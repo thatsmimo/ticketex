@@ -6,8 +6,6 @@ export default StyleSheet.create({
     backgroundColor: Colors.container,
     flex: 1,
     padding: 30,
-    alignItems: "center",
-    alignItems: "center",
   },
   logo: { width: "100%" },
   logoTxt: { fontFamily: "semi", fontSize: 18, textAlign: "center" },

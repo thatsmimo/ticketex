@@ -1,5 +1,7 @@
 // import AsyncStorage from "@react-native-community/async-storage";
 
+import AsyncStorage from "@react-native-community/async-storage";
+
 export default class API {
   constructor(options) {
     this.baseUrl = options.baseUrl;
@@ -51,8 +53,8 @@ export default class API {
   }
 
   async httpRequest(method, url, params, header = null) {
-    // let token = await AsyncStorage.getItem('userToken');
-    const token = undefined;
+    let token = JSON.parse(await AsyncStorage.getItem("userToken"))
+    console.log(token);
 
     return new Promise((resolve, reject) => {
       let options;
@@ -61,25 +63,26 @@ export default class API {
           headers: header
             ? header
             : {
-                // "Content-Type": "application/json",
-                Authorization: token != null && token,
+                Authorization: token!==null && `${token.token_type} ${token.access_token}`,
+                "Content-Type": "application/json",
               },
           method: method,
         };
       } else {
         options = {
-          // headers: {
-          //   "Content-Type": "application/json",
-          //   Authorization: token != null && "Bearer " + token,
-          // },
+          headers: header
+          ? header
+          : {
+              Authorization: `${token.token_type} ${token.access_token}`,
+              "Content-Type": "application/json",
+            },
           method: method,
           body: JSON.stringify(params),
         };
       }
 
       console.log("api -> " + url);
-      console.log("params -> ", options);
-
+      console.log("params -> ", options)  
       fetch(url, options)
         .then((response) => {
           console.log("____response____ ", response);

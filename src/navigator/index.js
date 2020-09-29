@@ -25,6 +25,7 @@ const index = () => {
           return {
             ...prevState,
             userDetails: action.userDetails,
+            userToken: action.userToken,
             isLoading: false,
           };
         case "SIGN_IN":
@@ -42,6 +43,7 @@ const index = () => {
     {
       userDetails: null,
       isLoading: true,
+      userToken: null,
     }
   );
 
@@ -50,12 +52,18 @@ const index = () => {
       let userDetails;
       try {
         userDetails = await AsyncStorage.getItem("userDetails");
+        userToken = await AsyncStorage.getItem("userToken");
         console.log("userDetails: ", userDetails);
+        console.log("userToken: ", userToken);
       } catch (e) {
         // Restoring failed
       }
 
-      dispatch({ type: "RESTORE_USER_DETAILS", userDetails: userDetails });
+      dispatch({
+        type: "RESTORE_USER_DETAILS",
+        userDetails: userDetails,
+        token: userToken,
+      });
     };
 
     bootstrapAsync();
@@ -67,8 +75,13 @@ const index = () => {
         console.log("data: ", signInData);
 
         await AsyncStorage.setItem("userDetails", signInData.userDetails);
+        await AsyncStorage.setItem("userToken", signInData.tokens);
 
-        dispatch({ type: "SIGN_IN", userDetails: signInData.userDetails });
+        dispatch({
+          type: "SIGN_IN",
+          userDetails: signInData.userDetails,
+          userToken: signInData.tokens,
+        });
       },
       signOut: async () => {
         await AsyncStorage.clear();
@@ -136,7 +149,11 @@ const index = () => {
       <Stack.Screen name="MyAccount" component={screens.MyAccountScreen} />
       <Stack.Screen name="Balance" component={screens.BalanceScreen} />
       <Stack.Screen name="Bank" component={screens.BankScreen} />
-      <Stack.Screen name="AddBank" component={screens.AddBankScreen} />
+      <Stack.Screen
+        name="AddBank"
+        component={screens.AddBankScreen}
+        {...state}
+      />
       <Stack.Screen name="CreditCard" component={screens.CreditCardScreen} />
       <Stack.Screen
         name="AddCreditCard"

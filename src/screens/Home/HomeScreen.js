@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,63 +12,83 @@ import { Languages, Colors, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
+import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const HomeScreen = ({ navigation }) => {
+  const [searchText, setSearchText] = useState("");
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    search();
+  }, []);
+
   const insets = useSafeAreaInsets();
 
-  const renderList = () => (
-    <TouchableOpacity
-      onPress={() => navigation.navigate("Ticket")}
-      style={CommonStyles.cardNoBg}
-    >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Image
-          source={require("../../../assets/images/player.png")}
-          style={styles.cardUserImg}
-        />
-        <View style={{ paddingLeft: 10, flex: 1 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={styles.cardDetailsTitle}>ALHILAL vs ALNASSER</Text>
-            <View style={CommonStyles.mainChipContainer}>
-              <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
-                King Cup
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <View style={{ flex: 1, marginTop: 20 }}>
-              <View style={styles.chipWithDate(true)}>
-                <Text numberOfLines={1} style={styles.chipWithDateTxt}>
-                  SUN 3 NOVEMBER
+  const search = async () => {
+    const response = await Api.get("events/list?search=" + searchText);
+    setEvents(response.events);
+  };
+
+  const _handleSearch = async (text) => {
+    await search();
+  };
+
+  const renderList = ({ item }) => {
+    console.log(item);
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Ticket")}
+        style={CommonStyles.cardNoBg}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Image
+            source={require("../../../assets/images/player.png")}
+            style={styles.cardUserImg}
+          />
+          <View style={{ paddingLeft: 10, flex: 1 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.cardDetailsTitle}>{item.name}</Text>
+              <View style={CommonStyles.mainChipContainer}>
+                <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
+                  {item.name}
                 </Text>
               </View>
             </View>
-            <Separator width={10} />
-            <View style={{ flex: 1, marginTop: 20 }}>
-              <View style={styles.chipWithDate(false)}>
-                <Text numberOfLines={1} style={styles.chipWithDateTxt}>
-                  The Roof
-                </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <View style={{ flex: 1, marginTop: 20 }}>
+                <View style={styles.chipWithDate(true)}>
+                  <Text numberOfLines={1} style={styles.chipWithDateTxt}>
+                    {item.start}
+                  </Text>
+                </View>
+              </View>
+              <Separator width={10} />
+              <View style={{ flex: 1, marginTop: 20 }}>
+                <View style={styles.chipWithDate(false)}>
+                  <Text numberOfLines={1} style={styles.chipWithDateTxt}>
+                    {item.location}
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View
@@ -111,6 +131,12 @@ const HomeScreen = ({ navigation }) => {
               paddingLeft: 10,
               flex: 1,
             }}
+            onChangeText={(text) => {
+              setSearchText(text);
+              // search;
+              _handleSearch(text);
+            }}
+            // onChange={_handleSearch}
           />
         </View>
         <View style={{ flexDirection: "row", marginTop: 15 }}>
@@ -147,7 +173,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
       <FlatList
         contentContainerStyle={{ paddingHorizontal: 20, flexGrow: 1 }}
-        data={["", "", "", "", "", "", "", "", "", ""]}
+        data={events}
         ItemSeparatorComponent={Separator}
         renderItem={renderList}
         keyExtractor={(item, index) => index.toString()}

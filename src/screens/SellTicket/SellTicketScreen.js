@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, I18nManager } from "react-native";
 import { AppHeader, Separator } from "../../components";
 import { Languages, Colors, CommonStyles } from "../../js/common";
@@ -6,9 +6,21 @@ import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { List } from "react-native-paper";
+import Api from "../../js/service/api";
 
 const SellTicketScreen = () => {
+  const [sellList, setSellList] = useState([]);
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    List();
+  }, []);
+
+  const List = async () => {
+    const response = await Api.get("ticket/sell");
+    setEvents(response.tickets);
+  };
 
   return (
     <View style={CommonStyles.screensRootContainer(insets.top)}>
@@ -16,7 +28,7 @@ const SellTicketScreen = () => {
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={{ padding: 20 }}
-          data={["", "", ""]}
+          data={sellList}
           ListHeaderComponent={
             <Text
               style={{
@@ -39,7 +51,7 @@ const SellTicketScreen = () => {
   );
 };
 
-const renderList = ({ index }) => {
+const renderList = ({ item, index }) => {
   let iconName = IconDir.Ionicons.check;
   let iconColor = Colors.positive;
   let iconText = Languages.Sold;
@@ -61,7 +73,7 @@ const renderList = ({ index }) => {
   return (
     <View style={CommonStyles.cardLine}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Ticket {index + 1}</Text>
+        <Text>{item.serial}</Text>
         <Text
           style={{
             fontFamily: "regular",
@@ -79,7 +91,7 @@ const renderList = ({ index }) => {
           alignItems: "center",
         }}
       >
-        <Text style={CommonStyles.dateTxt}>SUN 3 NOVEMBER</Text>
+        <Text style={CommonStyles.dateTxt}>{item.date}</Text>
         <Text
           style={{
             fontFamily: "regular",

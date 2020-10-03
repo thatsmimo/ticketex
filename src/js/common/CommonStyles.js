@@ -16,7 +16,7 @@ export default StyleSheet.create({
     fontSize: 30,
     fontFamily: "regular",
   },
-  appBtn: { marginTop: 40 },
+  appBtn: { marginTop: 10 },
   dateTxt: {
     fontFamily: "regular",
     fontSize: 13,

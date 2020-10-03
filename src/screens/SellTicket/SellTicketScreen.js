@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, I18nManager } from "react-native";
 import { AppHeader, Separator } from "../../components";
 import { Languages, Colors, CommonStyles } from "../../js/common";
@@ -6,9 +6,24 @@ import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Api from "../../js/service/api";
 
 const SellTicketScreen = () => {
+  const [sellList, setSellList] = useState(null);
+  const [loader, setLoader] = useState(false);
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    fetchList();
+  }, []);
+
+  const fetchList = async () => {
+    setLoader(true);
+    const response = await Api.get("ticket/sell");
+    setLoader(false);
+    console.log(response);
+    if (response.status) setSellList(response.tickets);
+  };
 
   return (
     <View style={CommonStyles.screensRootContainer(insets.top)}>
@@ -16,30 +31,32 @@ const SellTicketScreen = () => {
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={{ padding: 20 }}
-          data={["", "", ""]}
-          ListHeaderComponent={
-            <Text
-              style={{
-                fontFamily: "regular",
-                fontSize: 15,
-                marginBottom: 15,
-                textAlign: I18nManager.isRTL ? "left" : "left",
-              }}
-            >
-              {Languages.MyListing}
-            </Text>
-          }
+          data={sellList}
+          // ListHeaderComponent={
+          //   <Text
+          //     style={{
+          //       fontFamily: "regular",
+          //       fontSize: 15,
+          //       marginBottom: 15,
+          //       textAlign: I18nManager.isRTL ? "left" : "left",
+          //     }}
+          //   >
+          //     {Languages.MyListing}
+          //   </Text>
+          // }
           ItemSeparatorComponent={Separator}
           renderItem={renderList}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
+          refreshing={loader}
+          onRefresh={fetchList}
         />
       </View>
     </View>
   );
 };
 
-const renderList = ({ index }) => {
+const renderList = ({ item, index }) => {
   let iconName = IconDir.Ionicons.check;
   let iconColor = Colors.positive;
   let iconText = Languages.Sold;
@@ -61,7 +78,7 @@ const renderList = ({ index }) => {
   return (
     <View style={CommonStyles.cardLine}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Ticket {index + 1}</Text>
+        <Text>{item.serial}</Text>
         <Text
           style={{
             fontFamily: "regular",
@@ -79,7 +96,7 @@ const renderList = ({ index }) => {
           alignItems: "center",
         }}
       >
-        <Text style={CommonStyles.dateTxt}>SUN 3 NOVEMBER</Text>
+        <Text style={CommonStyles.dateTxt}>{item.date}</Text>
         <Text
           style={{
             fontFamily: "regular",

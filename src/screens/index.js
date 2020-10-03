@@ -47,3 +47,12 @@ export const TicketScreen = _TicketScreen;
 
 import _TicketDetailsScreen from "./TicketDetails/TicketDetailsScreen";
 export const TicketDetailsScreen = _TicketDetailsScreen;
+
+import _AddTicketScreen from "./AddTicket/AddTicketScreen";
+export const AddTicketScreen = _AddTicketScreen;
+
+import _AddImageScreen from "./AddImage/AddImageScreen";
+export const AddImageScreen = _AddImageScreen;
+
+import _getCamera from "./GetCamera/CameraScreen";
+export const GetCamera = _getCamera;

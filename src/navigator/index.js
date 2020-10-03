@@ -116,6 +116,9 @@ const index = () => {
 
   const HomeStack = () => (
     <Stack.Navigator headerMode="none">
+      {/* <Stack.Screen name="AddTicket" component={screens.AddTicketScreen} /> */}
+      {/*    <Stack.Screen name="AddImage" component={screens.AddImageScreen} /> */}
+      {/*    <Stack.Screen name="CameraScreen" component={screens.GetCamera} /> */}
       <Stack.Screen name="Home" component={screens.HomeScreen} />
       <Stack.Screen name="Ticket" component={screens.TicketScreen} />
       <Stack.Screen
@@ -166,6 +169,15 @@ const index = () => {
 
   //----------------------------------------------------
 
+  const AddTicketStack = () => (
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen name="AddTicket" component={screens.AddTicketScreen} />
+      <Stack.Screen name="AddImage" component={screens.AddImageScreen} />
+    </Stack.Navigator>
+  );
+
+  //----------------------------------------------------
+
   const TabNav = () => {
     return (
       <Tab.Navigator
@@ -197,6 +209,20 @@ const index = () => {
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.ticket}
+                color={color}
+                size={26}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="AddTickett"
+          component={AddTicketStack}
+          options={{
+            tabBarLabel: <AppTabBarTxt name={Languages.AddTicket} />,
+            tabBarIcon: ({ color, focused }) => (
+              <MaterialCommunityIcons
+                name={IconDir.MaterialCommunityIcons.tagPlus}
                 color={color}
                 size={26}
               />

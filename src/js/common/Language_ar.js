@@ -5,6 +5,7 @@ export default {
   Login: "Login",
   Home: "Home",
   SellTicket: "Sell Ticket",
+  AddTicket: "AddTicket",
   PurchasedTicket: "Purchased Ticket",
   Account: "Account",
   MyAccount: "My Account",
@@ -16,7 +17,6 @@ export default {
   SignOut: "Sign Out",
   AddNewCreditCard: "Add New Credit card",
   AddBankAccount: "Add Bank Account",
-
   YourSellingBalanceIs: "Your Selling Balance is",
   BalancePageBigText:
     "You can use this balance to buy other ticket or you can request transfer to your bank account",
@@ -49,4 +49,5 @@ export default {
   Search: "Search",
   MyTickets: "My Tickets",
   OTP_Number: "OTP Number",
+  AddTicket: "Add Ticket",
 };

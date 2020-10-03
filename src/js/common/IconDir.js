@@ -16,6 +16,7 @@ const MaterialCommunityIcons = {
   account: "account",
   arrowLeft: "chevron-left",
   arrowRight: "chevron-right",
+  tagPlus: "tag-plus",
 };
 
 export default { Ionicons, MaterialCommunityIcons };

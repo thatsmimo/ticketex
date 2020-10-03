@@ -23,7 +23,7 @@ const PurchasedTicketScreen = ({ navigation }) => {
     console.log(item);
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate("PurchasedTicketDetails")}
+        onPress={() => navigation.navigate("PurchasedTicketDetails", item.id)}
         style={CommonStyles.cardNoBg}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>

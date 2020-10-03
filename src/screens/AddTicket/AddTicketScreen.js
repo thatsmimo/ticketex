@@ -6,11 +6,15 @@ import { AppHeader, AppButton, AppEditText } from "../../components";
 const AddTicketScreen = ({ navigation }) => {
   const [selectedFirst, setSelectedFirst] = useState(false);
   const [selectedSecond, setSelectedSecond] = useState(false);
+  const [selectedThird, setSelectedThird] = useState(false);
+  const [selectedFourth, setSelectedFourth] = useState(false);
   const [quantity, setQuantity] = useState("----");
   const [eventType, setEventType] = useState("----");
   const [classType, setClassType] = useState("----");
 
-  const _handlenavigate = () => navigation.navigate("AddImage");
+  const _handlenavigate = () => {
+    navigation.navigate("AddImage");
+  };
 
   const EventType = () => {
     if (selectedFirst) {
@@ -47,17 +51,27 @@ const AddTicketScreen = ({ navigation }) => {
               <Picker
                 selectedValue={quantity}
                 style={styles.picker}
-                onValueChange={(itemValue, itemIndex) => setQuantity(itemValue)}
+                onValueChange={(itemValue, itemIndex) => {
+                  setQuantity(itemValue);
+                  setSelectedThird(true);
+                }}
               >
                 <Picker.Item label="----" value="default" />
                 <Picker.Item label="1" value="java" />
               </Picker>
             </View>
-            <View style={styles.input}>
-              <Text>Price per Ticket</Text>
-              <AppEditText />
-            </View>
           </View>
+        </>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
+  const ButtonHandler = () => {
+    if (selectedFourth) {
+      return (
+        <>
           <View style={styles.btn}>
             <AppButton name="next" _handleOnPress={_handlenavigate} />
           </View>
@@ -67,6 +81,34 @@ const AddTicketScreen = ({ navigation }) => {
       return <></>;
     }
   };
+
+  const PricePerTIcket = () => {
+    if (selectedThird) {
+      return (
+        <>
+          <View style={styles.form}>
+            <View style={styles.input}>
+              <Text>Price per Ticket</Text>
+              <AppEditText
+                keyBoardType={"number-pad"}
+                saveText={(text) => {
+                  setSelectedFourth(true);
+                  // console.log(text);
+                }}
+              />
+            </View>
+          </View>
+          <ButtonHandler />
+          <Text style={styles.text}>
+            Note: Based on ticket class the price should not exceed 240 SAR
+          </Text>
+        </>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <AppHeader title="Add Ticket" />
@@ -88,9 +130,8 @@ const AddTicketScreen = ({ navigation }) => {
       </View>
       <EventType />
       <Quantity />
-      <Text style={styles.text}>
-        Note: Based on ticket class the price should not exceed 240 SAR
-      </Text>
+      <PricePerTIcket />
+      {/* <ButtonHandler /> */}
     </View>
   );
 };

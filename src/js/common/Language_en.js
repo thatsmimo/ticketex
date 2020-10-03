@@ -51,4 +51,5 @@ export default {
   MyTickets: "My Tickets",
   OTP_Number: "OTP Number",
   ResendOTPNumber: "Resend OTP Number",
+  AddTicket: "Add Ticket",
 };

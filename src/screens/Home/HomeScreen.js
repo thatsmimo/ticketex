@@ -17,7 +17,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const HomeScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState(null);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     search();
@@ -26,8 +27,13 @@ const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   const search = async () => {
+    setLoader(true);
     const response = await Api.get("events/list?search=" + searchText);
-    setEvents(response.events);
+    console.log(response);
+    setLoader(false);
+    if (response.status) {
+      setEvents(response.events);
+    }
   };
 
   const _handleSearch = async (text) => {
@@ -180,7 +186,19 @@ const HomeScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={Separator}
         ListFooterComponent={<Separator heigh={30} />}
+        refreshing={loader}
+        onRefresh={search}
       />
+      {/* <View
+        style={{
+          ...StyleSheet.absoluteFill,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "rgba(1,1,1,.3)",
+        }}
+      >
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View> */}
     </View>
   );
 };

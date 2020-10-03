@@ -6,20 +6,23 @@ import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { List } from "react-native-paper";
 import Api from "../../js/service/api";
 
 const SellTicketScreen = () => {
-  const [sellList, setSellList] = useState([]);
+  const [sellList, setSellList] = useState(null);
+  const [loader, setLoader] = useState(false);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    List();
+    fetchList();
   }, []);
 
-  const List = async () => {
+  const fetchList = async () => {
+    setLoader(true);
     const response = await Api.get("ticket/sell");
-    setEvents(response.tickets);
+    setLoader(false);
+    console.log(response);
+    if (response.status) setSellList(response.tickets);
   };
 
   return (
@@ -29,22 +32,24 @@ const SellTicketScreen = () => {
         <FlatList
           contentContainerStyle={{ padding: 20 }}
           data={sellList}
-          ListHeaderComponent={
-            <Text
-              style={{
-                fontFamily: "regular",
-                fontSize: 15,
-                marginBottom: 15,
-                textAlign: I18nManager.isRTL ? "left" : "left",
-              }}
-            >
-              {Languages.MyListing}
-            </Text>
-          }
+          // ListHeaderComponent={
+          //   <Text
+          //     style={{
+          //       fontFamily: "regular",
+          //       fontSize: 15,
+          //       marginBottom: 15,
+          //       textAlign: I18nManager.isRTL ? "left" : "left",
+          //     }}
+          //   >
+          //     {Languages.MyListing}
+          //   </Text>
+          // }
           ItemSeparatorComponent={Separator}
           renderItem={renderList}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
+          refreshing={loader}
+          onRefresh={fetchList}
         />
       </View>
     </View>

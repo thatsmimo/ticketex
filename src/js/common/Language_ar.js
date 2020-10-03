@@ -49,4 +49,5 @@ export default {
   Search: "Search",
   MyTickets: "My Tickets",
   OTP_Number: "OTP Number",
+  AddTicket: "Add Ticket",
 };

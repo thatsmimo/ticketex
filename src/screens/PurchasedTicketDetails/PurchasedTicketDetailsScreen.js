@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, I18nManager } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  I18nManager,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import { AppHeader, Separator } from "../../components";
 import { Languages, Colors, CommonStyles } from "../../js/common";
 import styles from "./styles";
@@ -25,6 +32,15 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
     console.log(listDetails);
   };
 
+  const _handleOpenMapsApp = () => {
+    const location = `${listDetails.lat},${listDetails.lng}`;
+    const url = Platform.select({
+      ios: `maps:${location}`,
+      android: `geo:${location}?center=${location}&q=${location}&z=100`,
+    });
+    Linking.openURL(url);
+  };
+
   const Details = () => {
     if (listDetails) {
       return (
@@ -34,7 +50,7 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
             <View style={CommonStyles.cardNoBg}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Image
-                  source={require("../../../assets/images/joker.jpg")}
+                  source={{ uri: listDetails.image_url }}
                   style={{ height: 117, width: 117, borderRadius: 8 }}
                 />
                 <View style={{ paddingLeft: 10, flex: 1 }}>
@@ -45,7 +61,9 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
                     <Separator height={10} />
                     <Text style={CommonStyles.dateTxt}>{listDetails.date}</Text>
                     <Separator height={10} />
-                    <Text style={CommonStyles.dateTxt}>The Roof</Text>
+                    <Text style={CommonStyles.dateTxt}>
+                      {listDetails.location}
+                    </Text>
                   </View>
                   <Text
                     style={{
@@ -64,39 +82,42 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
             </View>
 
             <Separator height={20} />
-            <View style={CommonStyles.cardNoBg}>
-              {/* <Image
+            <TouchableOpacity onPress={_handleOpenMapsApp}>
+              <View style={CommonStyles.cardNoBg}>
+                {/* <Image
               source={require("../../../assets/images/gmap.jpeg")}
               style={{ height: 117, width: "100%", alignSelf: "center" }}
               resizeMode="cover"
             /> */}
-              <MapView
-                initialRegion={{
-                  latitude: parseFloat(listDetails.lat),
-                  longitude: parseFloat(listDetails.lng),
-                  latitudeDelta: 0.00121,
-                  longitudeDelta: 0.00121,
-                }}
-                style={{ height: 117, width: "100%", alignSelf: "center" }}
-              >
-                <MapView.Marker
-                  coordinate={{
+
+                <MapView
+                  initialRegion={{
                     latitude: parseFloat(listDetails.lat),
                     longitude: parseFloat(listDetails.lng),
+                    latitudeDelta: 0.00121,
+                    longitudeDelta: 0.00121,
                   }}
-                  title={listDetails.location}
-                />
-              </MapView>
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: 5,
-                  fontFamily: "regular",
-                }}
-              >
-                {Languages.OpenOnGoogleMaps}
-              </Text>
-            </View>
+                  style={{ height: 117, width: "100%", alignSelf: "center" }}
+                >
+                  <MapView.Marker
+                    coordinate={{
+                      latitude: parseFloat(listDetails.lat),
+                      longitude: parseFloat(listDetails.lng),
+                    }}
+                    title={listDetails.location}
+                  />
+                </MapView>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    marginTop: 5,
+                    fontFamily: "regular",
+                  }}
+                >
+                  {Languages.OpenOnGoogleMaps}
+                </Text>
+              </View>
+            </TouchableOpacity>
             <Text
               style={{
                 color: Colors.lineColor,

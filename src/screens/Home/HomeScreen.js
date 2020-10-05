@@ -44,14 +44,11 @@ const HomeScreen = ({ navigation }) => {
     console.log(item);
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate("Ticket")}
+        onPress={() => navigation.navigate("Ticket", item.id)}
         style={CommonStyles.cardNoBg}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image
-            source={require("../../../assets/images/player.png")}
-            style={styles.cardUserImg}
-          />
+          <Image source={{ uri: item.image_url }} style={styles.cardUserImg} />
           <View style={{ paddingLeft: 10, flex: 1 }}>
             <View
               style={{

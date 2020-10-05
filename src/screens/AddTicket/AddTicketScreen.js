@@ -12,7 +12,7 @@ const AddTicketScreen = ({ navigation }) => {
   const [eventType, setEventType] = useState("----");
   const [classType, setClassType] = useState("----");
 
-  const _handlenavigate = () => {
+  const _handleNavigate = () => {
     navigation.navigate("AddImage");
   };
 
@@ -68,20 +68,6 @@ const AddTicketScreen = ({ navigation }) => {
     }
   };
 
-  const ButtonHandler = () => {
-    if (selectedFourth) {
-      return (
-        <>
-          <View style={styles.btn}>
-            <AppButton name="next" _handleOnPress={_handlenavigate} />
-          </View>
-        </>
-      );
-    } else {
-      return <></>;
-    }
-  };
-
   const PricePerTIcket = () => {
     if (selectedThird) {
       return (
@@ -93,19 +79,24 @@ const AddTicketScreen = ({ navigation }) => {
                 keyBoardType={"number-pad"}
                 saveText={(text) => {
                   setSelectedFourth(true);
-                  // console.log(text);
                 }}
               />
             </View>
           </View>
-          <ButtonHandler />
+          <View style={styles.btn}>
+            <AppButton
+              name="next"
+              _handleOnPress={_handleNavigate}
+              disabled={selectedFourth ? false : true}
+            />
+          </View>
           <Text style={styles.text}>
             Note: Based on ticket class the price should not exceed 240 SAR
           </Text>
         </>
       );
     } else {
-      return <></>;
+      return <View />;
     }
   };
 
@@ -131,7 +122,6 @@ const AddTicketScreen = ({ navigation }) => {
       <EventType />
       <Quantity />
       <PricePerTIcket />
-      {/* <ButtonHandler /> */}
     </View>
   );
 };

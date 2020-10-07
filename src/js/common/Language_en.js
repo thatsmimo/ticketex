@@ -52,4 +52,5 @@ export default {
   OTP_Number: "OTP Number",
   ResendOTPNumber: "Resend OTP Number",
   AddTicket: "Add Ticket",
+  Next: "Next",
 };

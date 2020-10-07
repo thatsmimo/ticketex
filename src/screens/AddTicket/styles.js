@@ -27,20 +27,21 @@ export default StyleSheet.create({
   picker: {
     height: 40,
     width: 230,
+    fontFamily: "regular",
+    fontSize: 11,
   },
   btn: {
     width: 240,
   },
   input: {
-    marginTop:20,
-    alignItems:"center",
+    marginTop: 0,
+    alignItems: "center",
     width: 240,
   },
-  text:{
-      textAlign:"justify",
-      paddingHorizontal:80,
-      paddingTop:50,
-      color:"red"
-
-  }
+  text: {
+    textAlign: "justify",
+    paddingHorizontal: 80,
+    paddingTop: 50,
+    color: "red",
+  },
 });

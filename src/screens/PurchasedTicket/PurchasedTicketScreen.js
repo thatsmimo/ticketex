@@ -8,6 +8,7 @@ import Api from "../../js/service/api";
 
 const PurchasedTicketScreen = ({ navigation }) => {
   const [purchasedList, setPurchasedList] = useState(null);
+  const [loader, setLoader] = useState(false);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -15,20 +16,24 @@ const PurchasedTicketScreen = ({ navigation }) => {
   }, []);
 
   const fetchList = async () => {
+    setLoader(true);
     const response = await Api.get("ticket/purchased");
     setPurchasedList(response.tickets);
+    setLoader(false);
   };
 
   const renderList = ({ item }) => {
-    console.log(item);
+    console.log(item.image_url);
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate("PurchasedTicketDetails")}
+        onPress={() => navigation.navigate("PurchasedTicketDetails", item.id)}
         style={CommonStyles.cardNoBg}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
-            source={require("../../../assets/images/player.png")}
+            source={{
+              uri: item.image_url,
+            }}
             style={styles.cardUserImg}
           />
           <View style={{ paddingLeft: 10, flex: 1 }}>
@@ -76,6 +81,8 @@ const PurchasedTicketScreen = ({ navigation }) => {
           renderItem={renderList}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
+          refreshing={loader}
+          onRefresh={fetchList}
         />
       </View>
     </View>

@@ -216,7 +216,7 @@ const index = () => {
           }}
         />
         <Tab.Screen
-          name="AddTickett"
+          name="AddTicket"
           component={AddTicketStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.AddTicket} />,

@@ -13,6 +13,7 @@ import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
 import Api from "../../js/service/api";
+import QRCode from "react-native-qrcode-svg";
 
 const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
   const [listDetails, setListDetails] = useState();
@@ -82,31 +83,25 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
             </View>
 
             <Separator height={20} />
-            <TouchableOpacity onPress={_handleOpenMapsApp}>
-              <View style={CommonStyles.cardNoBg}>
-                {/* <Image
-              source={require("../../../assets/images/gmap.jpeg")}
-              style={{ height: 117, width: "100%", alignSelf: "center" }}
-              resizeMode="cover"
-            /> */}
-
-                <MapView
-                  initialRegion={{
+            <View style={CommonStyles.cardNoBg}>
+              <MapView
+                initialRegion={{
+                  latitude: parseFloat(listDetails.lat),
+                  longitude: parseFloat(listDetails.lng),
+                  latitudeDelta: 0.00121,
+                  longitudeDelta: 0.00121,
+                }}
+                style={{ height: 117, width: "100%", alignSelf: "center" }}
+              >
+                <MapView.Marker
+                  coordinate={{
                     latitude: parseFloat(listDetails.lat),
                     longitude: parseFloat(listDetails.lng),
-                    latitudeDelta: 0.00121,
-                    longitudeDelta: 0.00121,
                   }}
-                  style={{ height: 117, width: "100%", alignSelf: "center" }}
-                >
-                  <MapView.Marker
-                    coordinate={{
-                      latitude: parseFloat(listDetails.lat),
-                      longitude: parseFloat(listDetails.lng),
-                    }}
-                    title={listDetails.location}
-                  />
-                </MapView>
+                  title={listDetails.location}
+                />
+              </MapView>
+              <TouchableOpacity onPress={_handleOpenMapsApp}>
                 <Text
                   style={{
                     textAlign: "center",
@@ -116,8 +111,8 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
                 >
                   {Languages.OpenOnGoogleMaps}
                 </Text>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
             <Text
               style={{
                 color: Colors.lineColor,
@@ -129,11 +124,9 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
               {Languages.OrYouCanScanQRCode}
             </Text>
             <View style={CommonStyles.cardNoBg}>
-              <Image
-                source={require("../../../assets/images/qr.png")}
-                style={{ height: 290, width: "100%", alignSelf: "center" }}
-                resizeMode="stretch"
-              />
+              <View style={{ alignItems: "center" }}>
+                <QRCode value={listDetails.barcode.toString()} size={150} />
+              </View>
             </View>
           </View>
         </View>

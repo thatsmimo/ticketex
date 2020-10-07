@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
+import { Picker } from "@react-native-community/picker";
 import { Separator } from "../../components";
 import { Languages, Colors, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
@@ -14,34 +15,48 @@ import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import index from "../../components/Separator";
 
 const HomeScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
   const [events, setEvents] = useState(null);
   const [loader, setLoader] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [primaryDropdown, setPrimaryDropDown] = useState("");
+  const [secondaryDropdown, setSecondaryDropDown] = useState("");
 
   useEffect(() => {
     search();
+    getOptions();
   }, []);
 
   const insets = useSafeAreaInsets();
 
-  const search = async () => {
+  const search = async (value) => {
     setLoader(true);
-    const response = await Api.get("events/list?search=" + searchText);
-    console.log(response);
+
+    const response = await Api.get(
+      "events/list?search=" + searchText + "&categoryId=" + (value ? value : "")
+    );
     setLoader(false);
     if (response.status) {
       setEvents(response.events);
     }
   };
 
-  const _handleSearch = async (text) => {
-    await search();
+  const getOptions = async () => {
+    const response = await Api.get("category/list");
+    console.log("res: ", response);
+    if (response.status) {
+      setOptions(response.categories);
+    }
+  };
+
+  const _handleDropDown = (value) => {
+    search(value);
   };
 
   const renderList = ({ item }) => {
-    console.log(item);
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate("Ticket", item.id)}
@@ -136,10 +151,8 @@ const HomeScreen = ({ navigation }) => {
             }}
             onChangeText={(text) => {
               setSearchText(text);
-              // search;
-              _handleSearch(text);
+              search();
             }}
-            // onChange={_handleSearch}
           />
         </View>
         <View style={{ flexDirection: "row", marginTop: 15 }}>
@@ -148,14 +161,26 @@ const HomeScreen = ({ navigation }) => {
               backgroundColor: "#EEF7FF",
               borderRadius: 20,
               flex: 1,
-              padding: 10,
               flexDirection: "row",
             }}
           >
-            <Text style={{ fontFamily: "semi", flex: 1, paddingHorizontal: 5 }}>
-              Riyadh
-            </Text>
-            <Ionicons name={IconDir.Ionicons.down} size={20} />
+            <Picker
+              selectedValue={primaryDropdown}
+              style={{
+                flex: 1,
+              }}
+              onValueChange={(itemValue, itemIndex) => {
+                setPrimaryDropDown(itemValue);
+                _handleDropDown(itemIndex);
+                console.log("itemvalue : ", itemValue);
+                console.log("itemindex : ", itemIndex);
+              }}
+            >
+              <Picker.Item label="----" value="" />
+              {options.map((element, index) => (
+                <Picker.Item label={element.name} value={index} />
+              ))}
+            </Picker>
           </View>
           <Separator width={10} />
           <View
@@ -163,14 +188,23 @@ const HomeScreen = ({ navigation }) => {
               backgroundColor: "#EEF7FF",
               borderRadius: 20,
               flex: 1,
-              padding: 10,
               flexDirection: "row",
             }}
           >
-            <Text style={{ fontFamily: "semi", flex: 1, paddingHorizontal: 5 }}>
-              Riyadh
-            </Text>
-            <Ionicons name={IconDir.Ionicons.down} size={20} />
+            <Picker
+              enabled={false}
+              selectedValue={secondaryDropdown}
+              style={{
+                flex: 1,
+              }}
+              onValueChange={(itemValue, itemIndex) => {
+                setSecondaryDropDown(itemValue);
+                _handleDropDown();
+              }}
+            >
+              <Picker.Item label="----" value="default" />
+              <Picker.Item label="1" value="java" />
+            </Picker>
           </View>
         </View>
       </View>
@@ -186,16 +220,6 @@ const HomeScreen = ({ navigation }) => {
         refreshing={loader}
         onRefresh={search}
       />
-      {/* <View
-        style={{
-          ...StyleSheet.absoluteFill,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "rgba(1,1,1,.3)",
-        }}
-      >
-        <ActivityIndicator size="large" color={Colors.primary} />
-      </View> */}
     </View>
   );
 };

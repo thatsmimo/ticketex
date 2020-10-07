@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { View, Picker, Text } from "react-native";
+import { View, Text } from "react-native";
 import styles from "./styles";
+import { Picker } from "@react-native-community/picker";
+
 import { AppHeader, AppButton, AppEditText } from "../../components";
 
 const AddTicketScreen = ({ navigation }) => {
@@ -87,7 +89,7 @@ const AddTicketScreen = ({ navigation }) => {
             <AppButton
               name="next"
               _handleOnPress={_handleNavigate}
-              disabled={selectedFourth ? false : true}
+              disabled={true}
             />
           </View>
           <Text style={styles.text}>

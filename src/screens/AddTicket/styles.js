@@ -27,6 +27,8 @@ export default StyleSheet.create({
   picker: {
     height: 40,
     width: 230,
+    fontFamily: "regular",
+    fontSize: 11,
   },
   btn: {
     width: 240,

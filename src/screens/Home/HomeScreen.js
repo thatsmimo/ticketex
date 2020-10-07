@@ -178,7 +178,7 @@ const HomeScreen = ({ navigation }) => {
             >
               <Picker.Item label="----" value="" />
               {options.map((element, index) => (
-                <Picker.Item label={element.name} value={index} />
+                <Picker.Item label={element.name} value={index} key={index} />
               ))}
             </Picker>
           </View>

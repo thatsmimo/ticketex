@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import styles from "./styles";
 import { Picker } from "@react-native-community/picker";
-
 import { AppHeader, AppButton, AppEditText } from "../../components";
+import { Colors, Languages } from "../../js/common";
 
 const AddTicketScreen = ({ navigation }) => {
   const [selectedFirst, setSelectedFirst] = useState(false);
   const [selectedSecond, setSelectedSecond] = useState(false);
   const [selectedThird, setSelectedThird] = useState(false);
-  const [selectedFourth, setSelectedFourth] = useState(false);
+  const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("----");
   const [eventType, setEventType] = useState("----");
   const [classType, setClassType] = useState("----");
@@ -53,10 +53,13 @@ const AddTicketScreen = ({ navigation }) => {
               <Picker
                 selectedValue={quantity}
                 style={styles.picker}
+                mode="dialog"
+                // prompt="ss"
                 onValueChange={(itemValue, itemIndex) => {
                   setQuantity(itemValue);
                   setSelectedThird(true);
                 }}
+                itemStyle={{ fontFamily: "regular", fontSize: 11 }}
               >
                 <Picker.Item label="----" value="default" />
                 <Picker.Item label="1" value="java" />
@@ -70,26 +73,49 @@ const AddTicketScreen = ({ navigation }) => {
     }
   };
 
-  const PricePerTIcket = () => {
+  const PricePerTicket = () => {
     if (selectedThird) {
       return (
         <>
           <View style={styles.form}>
             <View style={styles.input}>
               <Text>Price per Ticket</Text>
-              <AppEditText
+              {/* <AppEditText
+                value={price}
                 keyBoardType={"number-pad"}
-                saveText={(text) => {
-                  setSelectedFourth(true);
+                saveText={(text) => setPrice(() => text)}
+              /> */}
+              <View
+                style={{
+                  height: 45,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  borderRadius: 45 / 2,
+                  paddingLeft: 5,
+                  marginTop: 15,
+                  borderColor: Colors.lineColor,
+                  borderWidth: 0.5,
                 }}
-              />
+              >
+                <TextInput
+                  style={{
+                    fontSize: 13,
+                    fontFamily: "regular",
+                    color: "#1d1d1d",
+                    paddingHorizontal: 10,
+                    flex: 1,
+                    justifyContent: "center",
+                  }}
+                  saveText={(text) => setPrice(() => text)}
+                />
+              </View>
             </View>
           </View>
           <View style={styles.btn}>
             <AppButton
-              name="next"
+              name={Languages.Next}
               _handleOnPress={_handleNavigate}
-              disabled={true}
+              disabled={price === "" ? true : false}
             />
           </View>
           <Text style={styles.text}>
@@ -123,7 +149,7 @@ const AddTicketScreen = ({ navigation }) => {
       </View>
       <EventType />
       <Quantity />
-      <PricePerTIcket />
+      <PricePerTicket />
     </View>
   );
 };

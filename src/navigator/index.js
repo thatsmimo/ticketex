@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, createContext } from "react";
+import React, { useReducer, useEffect, useState } from "react";
 import { StatusBar, View, Text, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
@@ -9,15 +9,26 @@ import { Colors, Languages, IconDir, CommonStyles } from "../js/common";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-community/async-storage";
 import { AuthContext } from "../js/context";
+import AppLoading from "../components/AppLoading";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 const AppTabBarTxt = ({ name }) => (
-  <Text style={{ fontSize: 11, fontFamily: "regular" }}>{name}</Text>
+  <Text
+    style={{
+      fontSize: name === Languages.PurchasedTicket ? 10 : 13,
+      fontFamily: "regular",
+    }}
+  >
+    {name}
+  </Text>
 );
 
 const index = () => {
+  // const navigationRef = React.useRef(null);
+  // const [navigationState, setNavigationState] = useState({});
+
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -94,18 +105,21 @@ const index = () => {
     []
   );
 
-  const PlatformStatusBar = () => (
-    <>
-      {Platform.OS === "ios" ? (
-        <StatusBar barStyle="dark-content" />
-      ) : (
-        <StatusBar
-          backgroundColor={Colors.background}
-          barStyle="dark-content"
-        />
-      )}
-    </>
-  );
+  const PlatformStatusBar = () => {
+    // console.log("navState: ", navState);
+    return (
+      <>
+        {Platform.OS === "ios" ? (
+          <StatusBar barStyle="dark-content" />
+        ) : (
+          <StatusBar
+            backgroundColor={Colors.background}
+            barStyle="dark-content"
+          />
+        )}
+      </>
+    );
+  };
 
   // ---------------------------------------------------
   const LoginStack = () => (
@@ -186,6 +200,7 @@ const index = () => {
         inactiveColor={Colors.lineColor}
         activeColor={Colors.primary}
         barStyle={CommonStyles.tabBarContainerStyle}
+        style={{ fontSize: 10 }}
       >
         <Tab.Screen
           name="Home"
@@ -261,24 +276,36 @@ const index = () => {
     );
   };
 
-  const NavMainContent = () => (
-    <>
-      <PlatformStatusBar />
-      {!state.userDetails ? <LoginStack /> : <TabNav />}
-    </>
-  );
+  const NavMainContent = ({}) => {
+    // console.log("navigationRef: ", navigationRef.current);
+    return (
+      <>
+        <PlatformStatusBar
+        //navState={navigationState}
+        />
+        {!state.userDetails ? <LoginStack /> : <TabNav />}
+      </>
+    );
+  };
 
   if (state.isLoading) {
-    return (
-      <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
-        <Text style={{ fontSize: 25, fontFamily: "semi" }}>Loading...</Text>
-      </View>
-    );
+    return <AppLoading />;
   }
+
+  // const unsubscribe = navigationRef.current?.addListener("state", (e) => {
+  //   // You can get the raw navigation state (partial state object of the root navigator)
+  //   console.log(e.data.state);
+  //   setNavigationState(e.data.state);
+
+  //   // Or get the full state object with `getRootState()`
+  //   // console.log(navigationRef.current.getRootState());
+  // });
 
   return (
     <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
+      <NavigationContainer
+      //ref={navigationRef}
+      >
         <SafeAreaProvider>
           <NavMainContent />
         </SafeAreaProvider>

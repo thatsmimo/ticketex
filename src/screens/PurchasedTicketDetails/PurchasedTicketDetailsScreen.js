@@ -15,12 +15,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
 import Api from "../../js/service/api";
 import QRCode from "react-native-qrcode-svg";
+import AppLoading from "../../components/AppLoading";
 
 const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
   const [listDetails, setListDetails] = useState();
+  const [loading, setLoading] = useState(true);
+
   const insets = useSafeAreaInsets();
   const ticketId = route.params;
-  console.log(ticketId);
 
   useEffect(() => {
     purchasedListDetails();
@@ -28,6 +30,7 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
 
   const purchasedListDetails = async () => {
     const response = await Api.get("ticket/detail?id=" + ticketId);
+    setLoading(false);
     if (response.status) {
       setListDetails(response.ticket);
     }
@@ -136,6 +139,10 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
       return <></>;
     }
   };
+  if (loading) {
+    return <AppLoading />;
+  }
+
   return (
     <ScrollView>
       <Details />

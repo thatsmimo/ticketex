@@ -3,9 +3,11 @@ import { View, Text, TextInput } from "react-native";
 import styles from "./styles";
 import { Picker } from "@react-native-community/picker";
 import { AppHeader, AppButton, SearchablePicker } from "../../components";
-import { Colors, Languages } from "../../js/common";
+import { Colors, CommonStyles, Languages } from "../../js/common";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const AddTicketScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [selectedFirst, setSelectedFirst] = useState("");
   const [selectedSecond, setSelectedSecond] = useState("");
   const [selectedThird, setSelectedThird] = useState("");
@@ -314,7 +316,7 @@ const AddTicketScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={CommonStyles.screensRootContainer(insets.top)}>
       <AppHeader title="Add Ticket" />
       <View style={styles.form}>
         <Text>Event Type</Text>

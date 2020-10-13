@@ -15,7 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import index from "../../components/Separator";
+// import index from "../../components/Separator";
+import { StatusBar } from "expo-status-bar";
 
 const HomeScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
@@ -23,7 +24,7 @@ const HomeScreen = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
   const [options, setOptions] = useState([]);
   const [primaryDropdown, setPrimaryDropDown] = useState("");
-  const [secondaryDropdown, setSecondaryDropDown] = useState("");
+  // const [secondaryDropdown, setSecondaryDropDown] = useState("");
 
   useEffect(() => {
     search();
@@ -34,13 +35,12 @@ const HomeScreen = ({ navigation }) => {
 
   const search = async (value) => {
     setLoader(true);
-
     const response = await Api.get(
       "events/list?search=" + searchText + "&categoryId=" + (value ? value : "")
     );
     setLoader(false);
     if (response.status) {
-      setEvents(response.events);
+      setEvents(() => [...response.events]);
     }
   };
 
@@ -116,10 +116,12 @@ const HomeScreen = ({ navigation }) => {
         paddingTop: insets.top,
       }}
     >
+      <StatusBar style={"dark"} />
       <View style={styles.container}>
         <Image
           source={Assets.logo_app_name}
           style={{ height: 65, width: 65 }}
+          resizeMode="contain"
         />
         <View
           style={{
@@ -165,10 +167,12 @@ const HomeScreen = ({ navigation }) => {
             }}
           >
             <Picker
+              mode="dialog"
               selectedValue={primaryDropdown}
               style={{
                 flex: 1,
               }}
+              itemStyle={{}}
               onValueChange={(itemValue, itemIndex) => {
                 setPrimaryDropDown(itemValue);
                 _handleDropDown(itemIndex);
@@ -177,7 +181,7 @@ const HomeScreen = ({ navigation }) => {
               }}
             >
               <Picker.Item
-                label="select category"
+                label={Languages.SelectCategory}
                 value=""
                 color={Colors.lineColor}
               />

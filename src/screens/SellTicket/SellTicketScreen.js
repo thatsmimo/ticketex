@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
+import { StatusBar } from "expo-status-bar";
 
 const SellTicketScreen = () => {
   const [sellList, setSellList] = useState(null);
@@ -77,6 +78,7 @@ const renderList = ({ item, index }) => {
   }
   return (
     <View style={CommonStyles.cardLine}>
+      <StatusBar style={"dark"} />
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text>{item.serial}</Text>
         <Text

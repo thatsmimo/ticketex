@@ -7,12 +7,24 @@ import IconDir from "../../js/common/IconDir";
 import { StatusBar } from "expo-status-bar";
 import { IconButton } from "react-native-paper";
 import { Separator, AppButton } from "../../components";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TicketDetailsScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   return (
     <>
-      <StatusBar translucent style={"light"} />
-      <View>
+      <View style={{ paddingTop: insets.top }}>
+        <StatusBar translucent style={"dark"} />
+        <View
+          style={{
+            height: 25,
+            backgroundColor: "rgba(255,255,255,.5)",
+            position: "absolute",
+            zIndex: 9,
+            left: 0,
+            right: 0,
+          }}
+        />
         <Image
           source={require("../../../assets/images/player.png")}
           style={styles.headerBigImg}

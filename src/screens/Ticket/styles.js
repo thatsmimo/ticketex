@@ -6,7 +6,11 @@ export default StyleSheet.create({
     backgroundColor: Colors.container,
     flex: 1,
   },
-  headerBigImg: { height: 300, width: "100%" },
+  headerBigImg: {
+    height: 300,
+    width: "100%",
+    top: -30,
+  },
   headerTopContainer: { ...StyleSheet.absoluteFill, marginTop: 20, padding: 0 },
   headerBigTxt: {
     color: Colors.background,
@@ -20,7 +24,7 @@ export default StyleSheet.create({
     zIndex: 9,
     left: 0,
     right: 0,
-    bottom: 20,
+    bottom: 50,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -46,7 +50,7 @@ export default StyleSheet.create({
     borderBottomLeftRadius: 8,
     borderBottomStartRadius: 8,
     backgroundColor: Colors.background,
-    marginTop: isInitial ? -10 : 10,
+    marginTop: isInitial ? -40 : 10,
     ...CommonStyles.shadow,
   }),
   rowAsContainer: {

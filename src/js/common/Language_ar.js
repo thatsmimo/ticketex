@@ -51,4 +51,5 @@ export default {
   OTP_Number: "OTP Number",
   AddTicket: "Add Ticket",
   Next: "Next",
+  SelectCategory: "Select a category",
 };

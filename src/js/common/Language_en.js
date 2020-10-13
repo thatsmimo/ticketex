@@ -53,4 +53,5 @@ export default {
   ResendOTPNumber: "Resend OTP Number",
   AddTicket: "Add Ticket",
   Next: "Next",
+  SelectCategory: "Select a category",
 };

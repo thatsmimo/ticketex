@@ -13,8 +13,10 @@ export default StyleSheet.create({
     borderTopRightRadius: 15,
     borderColor: "transparent",
     overflow: "hidden",
-    fontSize: 30,
+    fontSize: 20,
     fontFamily: "regular",
+    paddingBottom: 3,
+    // marginBottom: 10,
   },
   appBtn: { marginTop: 10 },
   dateTxt: {

@@ -6,6 +6,7 @@ import {
   I18nManager,
   TouchableOpacity,
   Linking,
+  ScrollView,
 } from "react-native";
 import { AppHeader, Separator } from "../../components";
 import { Languages, Colors, CommonStyles } from "../../js/common";
@@ -135,7 +136,11 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
       return <></>;
     }
   };
-  return <Details />;
+  return (
+    <ScrollView>
+      <Details />
+    </ScrollView>
+  );
 };
 
 export default PurchasedTicketDetailsScreen;

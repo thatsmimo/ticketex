@@ -176,14 +176,23 @@ const HomeScreen = ({ navigation }) => {
                 console.log("itemindex : ", itemIndex);
               }}
             >
-              <Picker.Item label="----" value="" />
+              <Picker.Item
+                label="select category"
+                value=""
+                color={Colors.lineColor}
+              />
               {options.map((element, index) => (
-                <Picker.Item label={element.name} value={index} key={index} />
+                <Picker.Item
+                  label={element.name}
+                  value={index}
+                  key={index}
+                  color="black"
+                />
               ))}
             </Picker>
           </View>
           <Separator width={10} />
-          <View
+          {/* <View
             style={{
               backgroundColor: "#EEF7FF",
               borderRadius: 20,
@@ -205,7 +214,7 @@ const HomeScreen = ({ navigation }) => {
               <Picker.Item label="----" value="default" />
               <Picker.Item label="1" value="java" />
             </Picker>
-          </View>
+          </View> */}
         </View>
       </View>
       <FlatList

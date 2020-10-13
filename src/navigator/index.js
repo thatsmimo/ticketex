@@ -14,7 +14,7 @@ const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 const AppTabBarTxt = ({ name }) => (
-  <Text style={{ fontSize: 13, fontFamily: "regular" }}>{name}</Text>
+  <Text style={{ fontSize: 11, fontFamily: "regular" }}>{name}</Text>
 );
 
 const index = () => {
@@ -192,7 +192,7 @@ const index = () => {
           component={HomeStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.Home} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color, focused, size }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.home}
                 color={color}

@@ -6,6 +6,7 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import {
   Button,
@@ -30,7 +31,7 @@ const HomeScreen = ({ navigation }) => {
   const [events, setEvents] = useState(null);
   const [loader, setLoader] = useState(false);
   const [options, setOptions] = useState([]);
-  const [primaryDropdown, setPrimaryDropDown] = useState("");
+  const [primaryDropdown, setPrimaryDropDown] = useState("Set Category");
   // const [secondaryDropdown, setSecondaryDropDown] = useState("");
 
   const [visible, setVisible] = useState(false);
@@ -44,6 +45,57 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   const insets = useSafeAreaInsets();
+
+  // const dummyData = [
+  //   {
+  //     id: "0",
+  //     word: "shine flower",
+  //   },
+  //   {
+  //     id: "1",
+  //     word: "smile friend pizza school this is great",
+  //   },
+  //   {
+  //     id: "2",
+  //     word: "sweet",
+  //   },
+  //   {
+  //     id: "3",
+  //     word: "chocolate",
+  //   },
+  //   {
+  //     id: "4",
+  //     word: "night",
+  //   },
+  //   {
+  //     id: "5",
+  //     word: "square",
+  //   },
+  //   {
+  //     id: "6",
+  //     word: "books stars enjoy",
+  //   },
+  //   {
+  //     id: "7",
+  //     word: "house",
+  //   },
+  //   {
+  //     id: "9",
+  //     word: "pencil",
+  //   },
+  //   {
+  //     id: "10",
+  //     word: "pencil",
+  //   },
+  //   {
+  //     id: "11",
+  //     word: "pencil",
+  //   },
+  //   {
+  //     id: "12",
+  //     word: "pencil",
+  //   },
+  // ];
 
   const search = async (value) => {
     setLoader(true);
@@ -61,6 +113,7 @@ const HomeScreen = ({ navigation }) => {
     console.log("res: ", response);
     if (response.status) {
       setOptions(response.categories);
+      // setOptions(dummyData);
     }
   };
 
@@ -74,36 +127,40 @@ const HomeScreen = ({ navigation }) => {
         <Portal>
           <Dialog visible={visible} onDismiss={hideDialog}>
             <Dialog.Content>
-              <RadioButton.Group
-                onValueChange={(value) => {
-                  setValue(value);
-                  setPrimaryDropDown(
-                    value === ""
-                      ? Languages.select_category
-                      : options[value].name
-                  );
-                  _handleDropDown(value);
-                  hideDialog();
-                }}
-                value={value}
-              >
-                <RadioButton.Item
-                  label="Set Category"
-                  value=""
-                  color={Colors.lineColor}
-                  labelStyle={{ color: Colors.lineColor }}
-                  key={value}
-                  onPress={() => console.log("did it")}
-                />
-                {options.map((element, index) => (
+              <ScrollView>
+                <RadioButton.Group
+                  onValueChange={(value) => {
+                    setValue(value);
+                    setPrimaryDropDown(
+                      value === "" ? "Select Category" : options[value].name
+                    );
+                    let x = 0;
+                    x = parseInt(value);
+                    x = x + 1;
+                    _handleDropDown(x);
+                    hideDialog();
+                  }}
+                  value={value}
+                >
                   <RadioButton.Item
-                    label={element.name}
-                    value={index}
-                    color="black"
-                    onPress={() => console.log("did it")}
+                    label="Set Category"
+                    value=""
+                    color={Colors.lineColor}
+                    labelStyle={{ color: Colors.lineColor }}
+                    key={value}
+                    // status={"checked"}
                   />
-                ))}
-              </RadioButton.Group>
+                  {options.map((element, index) => (
+                    <RadioButton.Item
+                      label={element.name}
+                      value={index}
+                      color="black"
+                      style={{ width: "100%" }}
+                      labelStyle={{ width: "80%" }}
+                    />
+                  ))}
+                </RadioButton.Group>
+              </ScrollView>
             </Dialog.Content>
           </Dialog>
         </Portal>
@@ -257,7 +314,7 @@ const HomeScreen = ({ navigation }) => {
                   style={{
                     fontFamily: "semi",
                     flex: 1,
-                    // color: Colors.lineColor,
+                    color: Colors.lineColor,
                   }}
                 >
                   {primaryDropdown}

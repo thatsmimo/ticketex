@@ -9,10 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import {
-  Button,
-  Dialog,
-  Portal,
-  Provider,
+  Modal,
   RadioButton,
 } from "react-native-paper";
 import { Picker } from "@react-native-community/picker";
@@ -35,9 +32,9 @@ const HomeScreen = ({ navigation }) => {
   // const [secondaryDropdown, setSecondaryDropDown] = useState("");
 
   const [visible, setVisible] = useState(false);
-  const showDialog = () => setVisible(true);
-  const hideDialog = () => setVisible(false);
-  const [value, setValue] = useState("Set Category");
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const [value, setValue] = useState("");
 
   useEffect(() => {
     search();
@@ -46,56 +43,56 @@ const HomeScreen = ({ navigation }) => {
 
   const insets = useSafeAreaInsets();
 
-  // const dummyData = [
-  //   {
-  //     id: "0",
-  //     word: "shine flower",
-  //   },
-  //   {
-  //     id: "1",
-  //     word: "smile friend pizza school this is great",
-  //   },
-  //   {
-  //     id: "2",
-  //     word: "sweet",
-  //   },
-  //   {
-  //     id: "3",
-  //     word: "chocolate",
-  //   },
-  //   {
-  //     id: "4",
-  //     word: "night",
-  //   },
-  //   {
-  //     id: "5",
-  //     word: "square",
-  //   },
-  //   {
-  //     id: "6",
-  //     word: "books stars enjoy",
-  //   },
-  //   {
-  //     id: "7",
-  //     word: "house",
-  //   },
-  //   {
-  //     id: "9",
-  //     word: "pencil",
-  //   },
-  //   {
-  //     id: "10",
-  //     word: "pencil",
-  //   },
-  //   {
-  //     id: "11",
-  //     word: "pencil",
-  //   },
-  //   {
-  //     id: "12",
-  //     word: "pencil",
-  //   },
-  // ];
+    const dummyData = [
+    {
+      id: "0",
+      word: "shine flower",
+    },
+    {
+      id: "1",
+      word: "smile friend pizza school this is great",
+    },
+    {
+      id: "2",
+      word: "sweet",
+    },
+    {
+      id: "3",
+      word: "chocolate",
+    },
+    {
+      id: "4",
+      word: "night",
+    },
+    {
+      id: "5",
+      word: "square",
+    },
+    {
+      id: "6",
+      word: "books stars enjoy",
+    },
+    {
+      id: "7",
+      word: "house",
+    },
+    {
+      id: "9",
+      word: "pencil",
+    },
+    {
+      id: "10",
+      word: "pencil",
+    },
+    {
+      id: "11",
+      word: "pencil",
+    },
+    {
+      id: "12",
+      word: "pencil",
+    },
+  ];
 
   const search = async (value) => {
     setLoader(true);
@@ -117,54 +114,41 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const _handleDropDown = (value) => {
-    search(value);
-  };
-
-  const DialogOptions = () => {
+  const ModalOptions = () => {
     return (
-      <Provider>
-        <Portal>
-          <Dialog visible={visible} onDismiss={hideDialog}>
-            <Dialog.Content>
-              <ScrollView>
-                <RadioButton.Group
-                  onValueChange={(value) => {
-                    setValue(value);
-                    setPrimaryDropDown(
-                      value === "" ? "Select Category" : options[value].name
-                    );
-                    let x = 0;
-                    x = parseInt(value);
-                    x = x + 1;
-                    _handleDropDown(x);
-                    hideDialog();
-                  }}
-                  value={value}
-                >
-                  <RadioButton.Item
-                    label="Set Category"
-                    value=""
-                    color={Colors.lineColor}
-                    labelStyle={{ color: Colors.lineColor }}
-                    key={value}
-                    // status={"checked"}
-                  />
-                  {options.map((element, index) => (
-                    <RadioButton.Item
-                      label={element.name}
-                      value={index}
-                      color="black"
-                      style={{ width: "100%" }}
-                      labelStyle={{ width: "80%" }}
-                    />
-                  ))}
-                </RadioButton.Group>
-              </ScrollView>
-            </Dialog.Content>
-          </Dialog>
-        </Portal>
-      </Provider>
+      <Modal visible={visible} onDismiss={hideModal}>
+        <View style={styles.modalView}>
+          <ScrollView>
+            <RadioButton.Group
+              onValueChange={(value) => {
+                setPrimaryDropDown(
+                  value === " " ? "Select Category" : options[value - 1].name
+                );
+                setValue(value);
+                setVisible(false);
+                search(value);
+              }}
+              value={value}
+            >
+              <RadioButton.Item
+                label="Set Category"
+                value={" "}
+                style={{ width: "100%" }}
+                labelStyle={{ width: "80%" }}
+              />
+              {options.map((element, index) => (
+                <RadioButton.Item
+                  label={element.name}
+                  value={index + 1}
+                  key={index}
+                  style={{ width: "100%" }}
+                  labelStyle={{ width: "80%" }}
+                />
+              ))}
+            </RadioButton.Group>
+          </ScrollView>
+        </View>
+      </Modal>
     );
   };
 
@@ -271,7 +255,7 @@ const HomeScreen = ({ navigation }) => {
               }}
             />
           </View>
-          <TouchableOpacity onPress={showDialog}>
+          <TouchableOpacity onPress={showModal}>
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <View
                 style={{
@@ -360,7 +344,7 @@ const HomeScreen = ({ navigation }) => {
           refreshing={loader}
           onRefresh={search}
         />
-        <DialogOptions />
+        <ModalOptions />
       </View>
     </>
   );

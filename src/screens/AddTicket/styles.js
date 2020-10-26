@@ -44,4 +44,12 @@ export default StyleSheet.create({
     paddingTop: 50,
     color: "red",
   },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 30,
+    alignItems: "center",
+    maxHeight: "80%",
+  },
 });

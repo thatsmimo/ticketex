@@ -8,6 +8,7 @@ import { StatusBar } from "expo-status-bar";
 import { IconButton } from "react-native-paper";
 import { Separator, AppButton } from "../../components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Constants from "expo-constants";
 
 const TicketDetailsScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -17,7 +18,7 @@ const TicketDetailsScreen = ({ navigation }) => {
         <StatusBar translucent style={"dark"} />
         <View
           style={{
-            height: 25,
+            height: Constants.statusBarHeight,
             backgroundColor: "rgba(255,255,255,.5)",
             position: "absolute",
             zIndex: 9,

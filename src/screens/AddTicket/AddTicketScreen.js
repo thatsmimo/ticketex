@@ -1,166 +1,135 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from "react-native";
-import { Modal, RadioButton } from "react-native-paper";
-import styles from "./styles";
-import { AppHeader, AppButton, SearchablePicker } from "../../components";
-import { Colors, CommonStyles, Languages } from "../../js/common";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { Modal } from "react-native-paper";
+import { AppEditText, AppHeader } from "../../components";
+import { Colors, CommonStyles } from "../../js/common";
 import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Api from "../../js/service/api";
 
-const AddTicketScreen = ({ navigation }) => {
+const containerStyle = {
+  backgroundColor: "white",
+  paddingHorizontal: 20,
+  paddingVertical: 10,
+  marginHorizontal: 20,
+  borderRadius: 8,
+  maxHeight: "60%",
+};
+
+const dummyData = [
+  { word: "Select Event" },
+  {
+    word: "shine flower",
+  },
+  {
+    word: "smile friend pizza school this is great da d dfd ftafdfdtfa",
+  },
+  {
+    word: "sweet",
+  },
+  {
+    word: "chocolate",
+  },
+  {
+    word: "night",
+  },
+  {
+    word: "square",
+  },
+  {
+    word: "books stars enjoy",
+  },
+  {
+    word: "house",
+  },
+  {
+    word: "pencil",
+  },
+  {
+    word: "pencil",
+  },
+  {
+    word: "pencil",
+  },
+  {
+    word: "pencil",
+  },
+];
+
+const AddTicketScreen = ({}) => {
   const insets = useSafeAreaInsets();
-  const [options, setOptions] = useState([]);
-  // const [tempOptions, setTempOptions] = useState(null);
+  const [eventList, setEventList] = useState([]);
 
   const [visible, setVisible] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  const [primaryDropdown, setPrimaryDropDown] = useState("Select Event");
-  const [eventValue, setEventValue] = useState("");
+  const [keyword, setKeyword] = useState("");
 
-  const containerStyle = {
-    backgroundColor: "white",
-    padding: 20,
-    marginHorizontal: 20,
-    borderRadius: 20,
-    maxHeight: "50%",
-  };
+  const [selectedEventPos, setSelectedEventPos] = useState(0); // set only event pos
+  const [currentModal, setCurrentModal] = useState("event"); // (default: 1st one) set type of modals
 
   useEffect(() => {
-    // search();
-    getOptions();
+    geteventList();
   }, []);
 
-  const dummyData = [
-    {
-      id: "0",
-      word: "shine flower",
-    },
-    {
-      id: "1",
-      word: "smile friend pizza school this is great",
-    },
-    {
-      id: "2",
-      word: "sweet",
-    },
-    {
-      id: "3",
-      word: "chocolate",
-    },
-    {
-      id: "4",
-      word: "night",
-    },
-    {
-      id: "5",
-      word: "square",
-    },
-    {
-      id: "6",
-      word: "books stars enjoy",
-    },
-    {
-      id: "7",
-      word: "house",
-    },
-    {
-      id: "9",
-      word: "pencil",
-    },
-    {
-      id: "10",
-      word: "pencil",
-    },
-    {
-      id: "11",
-      word: "pencil",
-    },
-    {
-      id: "12",
-      word: "pencil",
-    },
-  ];
-
-  const getOptions = async () => {
-    const response = await Api.get("category/list");
-    console.log("res: ", response);
-    if (response.status) {
-      // setOptions(response.categories);
-      setOptions(dummyData);
-    }
+  const geteventList = async () => {
+    setEventList(dummyData);
   };
 
-  const filteredOptions = (options, text) => {
+  const filteredeventList = (eventList, text) => {
     let temp = [];
-    let tempOptions = [];
-    for (let i = 0; i < options.length; i++) {
-      temp.push(options[i].word);
+    let tempeventList = [];
+    for (let i = 0; i < eventList.length; i++) {
+      temp.push(eventList[i].word);
     }
     temp.map((orgWord, index) => {
       text.split(" ").map((word) => {
         if (orgWord.toLowerCase().indexOf(word.toLowerCase()) != -1) {
-          tempOptions.push(options[index]);
+          tempeventList.push(eventList[index]);
         }
       });
     });
-    setOptions(tempOptions);
+    setEventList(tempeventList);
   };
 
-  const EventName = () => {
-    return (
-      <>
-        <SelectField text={primaryDropdown} />
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={containerStyle}
-        >
-          <TextInput
-            style={{
-              borderColor: "black",
-              borderRadius: 10,
-              borderWidth: 0.2,
-              marginBottom: 13,
-              // height: 30,
-              padding: 5,
-            }}
-            onChangeText={(text) => {
-              filteredOptions(options, text);
-            }}
-          />
-          <FlatList
-            data={options}
-            renderItem={renderList}
-            keyExtractor={(item) => item.id}
-          />
-        </Modal>
-      </>
-    );
-  };
-
-  const renderList = ({ item }) => {
+  const renderList = ({ item, index }) => {
+    let isMatchedItem = false;
+    switch (currentModal) {
+      case "event":
+        isMatchedItem = selectedEventPos === index;
+        break;
+    }
     return (
       <TouchableOpacity
         onPress={() => {
-          setPrimaryDropDown(item.word);
           hideModal();
-          setEventValue(item.id);
+          setSelectedEventPos(index);
         }}
         style={{ paddingVertical: 8 }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ fontFamily: "regular", fontSize: 15 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Ionicons
+            size={20}
+            name={
+              isMatchedItem
+                ? IconDir.Ionicons.radioOn
+                : IconDir.Ionicons.radioOff
+            }
+            color={Colors.primary}
+          />
+          <Text
+            style={{
+              fontFamily: "regular",
+              fontSize: 15,
+              marginLeft: 15,
+            }}
+          >
             {item.word}
           </Text>
         </View>
@@ -181,6 +150,7 @@ const AddTicketScreen = ({ navigation }) => {
                   flex: 1,
                   flexDirection: "row",
                   padding: 13,
+                  alignItems: "center",
                 }}
               >
                 <Text
@@ -201,10 +171,40 @@ const AddTicketScreen = ({ navigation }) => {
     );
   };
 
+  const _saveKeywordAndSearch = (text) => {
+    filteredeventList(eventList, text);
+    setKeyword(text.trim());
+  };
+
+  const _placeListToModal = () => {
+    switch (currentModal) {
+      case "event":
+        return eventList;
+    }
+  };
+
   return (
     <View style={CommonStyles.screensRootContainer(insets.top)}>
       <AppHeader title="Add Ticket" />
-      <EventName />
+      <SelectField text={eventList[selectedEventPos]?.word} />
+      <Modal
+        visible={visible}
+        onDismiss={hideModal}
+        contentContainerStyle={containerStyle}
+      >
+        <AppEditText
+          hint="Type here to search..."
+          value={keyword}
+          saveText={_saveKeywordAndSearch}
+        />
+        <FlatList
+          style={{ marginTop: 15, paddingHorizontal: 10 }}
+          data={_placeListToModal()}
+          renderItem={renderList}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+        />
+      </Modal>
     </View>
   );
 };

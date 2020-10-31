@@ -31,7 +31,10 @@ export default StyleSheet.create({
     fontSize: 11,
   },
   btn: {
-    width: 240,
+    alignItems: "center",
+    justifyContent: "center",
+    // width: 240,
+    paddingHorizontal:"15%"
   },
   input: {
     marginTop: 0,

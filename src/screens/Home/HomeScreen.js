@@ -6,13 +6,8 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
-  ScrollView,
 } from "react-native";
-import {
-  Modal,
-  RadioButton,
-} from "react-native-paper";
-import { Picker } from "@react-native-community/picker";
+import { Modal } from "react-native-paper";
 import { Separator } from "../../components";
 import { Languages, Colors, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
@@ -20,136 +15,56 @@ import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-// import index from "../../components/Separator";
 import { StatusBar } from "expo-status-bar";
 
-const HomeScreen = ({ navigation }) => {
-  const [searchText, setSearchText] = useState("");
-  const [events, setEvents] = useState(null);
-  const [loader, setLoader] = useState(false);
-  const [options, setOptions] = useState([]);
-  const [primaryDropdown, setPrimaryDropDown] = useState("Set Category");
-  // const [secondaryDropdown, setSecondaryDropDown] = useState("");
+let orgEventList = [];
 
+const HomeScreen = ({ navigation }) => {
+  const [eventList, setEventList] = useState(null);
+  const [loader, setLoader] = useState(false);
+  const [categoryList, setCategoryList] = useState([]);
+
+  const [selectedCategoryPos, setCategoryPos] = useState(-1);
   const [visible, setVisible] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const [value, setValue] = useState("");
-
-  useEffect(() => {
-    search();
-    getOptions();
-  }, []);
 
   const insets = useSafeAreaInsets();
 
-    const dummyData = [
-    {
-      id: "0",
-      word: "shine flower",
-    },
-    {
-      id: "1",
-      word: "smile friend pizza school this is great",
-    },
-    {
-      id: "2",
-      word: "sweet",
-    },
-    {
-      id: "3",
-      word: "chocolate",
-    },
-    {
-      id: "4",
-      word: "night",
-    },
-    {
-      id: "5",
-      word: "square",
-    },
-    {
-      id: "6",
-      word: "books stars enjoy",
-    },
-    {
-      id: "7",
-      word: "house",
-    },
-    {
-      id: "9",
-      word: "pencil",
-    },
-    {
-      id: "10",
-      word: "pencil",
-    },
-    {
-      id: "11",
-      word: "pencil",
-    },
-    {
-      id: "12",
-      word: "pencil",
-    },
-  ];
+  useEffect(() => {
+    fetchSearch("");
+    getOptions();
+  }, []);
 
-  const search = async (value) => {
+  const fetchSearch = async (id) => {
     setLoader(true);
     const response = await Api.get(
-      "events/list?search=" + searchText + "&categoryId=" + (value ? value : "")
+      "events/list?search=" + "" + "&categoryId=" + (id ? id : "")
     );
+    console.log("search event: ", response);
     setLoader(false);
     if (response.status) {
-      setEvents(() => [...response.events]);
+      orgEventList = response.events;
+      setEventList(response.events);
     }
+  };
+
+  const search = async (value) => {
+    setEventList([...orgEventList]);
+    const keyword = value;
+    const filterList = orgEventList.filter(
+      (e) => !e.name.toLowerCase().search(keyword.toLowerCase())
+    );
+    console.log("filterList: ", filterList);
+    setEventList([...filterList]);
   };
 
   const getOptions = async () => {
     const response = await Api.get("category/list");
     console.log("res: ", response);
     if (response.status) {
-      setOptions(response.categories);
-      // setOptions(dummyData);
+      setCategoryList(response.categories);
     }
-  };
-
-  const ModalOptions = () => {
-    return (
-      <Modal visible={visible} onDismiss={hideModal}>
-        <View style={styles.modalView}>
-          <ScrollView>
-            <RadioButton.Group
-              onValueChange={(value) => {
-                setPrimaryDropDown(
-                  value === " " ? "Select Category" : options[value - 1].name
-                );
-                setValue(value);
-                setVisible(false);
-                search(value);
-              }}
-              value={value}
-            >
-              <RadioButton.Item
-                label="Set Category"
-                value={" "}
-                style={{ width: "100%" }}
-                labelStyle={{ width: "80%" }}
-              />
-              {options.map((element, index) => (
-                <RadioButton.Item
-                  label={element.name}
-                  value={index + 1}
-                  key={index}
-                  style={{ width: "100%" }}
-                  labelStyle={{ width: "80%" }}
-                />
-              ))}
-            </RadioButton.Group>
-          </ScrollView>
-        </View>
-      </Modal>
-    );
   };
 
   const renderList = ({ item }) => {
@@ -204,6 +119,46 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
+  const renderModalList = ({ item, index }) => {
+    const isMatchedItem = selectedCategoryPos === index;
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          hideModal();
+          setCategoryPos(index);
+          fetchSearch(item.id);
+        }}
+        style={{ paddingVertical: 8 }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Ionicons
+            size={20}
+            name={
+              isMatchedItem
+                ? IconDir.Ionicons.radioOn
+                : IconDir.Ionicons.radioOff
+            }
+            color={Colors.primary}
+          />
+          <Text
+            style={{
+              fontFamily: "regular",
+              fontSize: 15,
+              marginLeft: 15,
+            }}
+          >
+            {item.name}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <>
       <View
@@ -214,7 +169,6 @@ const HomeScreen = ({ navigation }) => {
         }}
       >
         <StatusBar style={"dark"} />
-
         <View style={styles.container}>
           <Image
             source={Assets.logo_app_name}
@@ -250,8 +204,7 @@ const HomeScreen = ({ navigation }) => {
                 flex: 1,
               }}
               onChangeText={(text) => {
-                setSearchText(text);
-                search();
+                search(text);
               }}
             />
           </View>
@@ -259,41 +212,13 @@ const HomeScreen = ({ navigation }) => {
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <View
                 style={{
-                  backgroundColor: "#EEF7FF",
+                  backgroundColor: Colors.lightBlue,
                   borderRadius: 20,
                   flex: 1,
                   flexDirection: "row",
                   padding: 13,
                 }}
               >
-                {/* <Picker
-              mode="dialog"
-              selectedValue={primaryDropdown}
-              style={{
-                flex: 1,
-              }}
-              itemStyle={{}}
-              onValueChange={(itemValue, itemIndex) => {
-                setPrimaryDropDown(itemValue);
-                _handleDropDown(itemIndex);
-                console.log("itemvalue : ", itemValue);
-                console.log("itemindex : ", itemIndex);
-              }}
-            >
-              <Picker.Item
-                label={Languages.SelectCategory}
-                value=""
-                color={Colors.lineColor}
-              />
-              {options.map((element, index) => (
-                <Picker.Item
-                  label={element.name}
-                  value={index}
-                  key={index}
-                  color="black"
-                />
-              ))}
-            </Picker> */}
                 <Text
                   style={{
                     fontFamily: "semi",
@@ -301,40 +226,23 @@ const HomeScreen = ({ navigation }) => {
                     color: Colors.lineColor,
                   }}
                 >
-                  {primaryDropdown}
+                  {selectedCategoryPos == -1
+                    ? "Select Category"
+                    : categoryList[selectedCategoryPos].name}
                 </Text>
-                <Ionicons name={IconDir.Ionicons.down} size={20} />
+                <Ionicons
+                  name={IconDir.Ionicons.down}
+                  size={20}
+                  color={Colors.lineColor}
+                />
               </View>
               <Separator width={10} />
-              {/* <View
-            style={{
-              backgroundColor: "#EEF7FF",
-              borderRadius: 20,
-              flex: 1,
-              flexDirection: "row",
-            }}
-            >
-            <Picker
-            enabled={false}
-            selectedValue={secondaryDropdown}
-            style={{
-              flex: 1,
-            }}
-            onValueChange={(itemValue, itemIndex) => {
-              setSecondaryDropDown(itemValue);
-              _handleDropDown();
-            }}
-            >
-            <Picker.Item label="----" value="default" />
-            <Picker.Item label="1" value="java" />
-            </Picker>
-          </View> */}
             </View>
           </TouchableOpacity>
         </View>
         <FlatList
           contentContainerStyle={{ paddingHorizontal: 20, flexGrow: 1 }}
-          data={events}
+          data={eventList}
           ItemSeparatorComponent={Separator}
           renderItem={renderList}
           keyExtractor={(item, index) => index.toString()}
@@ -342,9 +250,56 @@ const HomeScreen = ({ navigation }) => {
           ListHeaderComponent={Separator}
           ListFooterComponent={<Separator heigh={30} />}
           refreshing={loader}
-          onRefresh={search}
+          onRefresh={() => fetchSearch("")}
         />
-        <ModalOptions />
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={CommonStyles.appModalContainer}
+        >
+          {selectedCategoryPos !== -1 && (
+            <TouchableOpacity
+              onPress={() => {
+                hideModal();
+                setCategoryPos(-1);
+                fetchSearch("");
+              }}
+              style={{
+                flexDirection: "row",
+                width: 100,
+                backgroundColor: Colors.lightBlue,
+                alignSelf: "flex-end",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 5,
+                borderRadius: 20,
+              }}
+            >
+              <Ionicons
+                size={20}
+                name={IconDir.Ionicons.close}
+                color={Colors.primary}
+              />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: "semi",
+                  color: Colors.lineColor,
+                  marginLeft: 8,
+                }}
+              >
+                Clear
+              </Text>
+            </TouchableOpacity>
+          )}
+          <FlatList
+            style={{ marginTop: 15, paddingHorizontal: 10 }}
+            data={categoryList}
+            renderItem={renderModalList}
+            keyExtractor={(item, index) => index.toString()}
+            showsVerticalScrollIndicator={false}
+          />
+        </Modal>
       </View>
     </>
   );

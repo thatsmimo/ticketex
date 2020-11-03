@@ -8,4 +8,6 @@ export default {
   positive: "#52C68C",
   negative: "#FD392E",
   neutral: "#F1B758",
+
+  lightBlue: "#EEF7FF",
 };

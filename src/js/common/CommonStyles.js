@@ -78,4 +78,12 @@ export default StyleSheet.create({
     width: "100%",
   },
   marginTop50: { marginTop: 50 },
+  appModalContainer: {
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginHorizontal: 20,
+    borderRadius: 8,
+    maxHeight: "60%",
+  },
 });

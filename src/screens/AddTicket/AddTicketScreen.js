@@ -16,7 +16,7 @@ const containerStyle = {
   maxHeight: "60%",
 };
 
-const dummyData = [
+const dummyData1 = [
   { word: "Select Event" },
   {
     word: "shine flower",
@@ -55,10 +55,43 @@ const dummyData = [
     word: "pencil",
   },
 ];
+const dummyData2 = [
+  {
+    word: "sweet",
+  },
+  {
+    word: "chocolate",
+  },
+  {
+    word: "night",
+  },
+  {
+    word: "square",
+  },
+  {
+    word: "books stars enjoy",
+  },
+  {
+    word: "house",
+  },
+  {
+    word: "pencil",
+  },
+  {
+    word: "pencil",
+  },
+  {
+    word: "pencil",
+  },
+  {
+    word: "pencil",
+  },
+];
 
 const AddTicketScreen = ({}) => {
   const insets = useSafeAreaInsets();
   const [eventList, setEventList] = useState([]);
+  const [classTypeList, setClassTypeList] = useState([]);
 
   const [visible, setVisible] = useState(false);
   const showModal = () => setVisible(true);
@@ -69,12 +102,15 @@ const AddTicketScreen = ({}) => {
   const [selectedEventPos, setSelectedEventPos] = useState(0); // set only event pos
   const [currentModal, setCurrentModal] = useState("event"); // (default: 1st one) set type of modals
 
+  const [selectedClassPos, setSelectedClassPos] = useState(0); // set only class pos
+
   useEffect(() => {
     geteventList();
   }, []);
 
   const geteventList = async () => {
-    setEventList(dummyData);
+    setEventList(dummyData1);
+    setClassTypeList(dummyData2);
   };
 
   const filteredeventList = (eventList, text) => {
@@ -91,6 +127,7 @@ const AddTicketScreen = ({}) => {
       });
     });
     setEventList(tempeventList);
+    setClassTypeList(tempeventList);
   };
 
   const renderList = ({ item, index }) => {
@@ -99,12 +136,19 @@ const AddTicketScreen = ({}) => {
       case "event":
         isMatchedItem = selectedEventPos === index;
         break;
+      case "classType":
+        isMatchedItem = selectedClassPos === index;
+        break;
     }
     return (
       <TouchableOpacity
         onPress={() => {
           hideModal();
-          setSelectedEventPos(index);
+          if (currentModal == "event") {
+            setSelectedEventPos(index);
+          } else {
+            setSelectedClassPos(index);
+          }
         }}
         style={{ paddingVertical: 8 }}
       >
@@ -138,10 +182,17 @@ const AddTicketScreen = ({}) => {
   };
 
   const SelectField = ({ text }) => {
+    // console.log(name);
     return (
       <>
         <View style={{ marginHorizontal: "10%" }}>
-          <TouchableOpacity onPress={showModal}>
+          <TouchableOpacity
+            onPress={() => {
+              showModal();
+              setCurrentModal("classType");
+            }}
+            // onPressOut={setCurrentModal(name)}
+          >
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <View
                 style={{
@@ -177,16 +228,36 @@ const AddTicketScreen = ({}) => {
   };
 
   const _placeListToModal = () => {
+    // if (selectedEventPos != 0) {
+    //   setCurrentModal("classType");
+    // }
+    console.log("current Modal: ", currentModal);
     switch (currentModal) {
       case "event":
         return eventList;
+      case "classType":
+        return classTypeList;
     }
+  };
+
+  const ClassType = () => {
+    if (selectedEventPos != 0) {
+      // return <SelectField text={classTypeList[selectedClassPos]?.word} />;
+      return (
+        <TouchableOpacity onPress={() => setCurrentModal("classType")}>
+          <SelectField text={classTypeList[selectedClassPos]?.word} />
+        </TouchableOpacity>
+      );
+    } else return null;
   };
 
   return (
     <View style={CommonStyles.screensRootContainer(insets.top)}>
       <AppHeader title="Add Ticket" />
-      <SelectField text={eventList[selectedEventPos]?.word} />
+      <TouchableOpacity onPress={() => console.log("event")}>
+        <SelectField text={eventList[selectedEventPos]?.word} />
+      </TouchableOpacity>
+      <ClassType />
       <Modal
         visible={visible}
         onDismiss={hideModal}

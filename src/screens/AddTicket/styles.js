@@ -32,6 +32,7 @@ export default StyleSheet.create({
   },
   btn: {
     width: 240,
+    alignSelf: "center",
   },
   input: {
     marginTop: 0,

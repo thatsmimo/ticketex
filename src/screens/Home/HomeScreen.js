@@ -41,7 +41,7 @@ const HomeScreen = ({ navigation }) => {
     const response = await Api.get(
       "events/list?search=" + "" + "&categoryId=" + (id ? id : "")
     );
-    console.log("search event: ", response);
+    // console.log("search event: ", response);
     setLoader(false);
     if (response.status) {
       orgEventList = response.events;
@@ -55,13 +55,13 @@ const HomeScreen = ({ navigation }) => {
     const filterList = orgEventList.filter(
       (e) => !e.name.toLowerCase().search(keyword.toLowerCase())
     );
-    console.log("filterList: ", filterList);
+    // console.log("filterList: ", filterList);
     setEventList([...filterList]);
   };
 
   const getOptions = async () => {
     const response = await Api.get("category/list");
-    console.log("res: ", response);
+    // console.log("res: ", response);
     if (response.status) {
       setCategoryList(response.categories);
     }

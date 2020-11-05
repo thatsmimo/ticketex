@@ -5,56 +5,14 @@ import { AppButton, AppEditText, AppHeader } from "../../components";
 import { Colors, CommonStyles } from "../../js/common";
 import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
+import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-const dummyData1 = [
-  {
-    word: "shine flower",
-  },
-  {
-    word: "smile friend pizza school this is great da d dfd ftafdfdtfa",
-  },
-  {
-    word: "sweet",
-  },
-  {
-    word: "chocolate",
-  },
-  {
-    word: "night",
-  },
-  {
-    word: "square",
-  },
-  {
-    word: "books stars enjoy",
-  },
-  {
-    word: "house",
-  },
-  {
-    word: "pencil",
-  },
-];
-const dummyData2 = [
-  {
-    word: "a",
-  },
-  {
-    word: "b",
-  },
-  {
-    word: "c",
-  },
-  {
-    word: "d",
-  },
-];
 
 const AddTicketScreen = ({}) => {
   const insets = useSafeAreaInsets();
   const [eventList, setEventList] = useState([]);
   const [classList, setClassList] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   const [visible, setVisible] = useState(false);
 
@@ -72,8 +30,16 @@ const AddTicketScreen = ({}) => {
   }, []);
 
   const geteventList = async () => {
-    setEventList(dummyData1);
-    setClassList(dummyData2);
+    setLoader(true);
+    const classResponse = await Api.get("class-type");
+    const eventResponse = await Api.get("events/list");
+    setLoader(false);
+    if (classResponse.status) {
+      setClassList(classResponse.data);
+    }
+    if (eventResponse.status) {
+      setEventList(eventResponse.events);
+    }
   };
 
   const showModal = () => setVisible(true);
@@ -123,7 +89,7 @@ const AddTicketScreen = ({}) => {
               marginLeft: 15,
             }}
           >
-            {item.word}
+            {item.name}
           </Text>
         </View>
       </TouchableOpacity>
@@ -224,14 +190,14 @@ const AddTicketScreen = ({}) => {
         <View style={{ paddingHorizontal: 30 }}>
           <FeildHeader name={"Select Event type:"} />
           <SelectField
-            selectedTxt={eventList[selectedEventPos]?.word}
+            selectedTxt={eventList[selectedEventPos]?.name}
             type={"event"}
           />
           {selectedEventPos !== -1 && (
             <>
               <FeildHeader name={"Select Class type:"} />
               <SelectField
-                selectedTxt={classList[selectedClassPos]?.word}
+                selectedTxt={classList[selectedClassPos]?.name}
                 type={"class"}
               />
             </>
@@ -355,6 +321,8 @@ const AddTicketScreen = ({}) => {
           renderItem={renderList}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
+          refreshing={loader}
+          onRefresh={() => geteventList()}
         />
       </Modal>
     </>

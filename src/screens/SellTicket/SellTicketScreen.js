@@ -20,9 +20,9 @@ const SellTicketScreen = () => {
 
   const fetchList = async () => {
     setLoader(true);
-    const response = await Api.get("ticket/sell");
-    setLoader(false);
-    console.log(response);
+    // const response = await Api.get("ticket/sell"); // OFF due to api modification ongoing
+    setLoader(true);
+    console.log("SellTicketScreen: ", response);
     if (response.status) setSellList(response.tickets);
   };
 

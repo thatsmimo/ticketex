@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ScrollView,
+} from "react-native";
 import { Modal } from "react-native-paper";
 import { AppButton, AppEditText, AppHeader } from "../../components";
 import { Colors, CommonStyles } from "../../js/common";
@@ -8,7 +14,7 @@ import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const AddTicketScreen = ({}) => {
+const AddTicketScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const [eventList, setEventList] = useState([]);
   const [classList, setClassList] = useState([]);
@@ -24,6 +30,8 @@ const AddTicketScreen = ({}) => {
   const [selectedClassPos, setSelectedClassPos] = useState(-1); // set only class pos
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState("");
+  const [name, setName] = useState("");
+  const [desc, setDesc] = useState("");
 
   useEffect(() => {
     geteventList();
@@ -42,6 +50,10 @@ const AddTicketScreen = ({}) => {
     }
   };
 
+  const _handleNav = () => {
+    console.log("nav");
+    navigation.navigate("ScanQr");
+  };
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
@@ -187,123 +199,140 @@ const AddTicketScreen = ({}) => {
     <>
       <View style={CommonStyles.screensRootContainer(insets.top)}>
         <AppHeader title="Add Ticket" />
-        <View style={{ paddingHorizontal: 30 }}>
-          <FeildHeader name={"Select Event type:"} />
-          <SelectField
-            selectedTxt={eventList[selectedEventPos]?.name}
-            type={"event"}
-          />
-          {selectedEventPos !== -1 && (
-            <>
-              <FeildHeader name={"Select Class type:"} />
-              <SelectField
-                selectedTxt={classList[selectedClassPos]?.name}
-                type={"class"}
-              />
-            </>
-          )}
-          {selectedClassPos !== -1 && (
-            <>
-              <FeildHeader name={"Quantity:"} />
-              <View
-                style={{
-                  height: 45,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "row",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => _handleQuantity("-")}
-                  style={{
-                    paddingVertical: 13,
-                    paddingHorizontal: 20,
-                    backgroundColor: Colors.lightBlue,
-                    borderTopLeftRadius: 20,
-                    borderBottomLeftRadius: 20,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: "semi",
-                      color: Colors.lineColor,
-                      textAlign: "center",
-                      fontSize: 20,
-                    }}
-                  >
-                    -
-                  </Text>
-                </TouchableOpacity>
+        <ScrollView>
+          <View style={{ paddingHorizontal: 30 }}>
+            <FeildHeader name={"Select Event type:"} />
+            <SelectField
+              selectedTxt={eventList[selectedEventPos]?.name}
+              type={"event"}
+            />
+            {selectedEventPos !== -1 && (
+              <>
+                <FeildHeader name={"Select Class type:"} />
+                <SelectField
+                  selectedTxt={classList[selectedClassPos]?.name}
+                  type={"class"}
+                />
+              </>
+            )}
+            {selectedClassPos !== -1 && (
+              <>
+                <FeildHeader name={"Quantity:"} />
                 <View
                   style={{
-                    padding: 13,
-                    width: 75,
-                    backgroundColor: Colors.lightBlue,
+                    height: 45,
                     justifyContent: "center",
-                    marginHorizontal: 2,
+                    alignItems: "center",
+                    flexDirection: "row",
                   }}
                 >
-                  <Text
+                  <TouchableOpacity
+                    onPress={() => _handleQuantity("-")}
                     style={{
-                      fontFamily: "semi",
-                      color: Colors.lineColor,
-                      textAlign: "center",
-                      fontSize: 20,
+                      paddingVertical: 13,
+                      paddingHorizontal: 20,
+                      backgroundColor: Colors.lightBlue,
+                      borderTopLeftRadius: 20,
+                      borderBottomLeftRadius: 20,
+                      justifyContent: "center",
                     }}
                   >
-                    {quantity}
-                  </Text>
+                    <Text
+                      style={{
+                        fontFamily: "semi",
+                        color: Colors.lineColor,
+                        textAlign: "center",
+                        fontSize: 20,
+                      }}
+                    >
+                      -
+                    </Text>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      padding: 13,
+                      width: 75,
+                      backgroundColor: Colors.lightBlue,
+                      justifyContent: "center",
+                      marginHorizontal: 2,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "semi",
+                        color: Colors.lineColor,
+                        textAlign: "center",
+                        fontSize: 20,
+                      }}
+                    >
+                      {quantity}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => _handleQuantity("+")}
+                    style={{
+                      padding: 13,
+                      paddingHorizontal: 20,
+                      backgroundColor: Colors.lightBlue,
+                      borderTopRightRadius: 20,
+                      borderBottomRightRadius: 20,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "semi",
+                        color: Colors.lineColor,
+                        textAlign: "center",
+                        fontSize: 20,
+                      }}
+                    >
+                      +
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  onPress={() => _handleQuantity("+")}
-                  style={{
-                    padding: 13,
-                    paddingHorizontal: 20,
-                    backgroundColor: Colors.lightBlue,
-                    borderTopRightRadius: 20,
-                    borderBottomRightRadius: 20,
-                    justifyContent: "center",
+                <FeildHeader name={"Price per ticket (SAR)"} />
+                <AppEditText
+                  value={price}
+                  containerStyle={{ marginTop: 0 }}
+                  hint={"Price"}
+                  saveText={(t) => setPrice(t)}
+                  keyBoardType="number-pad"
+                />
+                <FeildHeader
+                  name={
+                    "Note: Based on ticket class the price should not exceed 240 SAR"
+                  }
+                  containerStyle={{
+                    marginTop: 5,
+                    color: Colors.negative,
+                    fontSize: 13,
                   }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: "semi",
-                      color: Colors.lineColor,
-                      textAlign: "center",
-                      fontSize: 20,
-                    }}
-                  >
-                    +
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <FeildHeader name={"Price per ticket (SAR)"} />
-              <AppEditText
-                value={price}
-                containerStyle={{ marginTop: 0 }}
-                hint={"Price"}
-                saveText={(t) => setPrice(t)}
-                keyBoardType="number-pad"
-              />
-              <FeildHeader
-                name={
-                  "Note: Based on ticket class the price should not exceed 240 SAR"
-                }
-                containerStyle={{
-                  marginTop: 5,
-                  color: Colors.negative,
-                  fontSize: 13,
-                }}
-              />
-            </>
-          )}
-          <AppButton
-            // _handleOnPress={_handleLogin}
-            name={"Next"}
-            containerStyle={CommonStyles.marginTop50}
-          />
-        </View>
+                />
+                <FeildHeader name={"Ticket Name"} />
+                <AppEditText
+                  value={name}
+                  containerStyle={{ marginTop: 0 }}
+                  hint={"Ticket Name"}
+                  saveText={(t) => setName(t)}
+                />
+                <FeildHeader name={"Ticket Description"} />
+                <AppEditText
+                  value={desc}
+                  containerStyle={{ marginTop: 0 }}
+                  hint={"Ticket Description"}
+                  saveText={(t) => setDesc(t)}
+                />
+              </>
+            )}
+            <AppButton
+              // _handleOnPress={_handleLogin}
+              name={"Next"}
+              containerStyle={{ marginTop: 40, marginBottom: 40 }}
+              _handleOnPress={_handleNav}
+            />
+          </View>
+        </ScrollView>
       </View>
       <Modal
         visible={visible}
@@ -323,6 +352,7 @@ const AddTicketScreen = ({}) => {
           showsVerticalScrollIndicator={false}
           refreshing={loader}
           onRefresh={() => geteventList()}
+          keyboardShouldPersistTaps="handled"
         />
       </Modal>
     </>

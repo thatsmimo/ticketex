@@ -164,6 +164,8 @@ const index = () => {
   const AccountStack = () => (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="MyAccount" component={screens.MyAccountScreen} />
+      <Stack.Screen name="ScanQr" component={screens.ScanQRScreen} />
+
       <Stack.Screen name="Balance" component={screens.BalanceScreen} />
       <Stack.Screen name="Bank" component={screens.BankScreen} />
       <Stack.Screen
@@ -187,6 +189,7 @@ const index = () => {
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="AddTicket" component={screens.AddTicketScreen} />
       <Stack.Screen name="AddImage" component={screens.AddImageScreen} />
+      <Stack.Screen name="ScanQr" component={screens.ScanQRScreen} />
     </Stack.Navigator>
   );
 

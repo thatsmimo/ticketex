@@ -9,34 +9,39 @@ import { IconButton } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 import Api from "../../js/service/api";
+import { globalDateFormatter, imgBaseUrl } from "../../utils";
 
 const TicketScreen = ({ navigation, route }) => {
-  // console.log("ticket: ", route.params);
   const insets = useSafeAreaInsets();
   const [eventDetails, setEventDetails] = useState({});
-  const [loader, setLoader] = useState(false);
-  const baseImgUrl = "https://ticketex.co/server/public/images/events/";
+  const [loader, setLoader] = useState(true);
+
   useEffect(() => {
     fetchEventDetails();
   }, []);
 
   const fetchEventDetails = async () => {
-    setLoader(true);
     const response = await Api.get("events/details/" + route.params);
-    // console.log("event details: ", response.events);
+    console.log("event details: ", response);
     setLoader(false);
     if (response.status) {
       setEventDetails(response.events);
     }
-    // console.log(baseImgUrl + eventDetails.image_name);
+  };
+
+  const _handleShowMore = (selectedItem) => {
+    navigation.navigate("TicketDetails", {
+      eventDetails: { ...eventDetails, offers: selectedItem },
+    });
   };
 
   const renderList = ({ item }) => (
     <View style={styles.card()}>
       <View style={styles.rowAsContainer}>
+        {/* TODO status wise filter*/}
         <Text style={styles.itemHeaderTxt}>{Languages.AvailableTickets}</Text>
         <Text
-          onPress={() => navigation.navigate("TicketDetails")}
+          onPress={() => _handleShowMore(item)}
           style={styles.itemShowMoreTxt}
         >
           {Languages.ShowMore}
@@ -45,7 +50,9 @@ const TicketScreen = ({ navigation, route }) => {
       {/* List */}
       <>
         <View style={styles.rowAsContainer}>
-          <Text style={styles.itemBodyTxt}>{item.ticket_desc}</Text>
+          <Text style={styles.itemBodyTxt}>
+            {item.qty} X {item.ticket_desc}
+          </Text>
           <Text style={styles.itemBodyTxt}>{item.price} SAR / Ticket</Text>
         </View>
         <Text style={styles.itemIconTxt}>
@@ -71,7 +78,7 @@ const TicketScreen = ({ navigation, route }) => {
           }}
         />
         <Image
-          source={{ uri: baseImgUrl + eventDetails.image_name }}
+          source={{ uri: imgBaseUrl + eventDetails.image_name }}
           style={styles.headerBigImg}
         />
         <View style={styles.headerTopContainer}>
@@ -107,7 +114,7 @@ const TicketScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.rowAsContainer}>
           <Text style={CommonStyles.dateTxt}>
-            {new Date(eventDetails.start).toDateString()}
+            {globalDateFormatter(eventDetails.start)}
           </Text>
           <Text style={CommonStyles.dateTxt}>{eventDetails.location}</Text>
           <Text style={CommonStyles.dateTxt}>Riyadh</Text>

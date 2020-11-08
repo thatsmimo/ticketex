@@ -3,6 +3,13 @@ import AppEditText from "./AppEditText";
 import AppButton from "./AppButton";
 import MyAccountItems from "./MyAccountItems";
 import Separator from "./Separator";
-import SearchablePicker from './SearchablePicker'
+import FeildHeader from "./FeildHeader";
 
-export { AppHeader, AppEditText, AppButton, MyAccountItems, Separator, SearchablePicker };
+export {
+  AppHeader,
+  AppEditText,
+  AppButton,
+  MyAccountItems,
+  Separator,
+  FeildHeader,
+};

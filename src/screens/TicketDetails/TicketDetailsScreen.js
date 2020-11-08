@@ -9,9 +9,13 @@ import { IconButton } from "react-native-paper";
 import { Separator, AppButton } from "../../components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Constants from "expo-constants";
+import { globalDateFormatter, imgBaseUrl } from "../../utils";
 
-const TicketDetailsScreen = ({ navigation }) => {
+const TicketDetailsScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
+  console.log("route: ", route);
+  const { eventDetails } = route.params;
+
   return (
     <>
       <View style={{ paddingTop: insets.top }}>
@@ -27,7 +31,7 @@ const TicketDetailsScreen = ({ navigation }) => {
           }}
         />
         <Image
-          source={require("../../../assets/images/player.png")}
+          source={{ uri: imgBaseUrl + eventDetails.image_name }}
           style={styles.headerBigImg}
         />
         <View style={styles.headerTopContainer}>
@@ -41,7 +45,7 @@ const TicketDetailsScreen = ({ navigation }) => {
             size={40}
             onPress={navigation.goBack}
           />
-          <Text style={styles.headerBigTxt}>ALHILAL vs ALNASSER</Text>
+          <Text style={styles.headerBigTxt}>{eventDetails.name}</Text>
         </View>
         <View style={styles.headerBtmContainer}>
           <View style={styles.headerOpacityContainer}>
@@ -54,7 +58,7 @@ const TicketDetailsScreen = ({ navigation }) => {
 
       <View style={styles.card(true)}>
         <View style={styles.rowAsContainer}>
-          <Text style={styles.bodyHeaderTxt}>ALHILAL vs ALNASSER</Text>
+          <Text style={styles.bodyHeaderTxt}>{eventDetails.name}</Text>
           <View style={CommonStyles.mainChipContainer}>
             <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
               King Cup
@@ -62,13 +66,15 @@ const TicketDetailsScreen = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.rowAsContainer}>
-          <Text style={CommonStyles.dateTxt}>SUN 3 NOVEMBER</Text>
-          <Text style={CommonStyles.dateTxt}>King Fahad Studium</Text>
+          <Text style={CommonStyles.dateTxt}>
+            {globalDateFormatter(eventDetails.start)}
+          </Text>
+          <Text style={CommonStyles.dateTxt}>{eventDetails.location}</Text>
           <Text style={CommonStyles.dateTxt}>Riyadh</Text>
         </View>
         <View style={styles.rowAsContainer}>
           <Text style={styles.extraTxt}>
-            {Languages.OriginalSellingPrices} 180 SAR
+            {Languages.OriginalSellingPrices} {eventDetails.org_price} SAR
           </Text>
         </View>
       </View>
@@ -76,11 +82,16 @@ const TicketDetailsScreen = ({ navigation }) => {
       <View style={styles.card()}>
         <View style={{}}>
           <Text style={styles.itemIconTxt}>
-            <Ionicons name={IconDir.Ionicons.user} /> Khalid Mohamed
+            <Ionicons name={IconDir.Ionicons.user} />{" "}
+            {eventDetails.offers.user.name}
           </Text>
-          <Text style={styles.item2ndTxt}>18 Tickets Sold</Text>
+          <Text style={styles.item2ndTxt}>
+            {eventDetails.offers.sold_qty} {Languages.TicketsSold}
+          </Text>
           <Separator />
-          <Text style={styles.itemIconTxt}>1 Ticket for 200 SAR</Text>
+          <Text style={styles.itemIconTxt}>
+            {Languages.OneTicketFor} {eventDetails.offers.price} SAR
+          </Text>
           <Text style={styles.item2ndTxt}>{Languages.PriceIncludesFees}</Text>
         </View>
         <View style={styles.padding20}>

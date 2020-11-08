@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, I18nManager } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { AppHeader, Separator } from "../../components";
 import { Languages, Colors, CommonStyles } from "../../js/common";
 import styles from "./styles";
@@ -11,7 +11,7 @@ import { StatusBar } from "expo-status-bar";
 
 const SellTicketScreen = () => {
   const [sellList, setSellList] = useState(null);
-  const [loader, setLoader] = useState(false);
+  const [loader, setLoader] = useState(true);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -19,11 +19,12 @@ const SellTicketScreen = () => {
   }, []);
 
   const fetchList = async () => {
-    setLoader(true);
-    // const response = await Api.get("ticket/sell"); // OFF due to api modification ongoing
-    setLoader(true);
+    const response = await Api.get("ticket/sell");
+    setLoader(false);
     console.log("SellTicketScreen: ", response);
-    if (response.status) setSellList(response.tickets);
+    if (response.status) {
+      setSellList(response.data);
+    }
   };
 
   return (
@@ -33,18 +34,6 @@ const SellTicketScreen = () => {
         <FlatList
           contentContainerStyle={{ padding: 20 }}
           data={sellList}
-          // ListHeaderComponent={
-          //   <Text
-          //     style={{
-          //       fontFamily: "regular",
-          //       fontSize: 15,
-          //       marginBottom: 15,
-          //       textAlign: I18nManager.isRTL ? "left" : "left",
-          //     }}
-          //   >
-          //     {Languages.MyListing}
-          //   </Text>
-          // }
           ItemSeparatorComponent={Separator}
           renderItem={renderList}
           keyExtractor={(item, index) => index.toString()}
@@ -57,37 +46,37 @@ const SellTicketScreen = () => {
   );
 };
 
-const renderList = ({ item, index }) => {
+const renderList = ({ item }) => {
   let iconName = IconDir.Ionicons.check;
   let iconColor = Colors.positive;
   let iconText = Languages.Sold;
 
-  switch (index) {
-    case 0:
-      break;
-    case 1:
-      iconColor = Colors.negative;
-      iconText = Languages.Expired;
-      iconName = IconDir.Ionicons.close;
-      break;
-    case 2:
-      iconColor = Colors.neutral;
-      iconText = Languages.Listed;
-      iconName = IconDir.Ionicons.menu;
-      break;
-  }
+  // switch (index) {
+  //   case 0:
+  //     break;
+  //   case 1:
+  //     iconColor = Colors.negative;
+  //     iconText = Languages.Expired;
+  //     iconName = IconDir.Ionicons.close;
+  //     break;
+  //   case 2:
+  //     iconColor = Colors.neutral;
+  //     iconText = Languages.Listed;
+  //     iconName = IconDir.Ionicons.menu;
+  //     break;
+  // }
   return (
     <View style={CommonStyles.cardLine}>
       <StatusBar style={"dark"} />
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>{item.serial}</Text>
+        <Text>{item.name}</Text>
         <Text
           style={{
             fontFamily: "regular",
             fontSize: 15,
           }}
         >
-          350 SAR
+          {item.price} SAR
         </Text>
       </View>
       <Separator />
@@ -98,7 +87,7 @@ const renderList = ({ item, index }) => {
           alignItems: "center",
         }}
       >
-        <Text style={CommonStyles.dateTxt}>{item.date}</Text>
+        <Text style={CommonStyles.dateTxt}>Nov 2 2020</Text>
         <Text
           style={{
             fontFamily: "regular",

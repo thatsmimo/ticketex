@@ -52,4 +52,11 @@ export default {
   AddTicket: "Add Ticket",
   Next: "Next",
   SelectCategory: "Select a category",
+
+  TicketsSold: "Tickets Sold",
+  OneTicketFor: "1 Ticket for",
+  Loading: "Loading",
+  EnterYourBankIban: "Enter your bank iban.",
+  EnterYourBankBeneficiaryName: "Enter your bank beneficiary name.",
+  EnterYourBankName: "Enter your bank name.",
 };

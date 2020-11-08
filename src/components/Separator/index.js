@@ -1,6 +1,5 @@
 import React from "react";
 import { View } from "react-native";
-import { Colors } from "../../js/common";
 import styles from "./styles";
 
 const index = ({ height = 10, color, width }) => (

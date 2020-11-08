@@ -6,6 +6,8 @@ const hasNotchAndroid =
 
 const isIphoneX = Platform.OS === "ios" && !Platform.isPad && !Platform.isTVOS;
 
+const imgBaseUrl = "https://ticketex.co/server/public/images/events/";
+
 const notify = (message) => {
   if (Platform.os == "ios") {
     Snackbar.show({
@@ -17,4 +19,8 @@ const notify = (message) => {
   }
 };
 
-export { hasNotchAndroid, isIphoneX, notify };
+const globalDateFormatter = (dbDate) => {
+  return new Date(dbDate).toDateString();
+};
+
+export { hasNotchAndroid, isIphoneX, notify, imgBaseUrl, globalDateFormatter };

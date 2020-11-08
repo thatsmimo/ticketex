@@ -13,8 +13,9 @@ import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { notify } from "../../utils";
 
-const AddTicketScreen = ({ navigation }) => {
+const AddTicketScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const [eventList, setEventList] = useState([]);
   const [classList, setClassList] = useState([]);
@@ -32,12 +33,30 @@ const AddTicketScreen = ({ navigation }) => {
   const [price, setPrice] = useState("");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
+  const [isScanQr, setScanQr] = useState(true);
 
   useEffect(() => {
-    geteventList();
+    _fetchDropdownLists();
   }, []);
 
-  const geteventList = async () => {
+  useEffect(() => {
+    if (route.params?.isSubmitted) {
+      // updated from previous screen
+      // reset all
+      setTimeout(() => {
+        setSelectedEventPos(-1);
+        setSelectedClassPos(-1);
+        setQuantity(1);
+        setCurrentModal("event");
+        setPrice("");
+        setKeyword("");
+        setName("");
+        setDesc("");
+      }, 200);
+    }
+  }, [route, route.params?.isSubmitted]);
+
+  const _fetchDropdownLists = async () => {
     setLoader(true);
     const classResponse = await Api.get("class-type");
     const eventResponse = await Api.get("events/list");
@@ -51,8 +70,43 @@ const AddTicketScreen = ({ navigation }) => {
   };
 
   const _handleNav = () => {
-    console.log("nav");
-    navigation.navigate("ScanQr");
+    if (!_handleValidation()) {
+      return;
+    }
+    let formData = new FormData();
+    formData.append("event_id", eventList[selectedEventPos].id);
+    formData.append("class_id", classList[selectedClassPos].id);
+    formData.append("qty", quantity);
+    formData.append("name", name);
+    formData.append("ticket_desc", desc);
+    formData.append("start", "2020-10-30");
+    formData.append("end", "2020-10-30");
+    console.log(formData);
+
+    navigation.navigate("ScanQr", {
+      isScanQr: isScanQr,
+      formData,
+      isSubmitted: false,
+    });
+  };
+  const _handleValidation = () => {
+    if (selectedEventPos === -1) {
+      notify("Select event type.");
+      return;
+    }
+    if (selectedClassPos === -1) {
+      notify("Select class type.");
+      return;
+    }
+    if (price === "") {
+      notify("Enter ticket price.");
+      return;
+    }
+    if (name === "") {
+      notify("Enter ticket name.");
+      return;
+    }
+    return true;
   };
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -199,7 +253,7 @@ const AddTicketScreen = ({ navigation }) => {
     <>
       <View style={CommonStyles.screensRootContainer(insets.top)}>
         <AppHeader title="Add Ticket" />
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="handled">
           <View style={{ paddingHorizontal: 30 }}>
             <FeildHeader name={"Select Event type:"} />
             <SelectField
@@ -323,10 +377,73 @@ const AddTicketScreen = ({ navigation }) => {
                   hint={"Ticket Description"}
                   saveText={(t) => setDesc(t)}
                 />
+                <FeildHeader
+                  name={"Select scan or upload the ticket QR Code"}
+                />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => setScanQr(true)}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Ionicons
+                      name={
+                        isScanQr
+                          ? IconDir.Ionicons.radioOn
+                          : IconDir.Ionicons.radioOff
+                      }
+                      size={25}
+                      color={Colors.primary}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: "semi",
+                        color: Colors.text,
+                        marginLeft: 10,
+                      }}
+                    >
+                      Scan QR Code
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setScanQr(false)}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Ionicons
+                      name={
+                        !isScanQr
+                          ? IconDir.Ionicons.radioOn
+                          : IconDir.Ionicons.radioOff
+                      }
+                      size={25}
+                      color={Colors.primary}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: "semi",
+                        color: Colors.text,
+                        marginLeft: 10,
+                      }}
+                    >
+                      Upload QR Code
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </>
             )}
             <AppButton
-              // _handleOnPress={_handleLogin}
               name={"Next"}
               containerStyle={{ marginTop: 40, marginBottom: 40 }}
               _handleOnPress={_handleNav}
@@ -351,7 +468,7 @@ const AddTicketScreen = ({ navigation }) => {
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           refreshing={loader}
-          onRefresh={() => geteventList()}
+          onRefresh={_fetchDropdownLists}
           keyboardShouldPersistTaps="handled"
         />
       </Modal>

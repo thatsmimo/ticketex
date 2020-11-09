@@ -77,6 +77,7 @@ const AddTicketScreen = ({ navigation, route }) => {
     formData.append("event_id", eventList[selectedEventPos].id);
     formData.append("class_id", classList[selectedClassPos].id);
     formData.append("qty", quantity);
+    formData.append("price", price);
     formData.append("name", name);
     formData.append("ticket_desc", desc);
     formData.append("start", "2020-10-30");

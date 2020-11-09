@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import * as ImagePicker from "expo-image-picker";
 import { notify } from "../../utils";
+import Api from "../../js/service/api";
 import QRCode from "react-native-qrcode-svg";
 
 export default function ScanQRScreen({ navigation, route }) {
@@ -56,7 +57,7 @@ export default function ScanQRScreen({ navigation, route }) {
     );
   };
 
-  const _appendQrAndSubmit = () => {
+  const _appendQrAndSubmit = async () => {
     const orgFormData = formData;
     if (isScanQr) {
       orgFormData.append("barcode", scannedData);
@@ -68,6 +69,10 @@ export default function ScanQRScreen({ navigation, route }) {
       orgFormData.append("image", { uri: image, name: filename, type });
     }
     console.log("dataset: ", orgFormData);
+
+    const response = await Api.upload("ticket/create", orgFormData);
+    console.log("response: ", response);
+
     if (true) {
       // clear all
       if (isScanQr) {

@@ -227,7 +227,7 @@ const HomeScreen = ({ navigation }) => {
                   }}
                 >
                   {selectedCategoryPos == -1
-                    ? "Select Category"
+                    ? Languages.SelectCategory
                     : categoryList[selectedCategoryPos].name}
                 </Text>
                 <Ionicons
@@ -288,7 +288,7 @@ const HomeScreen = ({ navigation }) => {
                   marginLeft: 8,
                 }}
               >
-                Clear
+                {Languages.Clear}
               </Text>
             </TouchableOpacity>
           )}

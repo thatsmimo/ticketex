@@ -16,7 +16,7 @@ const ContactUsScreen = ({ navigation }) => {
     const phn_ = phn.trim();
     const msg_ = msg.trim();
     if (phn_ === "") {
-      notify("Enter your phone number.");
+      notify(Languages.EnterPhoneNo);
       return;
     }
     // if (phn_.length < 10) {
@@ -24,7 +24,7 @@ const ContactUsScreen = ({ navigation }) => {
     //   return;
     // }
     if (msg_ === "") {
-      notify("Enter your message.");
+      notify(Languages.EnterMessage);
       return;
     }
     const params = {

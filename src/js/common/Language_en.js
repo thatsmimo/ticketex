@@ -53,7 +53,7 @@ export default {
   ResendOTPNumber: "Resend OTP Number",
   AddTicket: "Add Ticket",
   Next: "Next",
-  SelectCategory: "Select a category",
+  SelectCategory: "Select category",
 
   TicketsSold: "Tickets Sold",
   OneTicketFor: "1 Ticket for",
@@ -61,4 +61,39 @@ export default {
   EnterYourBankIban: "Enter your bank iban.",
   EnterYourBankBeneficiaryName: "Enter your bank beneficiary name.",
   EnterYourBankName: "Enter your bank name.",
+
+  SelectEventType: "Select Event Type",
+  SelectClassType: "Select Class Type",
+  Quantity: "Quantity:",
+  PricePerTicket: "Price Per Ticket(SAR)",
+  Note: "Based on ticket class the price should not exceed 240 SAR",
+  TicketName: "Ticket Name",
+  TicketDescription: "Ticket Description",
+  SelectQrOption: "Select Scan or upload the ticket QR Code",
+  UploadQRCode: "Upload QR Code",
+  ScanQRCode: "Scan QR Code",
+  Next: "Next",
+  Price: "Price",
+  TypeToSearch: "Type here to search...",
+  EnterPrice: "Enter ticket price.",
+  EnterName: "Enter ticket name.",
+
+  EnterPhoneNo: "Enter your phone number.",
+  EnterMessage: "Enter your message.",
+
+  AccesCameraDenied: "Acess to camera denied",
+
+  Clear: "Clear",
+
+  PleaseSelectImage: "Please select a image.",
+  AreYouSure: "Are you sure you want to submit!",
+  Ok: "Ok",
+  RequestingForCameraPermissions: "Requesting For Camera Permission",
+  NoAccessToCamera: "No access to camera",
+  ScannedData: "Scanned Data: ",
+  Submit: "Submit",
+  Scan: "Scan",
+  Upload: "Upload",
+
+  SAR: "SAR / Ticket",
 };

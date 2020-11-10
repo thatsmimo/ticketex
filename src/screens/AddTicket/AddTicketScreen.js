@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Modal } from "react-native-paper";
 import { AppButton, AppEditText, AppHeader } from "../../components";
-import { Colors, CommonStyles } from "../../js/common";
+import { Colors, CommonStyles, Languages } from "../../js/common";
 import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
@@ -92,19 +92,19 @@ const AddTicketScreen = ({ navigation, route }) => {
   };
   const _handleValidation = () => {
     if (selectedEventPos === -1) {
-      notify("Select event type.");
+      notify(Languages.SelectEventType + ".");
       return;
     }
     if (selectedClassPos === -1) {
-      notify("Select class type.");
+      notify(Languages.SelectClassType + ".");
       return;
     }
     if (price === "") {
-      notify("Enter ticket price.");
+      notify(Languages.EnterPrice);
       return;
     }
     if (name === "") {
-      notify("Enter ticket name.");
+      notify(Languages.EnterName);
       return;
     }
     return true;
@@ -253,17 +253,17 @@ const AddTicketScreen = ({ navigation, route }) => {
   return (
     <>
       <View style={CommonStyles.screensRootContainer(insets.top)}>
-        <AppHeader title="Add Ticket" />
+        <AppHeader title={Languages.AddTicket} />
         <ScrollView keyboardShouldPersistTaps="handled">
           <View style={{ paddingHorizontal: 30 }}>
-            <FeildHeader name={"Select Event type:"} />
+            <FeildHeader name={Languages.SelectEventType + ":"} />
             <SelectField
               selectedTxt={eventList[selectedEventPos]?.name}
               type={"event"}
             />
             {selectedEventPos !== -1 && (
               <>
-                <FeildHeader name={"Select Class type:"} />
+                <FeildHeader name={Languages.SelectClassType + ":"} />
                 <SelectField
                   selectedTxt={classList[selectedClassPos]?.name}
                   type={"class"}
@@ -272,7 +272,7 @@ const AddTicketScreen = ({ navigation, route }) => {
             )}
             {selectedClassPos !== -1 && (
               <>
-                <FeildHeader name={"Quantity:"} />
+                <FeildHeader name={Languages.Quantity} />
                 <View
                   style={{
                     height: 45,
@@ -346,41 +346,37 @@ const AddTicketScreen = ({ navigation, route }) => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <FeildHeader name={"Price per ticket (SAR)"} />
+                <FeildHeader name={Languages.PricePerTicket} />
                 <AppEditText
                   value={price}
                   containerStyle={{ marginTop: 0 }}
-                  hint={"Price"}
+                  hint={Languages.Price}
                   saveText={(t) => setPrice(t)}
                   keyBoardType="number-pad"
                 />
                 <FeildHeader
-                  name={
-                    "Note: Based on ticket class the price should not exceed 240 SAR"
-                  }
+                  name={Languages.Note}
                   containerStyle={{
                     marginTop: 5,
                     color: Colors.negative,
                     fontSize: 13,
                   }}
                 />
-                <FeildHeader name={"Ticket Name"} />
+                <FeildHeader name={Languages.TicketName} />
                 <AppEditText
                   value={name}
                   containerStyle={{ marginTop: 0 }}
-                  hint={"Ticket Name"}
+                  hint={Languages.TicketName}
                   saveText={(t) => setName(t)}
                 />
-                <FeildHeader name={"Ticket Description"} />
+                <FeildHeader name={Languages.TicketDescription} />
                 <AppEditText
                   value={desc}
                   containerStyle={{ marginTop: 0 }}
-                  hint={"Ticket Description"}
+                  hint={Languages.TicketDescription}
                   saveText={(t) => setDesc(t)}
                 />
-                <FeildHeader
-                  name={"Select scan or upload the ticket QR Code"}
-                />
+                <FeildHeader name={Languages.SelectQrOption} />
                 <View
                   style={{
                     flexDirection: "row",
@@ -411,7 +407,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                         marginLeft: 10,
                       }}
                     >
-                      Scan QR Code
+                      {Languages.ScanQRCode}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -438,14 +434,14 @@ const AddTicketScreen = ({ navigation, route }) => {
                         marginLeft: 10,
                       }}
                     >
-                      Upload QR Code
+                      {Languages.UploadQRCode}
                     </Text>
                   </TouchableOpacity>
                 </View>
               </>
             )}
             <AppButton
-              name={"Next"}
+              name={Languages.Next}
               containerStyle={{ marginTop: 40, marginBottom: 40 }}
               _handleOnPress={_handleNav}
             />
@@ -458,7 +454,7 @@ const AddTicketScreen = ({ navigation, route }) => {
         contentContainerStyle={CommonStyles.appModalContainer}
       >
         <AppEditText
-          hint="Type here to search..."
+          hint={Languages.TypeToSearch}
           value={keyword}
           saveText={_saveKeywordAndSearch}
         />

@@ -45,14 +45,14 @@ export default function ScanQRScreen({ navigation, route }) {
   const _handleSubmit = () => {
     if (!isScanQr) {
       if (image === null) {
-        notify("Please select a image.");
+        notify(Languages.PleaseSelectImage);
         return;
       }
     }
     Alert.alert(
       "",
-      "Are you sure you want to submit!",
-      [{ text: "OK", onPress: _appendQrAndSubmit }],
+      Languages.AreYouSure,
+      [{ text: Languages.Ok, onPress: _appendQrAndSubmit }],
       { cancelable: true }
     );
   };
@@ -110,7 +110,7 @@ export default function ScanQRScreen({ navigation, route }) {
           textAlign: "center",
         }}
       >
-        Requesting for camera permission
+        {Languages.RequestingForCameraPermissions}
       </Text>
     );
   }
@@ -124,7 +124,7 @@ export default function ScanQRScreen({ navigation, route }) {
           textAlign: "center",
         }}
       >
-        No access to camera
+        {Languages.NoAccessToCamera}
       </Text>
     );
   }
@@ -144,7 +144,7 @@ export default function ScanQRScreen({ navigation, route }) {
             />
           ) : (
             <View style={{ paddingHorizontal: 20 }}>
-              <FeildHeader name={"Scanned Data: "} />
+              <FeildHeader name={Languages.ScannedData} />
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text
                   style={{
@@ -185,12 +185,12 @@ export default function ScanQRScreen({ navigation, route }) {
                       marginLeft: 8,
                     }}
                   >
-                    Clear
+                    {Languages.Clear}
                   </Text>
                 </TouchableOpacity>
               </View>
               <AppButton
-                name={"Submit"}
+                name={Languages.Submit}
                 containerStyle={{
                   width: 200,
                   alignSelf: "center",
@@ -254,7 +254,7 @@ export default function ScanQRScreen({ navigation, route }) {
             )}
           </TouchableOpacity>
           <AppButton
-            name={"Submit"}
+            name={Languages.Submit}
             containerStyle={{
               width: 200,
               alignSelf: "center",
@@ -270,11 +270,13 @@ export default function ScanQRScreen({ navigation, route }) {
   return (
     <View style={[CommonStyles.screensRootContainer(insets.top)]}>
       <AppHeader
-        title={`${isScanQr ? "Scan" : "Upload"} QR`}
+        title={`${isScanQr ? Languages.Scan : Languages.Upload} QR`}
         navigation={navigation}
       />
       <FeildHeader
-        name={`Please ${isScanQr ? "scan" : "upload"} the ticket QR Code`}
+        name={`Please ${
+          isScanQr ? Languages.Scan : Languages.Upload
+        } the ticket QR Code`}
         containerStyle={{ paddingHorizontal: 20 }}
       />
       {_returnTypeUi()}

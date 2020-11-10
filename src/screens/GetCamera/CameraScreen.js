@@ -3,8 +3,9 @@ import { Text, View, TouchableOpacity, Image } from "react-native";
 import { Camera } from "expo-camera";
 import { AppHeader, AppButton, AppEditText } from "../../components";
 import styles from "./styles";
+import { Languages } from "../../js/common";
 
-export default function CameraScreen({navigation}) {
+export default function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const ref = useRef(null);
@@ -20,12 +21,12 @@ export default function CameraScreen({navigation}) {
     return <View />;
   }
   if (hasPermission === false) {
-    return <Text>access to camera Denied</Text>;
+    return <Text>{Languages.AccesCameraDenied}</Text>;
   }
 
-  _handleOnSnap = async() => {
+  _handleOnSnap = async () => {
     let image = await ref.current.takePictureAsync();
-    navigation.navigate("AddImage",image)
+    navigation.navigate("AddImage", image);
     console.log(image);
   };
 

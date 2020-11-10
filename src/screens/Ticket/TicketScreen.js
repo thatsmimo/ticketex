@@ -53,7 +53,9 @@ const TicketScreen = ({ navigation, route }) => {
           <Text style={styles.itemBodyTxt}>
             {item.qty} X {item.ticket_desc}
           </Text>
-          <Text style={styles.itemBodyTxt}>{item.price} SAR / Ticket</Text>
+          <Text style={styles.itemBodyTxt}>
+            {item.price} {Languages.SAR}
+          </Text>
         </View>
         <Text style={styles.itemIconTxt}>
           <Ionicons name={IconDir.Ionicons.user} /> {item.user.name}

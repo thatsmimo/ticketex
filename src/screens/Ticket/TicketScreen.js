@@ -13,8 +13,11 @@ import { globalDateFormatter, imgBaseUrl } from "../../utils";
 
 const TicketScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
-  const [eventDetails, setEventDetails] = useState({});
+  const [eventDetails, setEventDetails] = useState([]);
   const [loader, setLoader] = useState(true);
+
+  const [availableList, setAvailableList] = useState([]);
+  const [soldList, setSoldList] = useState([]);
 
   useEffect(() => {
     fetchEventDetails();
@@ -26,6 +29,7 @@ const TicketScreen = ({ navigation, route }) => {
     setLoader(false);
     if (response.status) {
       setEventDetails(response.events);
+      sortEventDetails(response.events);
     }
   };
 
@@ -35,11 +39,40 @@ const TicketScreen = ({ navigation, route }) => {
     });
   };
 
+  const sortEventDetails = (data) => {
+    // console.log("====================================");
+    // console.log(data);
+    // console.log("====================================");
+    let sold_list = data.offers.filter((item) => {
+      return item.status == "s";
+    });
+    let available_list = data.offers.filter((item) => {
+      return item.status == "a";
+    });
+    setAvailableList(available_list);
+    setSoldList(sold_list);
+    console.log("====================================");
+    console.log("responze: ", sold_list.length);
+    console.log("responze: ", available_list.length);
+    console.log("====================================");
+  };
+
   const renderList = ({ item }) => (
     <View style={styles.card()}>
       <View style={styles.rowAsContainer}>
         {/* TODO status wise filter*/}
-        <Text style={styles.itemHeaderTxt}>{Languages.AvailableTickets}</Text>
+        <Text
+          style={
+            item.status == "a"
+              ? styles.itemHeaderTxtAvailable
+              : styles.itemHeaderTxtSold
+            // styles.itemHeaderTxtAvailable
+          }
+        >
+          {item.status == "a"
+            ? Languages.AvailableTickets
+            : Languages.SoldTickets}
+        </Text>
         <Text
           onPress={() => _handleShowMore(item)}
           style={styles.itemShowMoreTxt}
@@ -129,7 +162,7 @@ const TicketScreen = ({ navigation, route }) => {
       </View>
 
       <FlatList
-        data={eventDetails.offers}
+        data={availableList.concat(soldList)}
         renderItem={renderList}
         keyExtractor={(item, index) => index.toString()}
         showsVerticalScrollIndicator={false}

@@ -23,8 +23,12 @@ const HomeScreen = ({ navigation }) => {
   const [eventList, setEventList] = useState(null);
   const [loader, setLoader] = useState(false);
   const [categoryList, setCategoryList] = useState([]);
+  const [cityList, setCityList] = useState([]);
+
+  const [categoryModalState, setCategoryModalState] = useState(null);
 
   const [selectedCategoryPos, setCategoryPos] = useState(-1);
+  const [selectedCityPos, setCityPos] = useState(-1);
   const [visible, setVisible] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -36,10 +40,25 @@ const HomeScreen = ({ navigation }) => {
     getOptions();
   }, []);
 
-  const fetchSearch = async (id) => {
+  let city = [
+    {
+      id: 1,
+      name: "riyadh",
+    },
+    {
+      id: 2,
+      name: "random",
+    },
+  ];
+
+  const fetchSearch = async (categoryId, cityId) => {
+    setCityList(city);
     setLoader(true);
     const response = await Api.get(
-      "events/list?search=" + "" + "&categoryId=" + (id ? id : "")
+      "events/list?search=" +
+        "" +
+        "&categoryId=" +
+        (categoryId ? categoryId : "")
     );
     // console.log("search event: ", response);
     setLoader(false);
@@ -60,8 +79,9 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const getOptions = async () => {
+    setCityList(city);
     const response = await Api.get("category/list");
-    // console.log("res: ", response);
+    console.log("res: ", response);
     if (response.status) {
       setCategoryList(response.categories);
     }
@@ -120,13 +140,21 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const renderModalList = ({ item, index }) => {
-    const isMatchedItem = selectedCategoryPos === index;
+    const isMatchedItem = categoryModalState
+      ? selectedCategoryPos === index
+      : selectedCityPos === index;
+
     return (
       <TouchableOpacity
         onPress={() => {
           hideModal();
-          setCategoryPos(index);
-          fetchSearch(item.id);
+          if (categoryModalState) {
+            setCategoryPos(index);
+            fetchSearch(item.id, null);
+          } else {
+            setCityPos(index);
+            fetchSearch(null, item.id);
+          }
         }}
         style={{ paddingVertical: 8 }}
       >
@@ -208,8 +236,15 @@ const HomeScreen = ({ navigation }) => {
               }}
             />
           </View>
-          <TouchableOpacity onPress={showModal}>
-            <View style={{ flexDirection: "row", marginTop: 15 }}>
+
+          <View style={{ flexDirection: "row", marginTop: 15 }}>
+            <TouchableOpacity
+              style={{ flex: 1, flexDirection: "row" }}
+              onPress={() => {
+                showModal();
+                setCategoryModalState(1);
+              }}
+            >
               <View
                 style={{
                   backgroundColor: Colors.lightBlue,
@@ -236,9 +271,43 @@ const HomeScreen = ({ navigation }) => {
                   color={Colors.lineColor}
                 />
               </View>
-              <Separator width={10} />
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            <Separator width={10} />
+            <TouchableOpacity
+              style={{ flex: 1, flexDirection: "row" }}
+              onPress={() => {
+                showModal();
+                setCategoryModalState(0);
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: Colors.lightBlue,
+                  borderRadius: 20,
+                  flex: 1,
+                  flexDirection: "row",
+                  padding: 13,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "semi",
+                    flex: 1,
+                    color: Colors.lineColor,
+                  }}
+                >
+                  {selectedCityPos == -1
+                    ? Languages.SelectCity
+                    : cityList[selectedCityPos].name}
+                </Text>
+                <Ionicons
+                  name={IconDir.Ionicons.down}
+                  size={20}
+                  color={Colors.lineColor}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
         <FlatList
           contentContainerStyle={{ paddingHorizontal: 20, flexGrow: 1 }}
@@ -292,9 +361,44 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           )}
+          {selectedCityPos !== -1 && (
+            <TouchableOpacity
+              onPress={() => {
+                hideModal();
+                setCityPos(-1);
+                fetchSearch("");
+              }}
+              style={{
+                flexDirection: "row",
+                width: 100,
+                backgroundColor: Colors.lightBlue,
+                alignSelf: "flex-end",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 5,
+                borderRadius: 20,
+              }}
+            >
+              <Ionicons
+                size={20}
+                name={IconDir.Ionicons.close}
+                color={Colors.primary}
+              />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: "semi",
+                  color: Colors.lineColor,
+                  marginLeft: 8,
+                }}
+              >
+                {Languages.Clear}
+              </Text>
+            </TouchableOpacity>
+          )}
           <FlatList
             style={{ marginTop: 15, paddingHorizontal: 10 }}
-            data={categoryList}
+            data={categoryModalState ? categoryList : cityList}
             renderItem={renderModalList}
             keyExtractor={(item, index) => index.toString()}
             showsVerticalScrollIndicator={false}

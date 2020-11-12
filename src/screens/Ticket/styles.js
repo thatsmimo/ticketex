@@ -65,10 +65,15 @@ export default StyleSheet.create({
   },
   extraTxt: { fontFamily: "regular", fontSize: 13 },
 
-  itemHeaderTxt: {
+  itemHeaderTxtAvailable: {
     fontFamily: "bold",
     fontSize: 13,
     color: Colors.positive,
+  },
+  itemHeaderTxtSold: {
+    fontFamily: "bold",
+    fontSize: 13,
+    color: Colors.negative,
   },
   itemShowMoreTxt: {
     fontFamily: "regular",

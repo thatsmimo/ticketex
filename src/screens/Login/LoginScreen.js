@@ -1,17 +1,34 @@
 import React, { useContext, useState } from "react";
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, TextInput, TouchableOpacity } from "react-native";
 import { AppHeader, AppEditText, AppButton } from "../../components";
-import { Assets, Languages, CommonStyles } from "../../js/common";
+import {
+  Assets,
+  Languages,
+  CommonStyles,
+  IconDir,
+  Colors,
+} from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AuthContext } from "../../js/context";
 import Api from "../../js/service/api";
 import { notify } from "../../utils";
+import { Ionicons } from "@expo/vector-icons";
+import CountryPicker, {
+  CountryModalProvider,
+} from "react-native-country-picker-modal";
 
 const LoginScreen = () => {
   const [mobile, setMobile] = useState("9578541854");
   const [otp, setOtp] = useState("");
   const [isOtpMode, setOtpMode] = useState(false);
+
+  const [cca2, setCca2] = useState("IN");
+  const [countryCode, setCountryCode] = useState("91");
+
+  const [withModal, setWithModal] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const switchVisible = () => setVisible(!visible);
 
   const insets = useSafeAreaInsets();
   const { signIn } = useContext(AuthContext);
@@ -33,11 +50,14 @@ const LoginScreen = () => {
       notify("Enter a valid mobile number.");
       return;
     }
-    const response = await Api.get(`users/login?mobile=${mobile}`);
+    const response = await Api.get(
+      `users/login?mobile=${"+" + countryCode.toString() + mobile}`
+    );
     console.log("res: ", response);
     if (response.status) {
-      setOtpMode(true);
+      console.log(response.otp);
       setOtp(response.otp);
+      setOtpMode(true);
     }
   };
 
@@ -46,7 +66,7 @@ const LoginScreen = () => {
       grant_type: "password",
       client_id: 9,
       client_secret: "NQKbFoKFXkLZh6AMkF7P4KiwRgE3wqhOHJzNyw5V",
-      username: mobile,
+      username: countryCode.toString() + mobile,
       password: otp,
       scope: "",
     };
@@ -79,16 +99,97 @@ const LoginScreen = () => {
           resizeMode="contain"
         />
         {!isOtpMode ? (
-          <AppEditText
-            value={mobile}
-            containerStyle={CommonStyles.marginTop50}
-            hint={Languages.MobileNo}
-            keyBoardType="number-pad"
-            saveText={(t) => setMobile(t.trim())}
-          />
+          <>
+            <View
+              style={{
+                height: 45,
+                marginTop: 30,
+                flexDirection: "row",
+                borderColor: "black",
+                borderRadius: 45 / 2,
+                borderWidth: 0.5,
+                padding: 6,
+                paddingLeft: 10,
+              }}
+            >
+              {/* <View> */}
+              {/* <CountryPicker
+                  onSelect={(item) => {
+                    setCountryCode("+" + item.callingCode[0].toString());
+                    console.log("====================================");
+                    console.log(item);
+                    console.log("====================================");
+                  }}
+                  cca2={cca2}
+                /> */}
+              <CountryModalProvider>
+                <CountryPicker
+                  {...{
+                    withModal,
+                    modalProps: {
+                      visible,
+                    },
+                    onClose: () => setVisible(false),
+                    onOpen: () => setVisible(true),
+                  }}
+                  onSelect={(item) => {
+                    setCountryCode(item.callingCode[0].toString());
+                    console.log("====================================");
+                    console.log(item.callingCode[0].toString());
+                    console.log("====================================");
+                  }}
+                />
+              </CountryModalProvider>
+              <TouchableOpacity
+                onPress={switchVisible}
+                style={{
+                  flexDirection: "row",
+                  padding: 4,
+                  paddingHorizontal: 3,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontFamily: "regular",
+                    color: "#1d1d1d",
+                    paddingVertical: 2,
+                    paddingRight: 9,
+                  }}
+                >
+                  {"+" + countryCode}
+                </Text>
+                <Ionicons
+                  size={24}
+                  name={IconDir.Ionicons.down}
+                  color={Colors.primary}
+                />
+              </TouchableOpacity>
+              <TextInput
+                style={{
+                  paddingLeft: 6,
+                  fontSize: 15,
+                  fontFamily: "regular",
+                  color: "#1d1d1d",
+                }}
+                value={mobile}
+                placeholder={Languages.MobileNo}
+                keyboardType="number-pad"
+                onChangeText={(t) => setMobile(t.trim())}
+              />
+              {/* </View> */}
+              {/* <AppEditText
+                  value={mobile}
+                  containerStyle={CommonStyles.marginTop50}
+                  hint={Languages.MobileNo}
+                  keyBoardType="number-pad"
+                  saveText={(t) => setMobile(t.trim())}
+                /> */}
+            </View>
+          </>
         ) : (
           <AppEditText
-            value={otp}
+            value={otp.toString()}
             containerStyle={CommonStyles.marginTop50}
             hint={Languages.OTP_Number}
             saveText={(t) => setOtp(t)}

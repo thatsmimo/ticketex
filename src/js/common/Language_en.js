@@ -54,6 +54,7 @@ export default {
   AddTicket: "Add Ticket",
   Next: "Next",
   SelectCategory: "Select category",
+  SelectCity: "Select city",
 
   TicketsSold: "Tickets Sold",
   OneTicketFor: "1 Ticket for",
@@ -96,4 +97,6 @@ export default {
   Upload: "Upload",
 
   SAR: "SAR / Ticket",
+
+  SoldTickets: "Sold Tickets",
 };

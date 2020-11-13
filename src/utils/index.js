@@ -23,4 +23,26 @@ const globalDateFormatter = (dbDate) => {
   return new Date(dbDate).toDateString();
 };
 
-export { hasNotchAndroid, isIphoneX, notify, imgBaseUrl, globalDateFormatter };
+const APP_DEFAULTS = {
+  callingCode: "966",
+  countryCode: "SA",
+  currency: "SAR",
+  flag: "flag-sa",
+  name: "Saudi Arabia",
+  region: "Asia",
+  subregion: "Western Asia",
+};
+
+const APP_KEYS = {
+  oAuthClientSecret: "NQKbFoKFXkLZh6AMkF7P4KiwRgE3wqhOHJzNyw5V",
+};
+
+export {
+  hasNotchAndroid,
+  isIphoneX,
+  notify,
+  imgBaseUrl,
+  globalDateFormatter,
+  APP_DEFAULTS,
+  APP_KEYS,
+};

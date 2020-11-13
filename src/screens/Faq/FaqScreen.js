@@ -1,55 +1,73 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, FlatList } from "react-native";
 import { AppHeader, Separator } from "../../components";
-import { Languages, Assets, CommonStyles } from "../../js/common";
+import { Languages, Assets, CommonStyles, Colors } from "../../js/common";
 import { List } from "react-native-paper";
 import styles from "./styles";
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
-import Colors from "../../js/common/Colors";
-import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
 
 const FaqScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
-  const [faqs, setFAQs] = useState([]);
+  const [faqList, setFaqList] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     getFAQs();
   }, []);
+
   const getFAQs = async () => {
+    setLoader(true);
     const response = await Api.get("faq");
     if (response.status) {
-      setFAQs(response.data);
+      setFaqList(response.data);
     }
+    setLoader(false);
   };
+
+  const renderList = ({ item }) => (
+    <View
+      style={{
+        backgroundColor: Colors.background,
+        // borderWidth: 0.3,
+        borderRadius: 8,
+        elevation: 2,
+      }}
+    >
+      <List.Accordion title={item.qq} titleStyle={styles.bodyHeader}>
+        <Text style={styles.bodyTxt}>
+          {item.ans} dbsbd hsvdfsd fs for(let s fs f s f s in object) {}
+        </Text>
+      </List.Accordion>
+    </View>
+  );
 
   return (
     <View style={CommonStyles.screensRootContainer(insets.top)}>
       <AppHeader title={Languages.FAQs} navigation={navigation} />
       <View style={styles.container}>
-        <View style={styles.innerContainer}>
-          <Image
-            source={Assets.ic_faq}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.logoTxt}>{Languages.FAQs}</Text>
-          <Separator />
-        </View>
-        <ScrollView>
-          <View style={{ flex: 1, paddingHorizontal: 10 }}>
-            {faqs.map((item, index) => {
-              return (
-                <List.Accordion title={item.qq} titleStyle={styles.bodyHeader}>
-                  <Text style={styles.bodyTxt}>{item.ans}</Text>
-                </List.Accordion>
-              );
-            })}
-          </View>
-        </ScrollView>
+        <FlatList
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          data={faqList}
+          renderItem={renderList}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          refreshing={loader}
+          onRefresh={getFAQs}
+          ListHeaderComponent={
+            <View style={styles.innerContainer}>
+              <Image
+                source={Assets.ic_faq}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+              <Text style={styles.logoTxt}>{Languages.FAQs}</Text>
+              <Separator />
+            </View>
+          }
+          ListFooterComponent={<Separator />}
+          ItemSeparatorComponent={() => <Separator />}
+        />
       </View>
     </View>
   );

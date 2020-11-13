@@ -14,7 +14,12 @@ export default StyleSheet.create({
   logoTxt: { fontFamily: "semi", fontSize: 18 },
   bodyHeader: {
     fontFamily: "semi",
-    fontSize: 19,
+    fontSize: 18,
   },
-  bodyTxt: { paddingHorizontal: 15, fontSize: 15 },
+  bodyTxt: {
+    paddingHorizontal: 15,
+    fontSize: 14,
+    fontFamily: "semi",
+    paddingBottom: 10,
+  },
 });

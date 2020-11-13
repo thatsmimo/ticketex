@@ -96,7 +96,6 @@ export default {
   Scan: "Scan",
   Upload: "Upload",
 
-  SAR: "SAR / Ticket",
-
   SoldTickets: "Sold Tickets",
+  SomethingWentWrong: "Something went wrong!",
 };

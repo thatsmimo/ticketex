@@ -43,6 +43,13 @@ const AddCreditCardScreen = ({ navigation }) => {
       expireYear: expireYear,
       expireMonth: expireMonth,
     };
+    // const formData = new FormData();
+    // formData.append("cardNumber", card_no);
+    // formData.append("holderName", holder_name);
+    // formData.append("cvv", cvv);
+    // formData.append("expireYear", expireYear);
+    // formData.append("expireMonth", expireMonth);
+
     const cardDetails = await Api.post("card/create", params);
     console.log(cardDetails);
     if (cardDetails.status) {

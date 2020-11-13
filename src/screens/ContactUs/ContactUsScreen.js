@@ -19,10 +19,6 @@ const ContactUsScreen = ({ navigation }) => {
       notify(Languages.EnterPhoneNo);
       return;
     }
-    // if (phn_.length < 10) {
-    //   notify("Enter a valid phone number.");
-    //   return;
-    // }
     if (msg_ === "") {
       notify(Languages.EnterMessage);
       return;

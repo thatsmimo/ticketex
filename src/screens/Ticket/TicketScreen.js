@@ -15,9 +15,7 @@ const TicketScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const [eventDetails, setEventDetails] = useState([]);
   const [loader, setLoader] = useState(true);
-
-  const [availableList, setAvailableList] = useState([]);
-  const [soldList, setSoldList] = useState([]);
+  const [ticketList, setTicketList] = useState([]);
 
   useEffect(() => {
     fetchEventDetails();
@@ -29,7 +27,7 @@ const TicketScreen = ({ navigation, route }) => {
     setLoader(false);
     if (response.status) {
       setEventDetails(response.events);
-      sortEventDetails(response.events);
+      sortTickets(response.events.offers);
     }
   };
 
@@ -39,34 +37,27 @@ const TicketScreen = ({ navigation, route }) => {
     });
   };
 
-  const sortEventDetails = (data) => {
-    // console.log("====================================");
-    // console.log(data);
-    // console.log("====================================");
-    let sold_list = data.offers.filter((item) => {
-      return item.status == "s";
+  const sortTickets = (ticketList) => {
+    let availableArr = [],
+      soldArr = [];
+    ticketList.forEach((element) => {
+      if (element.status == "s") {
+        soldArr.push({ ...element });
+      } else {
+        availableArr.push({ ...element });
+      }
     });
-    let available_list = data.offers.filter((item) => {
-      return item.status == "a";
-    });
-    setAvailableList(available_list);
-    setSoldList(sold_list);
-    console.log("====================================");
-    console.log("responze: ", sold_list.length);
-    console.log("responze: ", available_list.length);
-    console.log("====================================");
+    setTicketList([...availableArr, ...soldArr]);
   };
 
   const renderList = ({ item }) => (
     <View style={styles.card()}>
       <View style={styles.rowAsContainer}>
-        {/* TODO status wise filter*/}
         <Text
           style={
             item.status == "a"
               ? styles.itemHeaderTxtAvailable
               : styles.itemHeaderTxtSold
-            // styles.itemHeaderTxtAvailable
           }
         >
           {item.status == "a"
@@ -80,15 +71,12 @@ const TicketScreen = ({ navigation, route }) => {
           {Languages.ShowMore}
         </Text>
       </View>
-      {/* List */}
       <>
         <View style={styles.rowAsContainer}>
           <Text style={styles.itemBodyTxt}>
-            {item.qty} X {item.ticket_desc}
+            {item.qty} X {item.name}
           </Text>
-          <Text style={styles.itemBodyTxt}>
-            {item.price} {Languages.SAR}
-          </Text>
+          <Text style={styles.itemBodyTxt}>{item.price} SAR / Ticket</Text>
         </View>
         <Text style={styles.itemIconTxt}>
           <Ionicons name={IconDir.Ionicons.user} /> {item.user.name}
@@ -152,7 +140,7 @@ const TicketScreen = ({ navigation, route }) => {
             {globalDateFormatter(eventDetails.start)}
           </Text>
           <Text style={CommonStyles.dateTxt}>{eventDetails.location}</Text>
-          <Text style={CommonStyles.dateTxt}>Riyadh</Text>
+          <Text style={CommonStyles.dateTxt}>{eventDetails.city.name}</Text>
         </View>
         <View style={styles.rowAsContainer}>
           <Text style={styles.extraTxt}>
@@ -162,7 +150,7 @@ const TicketScreen = ({ navigation, route }) => {
       </View>
 
       <FlatList
-        data={availableList.concat(soldList)}
+        data={ticketList}
         renderItem={renderList}
         keyExtractor={(item, index) => index.toString()}
         showsVerticalScrollIndicator={false}

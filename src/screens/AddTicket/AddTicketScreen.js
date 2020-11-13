@@ -15,6 +15,9 @@ import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { notify } from "../../utils";
 
+let orgEventList = [];
+let orgClassList = [];
+
 const AddTicketScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const [eventList, setEventList] = useState([]);
@@ -55,16 +58,17 @@ const AddTicketScreen = ({ navigation, route }) => {
       }, 200);
     }
   }, [route, route.params?.isSubmitted]);
-
   const _fetchDropdownLists = async () => {
     setLoader(true);
     const classResponse = await Api.get("class-type");
     const eventResponse = await Api.get("events/list");
     setLoader(false);
     if (classResponse.status) {
+      orgClassList = classResponse.data;
       setClassList(classResponse.data);
     }
     if (eventResponse.status) {
+      orgEventList = eventResponse.events;
       setEventList(eventResponse.events);
     }
   };
@@ -205,6 +209,19 @@ const AddTicketScreen = ({ navigation, route }) => {
 
   const _saveKeywordAndSearch = (text) => {
     setKeyword(text.trim());
+
+    currentModal == "event"
+      ? setEventList([...orgEventList])
+      : setClassList([...orgClassList]);
+    const search_text = text;
+    const filterList = (currentModal == "event"
+      ? orgEventList
+      : orgClassList
+    ).filter((e) => !e.name.toLowerCase().search(search_text.toLowerCase()));
+    console.log("filterList: ", filterList);
+    currentModal == "event"
+      ? setEventList([...filterList])
+      : setClassList([...filterList]);
   };
 
   const _placeListToModal = () => {

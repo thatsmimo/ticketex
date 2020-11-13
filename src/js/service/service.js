@@ -80,7 +80,7 @@ export default class API {
             ? header
             : {
                 Authorization: `${token.token_type} ${token.access_token}`,
-                // "Content-Type": "application/json",
+                "Content-Type": "application/json",
               },
           method: method,
           body: JSON.stringify(params),

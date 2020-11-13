@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  FlatList,
 } from "react-native";
 import { Colors, CommonStyles, IconDir, Languages } from "../../js/common";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -17,19 +18,24 @@ import { notify } from "../../utils";
 import Api from "../../js/service/api";
 import QRCode from "react-native-qrcode-svg";
 
-// const qrData = [];
 export default function ScanQRScreen({ navigation, route }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scannedData, setScannedData] = useState("");
   const [scanned, setScanned] = useState(false);
   const [image, setImage] = useState(null);
-  const [qrData, setQrData] = useState(route.params.scannedQrList || []);
+
+  const [willUpdateId, setWillUpdateId] = useState("");
 
   const [qrCount, setQRCount] = useState(0);
 
   const insets = useSafeAreaInsets();
+  // scannedQrList.length = 0;
 
-  const { isScanQr, formData } = route.params;
+  console.log("====================================");
+  console.log("data: ", JSON.stringify(scannedQrList));
+  console.log("====================================");
+  const { isScanQr, scannedQrList, formData } = route.params;
+  const qrData = [];
 
   useEffect(() => {
     (async () => {
@@ -39,24 +45,11 @@ export default function ScanQRScreen({ navigation, route }) {
     })();
   }, []);
 
-  const _handleNavigation = () => {
-    navigation.navigate("ReviewQr", {
-      isScanQr: isScanQr,
-      scannedQrList: qrData,
-      formData,
-    });
-  };
-
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setScannedData(data);
-    setQRCount(qrCount + 1);
-
-    let orgQRData = [...qrData];
-    orgQRData.push({ data: data });
-    setQrData(orgQRData);
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-    console.log("data: ", data);
+    scannedQrList[willUpdateId].data = data;
+    console.log("data: ", scannedQrList[willUpdateId].data);
   };
 
   const _handleSubmit = () => {
@@ -77,7 +70,7 @@ export default function ScanQRScreen({ navigation, route }) {
   const _appendQrAndSubmit = async () => {
     const orgFormData = formData;
     if (isScanQr) {
-      orgFormData.append("barcode", scannedData);
+      orgFormData.append("barcode", scannedQrList);
     } else {
       const filename = image.split("/").pop();
       // Infer the type of the image
@@ -87,8 +80,8 @@ export default function ScanQRScreen({ navigation, route }) {
     }
     console.log("dataset: ", orgFormData);
 
-    const response = await Api.upload("ticket/create", orgFormData);
-    console.log("response: ", response);
+    // const response = await Api.upload("ticket/create", orgFormData);
+    // console.log("response: ", response);
 
     if (true) {
       // clear all
@@ -146,11 +139,69 @@ export default function ScanQRScreen({ navigation, route }) {
     );
   }
 
+  const renderScannedQrList = ({ item, index }) => {
+    // console.log(scannedQrList);
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginVertical: 10,
+        }}
+      >
+        <Text
+          style={{
+            textDecorationLine: "underline",
+            flex: 1,
+            fontSize: 14,
+            fontFamily: "regular",
+          }}
+        >
+          {item.data}
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            setScannedData("scan");
+            setScanned(false);
+            _returnTypeUi();
+            setWillUpdateId(index);
+          }}
+          style={{
+            flexDirection: "row",
+            width: 100,
+            backgroundColor: Colors.lightBlue,
+            alignSelf: "flex-end",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 7,
+            borderRadius: 20,
+          }}
+        >
+          <Ionicons
+            size={20}
+            name={IconDir.Ionicons.add}
+            color={Colors.primary}
+          />
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: "semi",
+              color: Colors.lineColor,
+              marginLeft: 8,
+            }}
+          >
+            {Languages.Edit}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
   const _returnTypeUi = () => {
     if (isScanQr) {
       return (
         <>
-          {scannedData === "" ? (
+          {scannedData === "scan" ? (
             <BarCodeScanner
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
               style={{
@@ -161,98 +212,25 @@ export default function ScanQRScreen({ navigation, route }) {
             />
           ) : (
             <View style={{ paddingHorizontal: 20 }}>
-              {/* <FeildHeader name={Languages.ScannedData} />
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  style={{
-                    textDecorationLine: "underline",
-                    flex: 1,
-                    fontSize: 14,
-                    fontFamily: "regular",
-                  }}
-                >
-                  {scannedData}
-                </Text>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    setScannedData("");
-                    setScanned(false);
-                    _returnTypeUi();
-                  }}
-                  style={{
-                    flexDirection: "row",
-                    width: 100,
-                    backgroundColor: Colors.lightBlue,
-                    alignSelf: "flex-end",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 7,
-                    borderRadius: 20,
-                  }}
-                >
-                  <Ionicons
-                    size={20}
-                    name={IconDir.Ionicons.add}
-                    color={Colors.primary}
-                  />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontFamily: "semi",
-                      color: Colors.lineColor,
-                      marginLeft: 8,
-                    }}
-                  >
-                    {/* {Languages.Clear} */}
-              {/* {Languages.ScanMore} */}
-              {/* </Text>
-                </TouchableOpacity>
-              </View>  */}
-
+              <FeildHeader name={Languages.ScannedData} />
+              <FlatList
+                data={scannedQrList}
+                renderItem={({ item, index }) =>
+                  renderScannedQrList({ item, index })
+                }
+                keyExtractor={(item, index) => index.toString()}
+              />
               {/* Submit button */}
-              <View style={{ flexDirection: "row" }}>
-                <View
-                  style={{
-                    borderColor: Colors.lineColor,
-                    borderWidth: 0.5,
-                    borderRadius: 40 / 2,
-                    height: 45,
-                    backgroundColor: Colors.lineColor,
-                    padding: 10,
-                    width: 60,
-                    flexDirection: "row",
-                    marginTop: 20,
-                    paddingHorizontal: 12,
-                    paddingBottom: 5,
-                    // paddingRight: 8,
-                  }}
-                >
-                  <Ionicons name={"ios-barcode"} size={20} color="white" />
-                  <Text style={{ paddingLeft: 8 }}>{qrCount}</Text>
-                </View>
-                <AppButton
-                  name={
-                    qrCount < formData._parts[2][1]
-                      ? Languages.ScanMore
-                      : Languages.ReviewQr
-                  }
-                  containerStyle={{
-                    width: 200,
-                    alignSelf: "center",
-                    marginLeft: 30,
-                  }}
-                  _handleOnPress={
-                    qrCount < formData._parts[2][1]
-                      ? () => {
-                          setScannedData("");
-                          setScanned(false);
-                          _returnTypeUi();
-                        }
-                      : _handleNavigation
-                  }
-                />
-              </View>
+
+              <AppButton
+                name={Languages.Submit}
+                containerStyle={{
+                  width: 200,
+                  alignSelf: "center",
+                  marginTop: 50,
+                }}
+                _handleOnPress={_handleSubmit}
+              />
             </View>
           )}
           {scannedData === "" && (
@@ -329,9 +307,7 @@ export default function ScanQRScreen({ navigation, route }) {
         navigation={navigation}
       />
       <FeildHeader
-        name={`Please ${
-          isScanQr ? Languages.Scan : Languages.Upload
-        } the ticket QR Code`}
+        name={`Please Review the ticket QR Code`}
         containerStyle={{ paddingHorizontal: 20 }}
       />
       {_returnTypeUi()}

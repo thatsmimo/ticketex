@@ -98,4 +98,8 @@ export default {
 
   SoldTickets: "Sold Tickets",
   SomethingWentWrong: "Something went wrong!",
+
+  ScanMore: "Scan More",
+  ReviewQr: "Review QR",
+  Edit: "Edit",
 };

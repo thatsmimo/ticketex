@@ -59,3 +59,6 @@ export const AddImageScreen = _AddImageScreen;
 
 import _getCamera from "./GetCamera/CameraScreen";
 export const GetCamera = _getCamera;
+
+import _reviewQrScreen from "./ReviewQR/ReviewQrScreen";
+export const ReviewQrScreen = _reviewQrScreen;

@@ -190,6 +190,7 @@ const index = () => {
       <Stack.Screen name="AddTicket" component={screens.AddTicketScreen} />
       <Stack.Screen name="AddImage" component={screens.AddImageScreen} />
       <Stack.Screen name="ScanQr" component={screens.ScanQRScreen} />
+      <Stack.Screen name="ReviewQr" component={screens.ReviewQrScreen} />
     </Stack.Navigator>
   );
 

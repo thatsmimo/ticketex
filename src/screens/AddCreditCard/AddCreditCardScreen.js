@@ -13,6 +13,7 @@ const AddCreditCardScreen = ({ navigation }) => {
   const [cvv, setCvv] = useState("");
   const [expireMonth, setExpireMonth] = useState("");
   const [expireYear, setExpireYear] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const insets = useSafeAreaInsets();
   const _handleNavigate = async () => {
@@ -36,6 +37,7 @@ const AddCreditCardScreen = ({ navigation }) => {
       notify("Enter expire year.");
       return;
     }
+    setLoader(true);
     const params = {
       cardNumber: card_no,
       holderName: holder_name,
@@ -43,19 +45,19 @@ const AddCreditCardScreen = ({ navigation }) => {
       expireYear: expireYear,
       expireMonth: expireMonth,
     };
-    // const formData = new FormData();
-    // formData.append("cardNumber", card_no);
-    // formData.append("holderName", holder_name);
-    // formData.append("cvv", cvv);
-    // formData.append("expireYear", expireYear);
-    // formData.append("expireMonth", expireMonth);
-
     const cardDetails = await Api.post("card/create", params);
     console.log(cardDetails);
     if (cardDetails.status) {
-      notify(cardDetails.message);
+      setHolder_name("");
+      setCvv("");
+      setCard_no("");
+      setExpireMonth("");
+      setExpireYear("");
     }
+    notify(cardDetails.message);
+    setLoader(false);
   };
+
   return (
     <View style={CommonStyles.screensRootContainer(insets.top)}>
       <AppHeader title={Languages.AddNewCreditCard} navigation={navigation} />
@@ -63,16 +65,19 @@ const AddCreditCardScreen = ({ navigation }) => {
         <Image source={Assets.ic_cc} style={styles.logo} resizeMode="contain" />
         <Text style={styles.logoTxt}>{Languages.AddNewCreditCard}</Text>
         <AppEditText
+          value={card_no}
           hint={Languages.CardNumber}
           keyBoardType="numeric"
           saveText={(text) => setCard_no(text)}
         />
         <AppEditText
+          value={holder_name}
           hint={Languages.CardHolderName}
           saveText={(text) => setHolder_name(text)}
         />
         <View style={{ flexDirection: "row" }}>
           <AppEditText
+            value={cvv}
             hint={Languages.CVV}
             keyBoardType="numeric"
             containerStyle={styles.editTxtExtra}
@@ -80,6 +85,7 @@ const AddCreditCardScreen = ({ navigation }) => {
           />
           <Separator width={10} />
           <AppEditText
+            value={expireMonth}
             hint={"Expire Month"}
             keyBoardType="numeric"
             containerStyle={styles.editTxtExtra}
@@ -88,6 +94,7 @@ const AddCreditCardScreen = ({ navigation }) => {
           />
           <Separator width={10} />
           <AppEditText
+            value={expireYear}
             hint={"Expire Year"}
             keyBoardType="numeric"
             containerStyle={styles.editTxtExtra}
@@ -98,7 +105,7 @@ const AddCreditCardScreen = ({ navigation }) => {
         <AppButton
           name={Languages.AddNewCreditCard}
           _handleOnPress={_handleNavigate}
-          containerStyle={CommonStyles.appBtn}
+          disabled={loader}
         />
       </View>
     </View>

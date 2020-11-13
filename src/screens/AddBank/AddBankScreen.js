@@ -12,6 +12,7 @@ const AddBankScreen = ({ navigation, route }) => {
   const [benfName, setBenfName] = useState("");
   const [bankName, setBankName] = useState("");
   const insets = useSafeAreaInsets();
+  const [loader, setLoader] = useState(false);
 
   const _handlenavigate = async () => {
     if (iban === "") {
@@ -26,6 +27,7 @@ const AddBankScreen = ({ navigation, route }) => {
       notify(Languages.EnterYourBankName);
       return;
     }
+    setLoader(true);
     const params = {
       iban: iban,
       beneficiaryName: benfName,
@@ -34,8 +36,12 @@ const AddBankScreen = ({ navigation, route }) => {
     const bankDetails = await Api.post("account/create", params);
     console.log(bankDetails);
     if (bankDetails.status) {
-      notify(bankDetails.message);
+      setBenfName("");
+      setIban("");
+      setBankName("");
     }
+    notify(bankDetails.message);
+    setLoader(false);
   };
 
   return (
@@ -48,28 +54,26 @@ const AddBankScreen = ({ navigation, route }) => {
           resizeMode="contain"
         />
         <Text style={styles.logoTxt}>{Languages.AddBankAccount}</Text>
-        <AppEditText hint={Languages.IBAN} saveText={(text) => setIban(text)} />
         <AppEditText
+          hint={Languages.IBAN}
+          value={iban}
+          saveText={(text) => setIban(text)}
+        />
+        <AppEditText
+          value={benfName}
           hint={Languages.BeneficiaryName}
           saveText={(text) => setBenfName(text)}
         />
         <AppEditText
+          value={bankName}
           hint={Languages.BankName}
           saveText={(text) => setBankName(text)}
         />
-        {/* <View style={styles.dropdownContainer}>
-          <Text style={styles.dropdownTxt}>{Languages.BankName}</Text>
-          <Ionicons
-            name={IconDir.Ionicons.down}
-            size={20}
-            color={Colors.lineColor}
-            style={styles.downIcon}
-          />
-        </View> */}
         <AppButton
           name={Languages.AddNewBank}
           containerStyle={CommonStyles.appBtn}
           _handleOnPress={_handlenavigate}
+          disabled={loader}
         />
       </View>
     </View>

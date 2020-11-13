@@ -36,7 +36,6 @@ const AddTicketScreen = ({ navigation, route }) => {
   const [price, setPrice] = useState("");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
-  const [isScanQr, setScanQr] = useState(true);
 
   useEffect(() => {
     _fetchDropdownLists();
@@ -58,6 +57,7 @@ const AddTicketScreen = ({ navigation, route }) => {
       }, 200);
     }
   }, [route, route.params?.isSubmitted]);
+
   const _fetchDropdownLists = async () => {
     setLoader(true);
     const classResponse = await Api.get("class-type");
@@ -77,19 +77,15 @@ const AddTicketScreen = ({ navigation, route }) => {
     if (!_handleValidation()) {
       return;
     }
-    let formData = new FormData();
-    formData.append("event_id", eventList[selectedEventPos].id);
-    formData.append("class_id", classList[selectedClassPos].id);
-    formData.append("qty", quantity);
-    formData.append("price", price);
-    formData.append("name", name);
-    formData.append("ticket_desc", desc);
-    formData.append("start", "2020-10-30");
-    formData.append("end", "2020-10-30");
-    console.log(formData);
-
+    const formData = {
+      event_id: eventList[selectedEventPos].id,
+      class_id: classList[selectedClassPos].id,
+      qty: quantity,
+      price: price,
+      name: name,
+      ticket_desc: desc,
+    };
     navigation.navigate("ScanQr", {
-      isScanQr: isScanQr,
       formData,
       isSubmitted: false,
     });
@@ -393,73 +389,11 @@ const AddTicketScreen = ({ navigation, route }) => {
                   hint={Languages.TicketDescription}
                   saveText={(t) => setDesc(t)}
                 />
-                <FeildHeader name={Languages.SelectQrOption} />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => setScanQr(true)}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Ionicons
-                      name={
-                        isScanQr
-                          ? IconDir.Ionicons.radioOn
-                          : IconDir.Ionicons.radioOff
-                      }
-                      size={25}
-                      color={Colors.primary}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: "semi",
-                        color: Colors.text,
-                        marginLeft: 10,
-                      }}
-                    >
-                      {Languages.ScanQRCode}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => setScanQr(false)}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Ionicons
-                      name={
-                        !isScanQr
-                          ? IconDir.Ionicons.radioOn
-                          : IconDir.Ionicons.radioOff
-                      }
-                      size={25}
-                      color={Colors.primary}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: "semi",
-                        color: Colors.text,
-                        marginLeft: 10,
-                      }}
-                    >
-                      {Languages.UploadQRCode}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
               </>
             )}
             <AppButton
               name={Languages.Next}
-              containerStyle={{ marginTop: 40, marginBottom: 40 }}
+              containerStyle={{ marginTop: 20, marginBottom: 40 }}
               _handleOnPress={_handleNav}
             />
           </View>

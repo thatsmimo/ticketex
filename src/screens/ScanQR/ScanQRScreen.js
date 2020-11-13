@@ -1,120 +1,43 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
-import { Colors, CommonStyles, IconDir, Languages } from "../../js/common";
+import { Text, View, StyleSheet } from "react-native";
+import { Colors, CommonStyles, Languages } from "../../js/common";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppButton, AppHeader, FeildHeader } from "../../components";
 import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import * as ImagePicker from "expo-image-picker";
-import { notify } from "../../utils";
-import Api from "../../js/service/api";
-import QRCode from "react-native-qrcode-svg";
 
-// const qrData = [];
-export default function ScanQRScreen({ navigation, route }) {
+const ScanQRScreen = ({ navigation, route }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scannedData, setScannedData] = useState("");
   const [scanned, setScanned] = useState(false);
-  const [image, setImage] = useState(null);
   const [qrData, setQrData] = useState(route.params.scannedQrList || []);
-
   const [qrCount, setQRCount] = useState(0);
-
   const insets = useSafeAreaInsets();
-
-  const { isScanQr, formData } = route.params;
+  const { formData } = route.params;
 
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
-      // const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
       setHasPermission(status === "granted");
     })();
   }, []);
 
   const _handleNavigation = () => {
     navigation.navigate("ReviewQr", {
-      isScanQr: isScanQr,
       scannedQrList: qrData,
       formData,
     });
   };
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
     setScannedData(data);
     setQRCount(qrCount + 1);
 
     let orgQRData = [...qrData];
-    orgQRData.push({ data: data });
+    orgQRData.push(data);
     setQrData(orgQRData);
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-    console.log("data: ", data);
-  };
-
-  const _handleSubmit = () => {
-    if (!isScanQr) {
-      if (image === null) {
-        notify(Languages.PleaseSelectImage);
-        return;
-      }
-    }
-    Alert.alert(
-      "",
-      Languages.AreYouSure,
-      [{ text: Languages.Ok, onPress: _appendQrAndSubmit }],
-      { cancelable: true }
-    );
-  };
-
-  const _appendQrAndSubmit = async () => {
-    const orgFormData = formData;
-    if (isScanQr) {
-      orgFormData.append("barcode", scannedData);
-    } else {
-      const filename = image.split("/").pop();
-      // Infer the type of the image
-      const match = /\.(\w+)$/.exec(filename);
-      const type = match ? `image/${match[1]}` : `image`;
-      orgFormData.append("image", { uri: image, name: filename, type });
-    }
-    console.log("dataset: ", orgFormData);
-
-    const response = await Api.upload("ticket/create", orgFormData);
-    console.log("response: ", response);
-
-    if (true) {
-      // clear all
-      if (isScanQr) {
-        setScannedData("");
-        setScanned(false);
-      } else {
-        setImage(null);
-      }
-      navigation.navigate("AddTicket", { isSubmitted: true });
-    }
-  };
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
+    console.log("scanned data: ", data);
   };
 
   if (hasPermission === null) {
@@ -147,194 +70,104 @@ export default function ScanQRScreen({ navigation, route }) {
   }
 
   const _returnTypeUi = () => {
-    if (isScanQr) {
-      return (
-        <>
-          {scannedData === "" ? (
-            <BarCodeScanner
-              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-              style={{
-                ...StyleSheet.absoluteFillObject,
-                top: 200,
-                bottom: 30,
-              }}
-            />
-          ) : (
-            <View style={{ paddingHorizontal: 20 }}>
-              {/* <FeildHeader name={Languages.ScannedData} />
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  style={{
-                    textDecorationLine: "underline",
-                    flex: 1,
-                    fontSize: 14,
-                    fontFamily: "regular",
-                  }}
-                >
-                  {scannedData}
-                </Text>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    setScannedData("");
-                    setScanned(false);
-                    _returnTypeUi();
-                  }}
-                  style={{
-                    flexDirection: "row",
-                    width: 100,
-                    backgroundColor: Colors.lightBlue,
-                    alignSelf: "flex-end",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 7,
-                    borderRadius: 20,
-                  }}
-                >
-                  <Ionicons
-                    size={20}
-                    name={IconDir.Ionicons.add}
-                    color={Colors.primary}
-                  />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontFamily: "semi",
-                      color: Colors.lineColor,
-                      marginLeft: 8,
-                    }}
-                  >
-                    {/* {Languages.Clear} */}
-              {/* {Languages.ScanMore} */}
-              {/* </Text>
-                </TouchableOpacity>
-              </View>  */}
-
-              {/* Submit button */}
-              <View style={{ flexDirection: "row" }}>
-                <View
-                  style={{
-                    borderColor: Colors.lineColor,
-                    borderWidth: 0.5,
-                    borderRadius: 40 / 2,
-                    height: 45,
-                    backgroundColor: Colors.lineColor,
-                    padding: 10,
-                    width: 60,
-                    flexDirection: "row",
-                    marginTop: 20,
-                    paddingHorizontal: 12,
-                    paddingBottom: 5,
-                    // paddingRight: 8,
-                  }}
-                >
-                  <Ionicons name={"ios-barcode"} size={20} color="white" />
-                  <Text style={{ paddingLeft: 8 }}>{qrCount}</Text>
-                </View>
-                <AppButton
-                  name={
-                    qrCount < formData._parts[2][1]
-                      ? Languages.ScanMore
-                      : Languages.ReviewQr
-                  }
-                  containerStyle={{
-                    width: 200,
-                    alignSelf: "center",
-                    marginLeft: 30,
-                  }}
-                  _handleOnPress={
-                    qrCount < formData._parts[2][1]
-                      ? () => {
-                          setScannedData("");
-                          setScanned(false);
-                          _returnTypeUi();
-                        }
-                      : _handleNavigation
-                  }
-                />
-              </View>
-            </View>
-          )}
-          {scannedData === "" && (
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                ...StyleSheet.absoluteFillObject,
-                top: 200,
-                bottom: 30,
-              }}
-            >
-              <View
-                style={{
-                  height: "65%",
-                  borderColor: "white",
-                  borderWidth: 2,
-                  width: "60%",
-                  borderRadius: 10,
-                }}
-              />
-            </View>
-          )}
-        </>
-      );
-    } else {
-      return (
-        <View style={{ paddingHorizontal: 20 }}>
-          <TouchableOpacity
-            onPress={pickImage}
+    return (
+      <>
+        {scannedData === "" ? (
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             style={{
-              marginTop: 30,
-              borderColor: Colors.lineColor,
-              borderRadius: 8,
-              borderWidth: 1,
-              alignItems: "center",
-              alignSelf: "center",
-              height: 150,
-              width: 150,
+              ...StyleSheet.absoluteFillObject,
+              top: 200,
+              bottom: 30,
+            }}
+          />
+        ) : (
+          <View
+            style={{
+              flexDirection: "row",
+              paddingHorizontal: 20,
               justifyContent: "center",
+              marginTop: 20,
             }}
           >
-            {image ? (
-              <Image
-                source={{ uri: image }}
-                style={{ width: 140, height: 140 }}
-              />
-            ) : (
-              <Ionicons
-                name={IconDir.Ionicons.add}
-                size={140}
-                color={Colors.lineColor}
-              />
-            )}
-          </TouchableOpacity>
-          <AppButton
-            name={Languages.Submit}
-            containerStyle={{
-              width: 200,
-              alignSelf: "center",
-              marginTop: 50,
+            <View
+              style={{
+                borderWidth: 0.5,
+                borderRadius: 20,
+                height: 45,
+                backgroundColor: Colors.lightBlue,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 15,
+              }}
+            >
+              <Ionicons name={"ios-barcode"} size={20} color={Colors.text} />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: "regular",
+                  color: Colors.text,
+                  textAlign: "center",
+                  marginLeft: 10,
+                }}
+              >
+                {qrCount}
+              </Text>
+            </View>
+            <AppButton
+              name={qrCount < formData.qty ? "Scan Next" : Languages.ReviewQr}
+              containerStyle={{
+                width: 200,
+                marginLeft: 10,
+                marginTop: 0,
+              }}
+              _handleOnPress={
+                qrCount < formData.qty
+                  ? () => {
+                      setScannedData("");
+                      setScanned(false);
+                      _returnTypeUi();
+                    }
+                  : _handleNavigation
+              }
+            />
+          </View>
+        )}
+        {scannedData === "" && (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              ...StyleSheet.absoluteFillObject,
+              top: 200,
+              bottom: 30,
             }}
-            _handleOnPress={_handleSubmit}
-          />
-        </View>
-      );
-    }
+          >
+            <View
+              style={{
+                height: "65%",
+                borderColor: "white",
+                borderWidth: 2,
+                width: "60%",
+                borderRadius: 10,
+              }}
+            />
+          </View>
+        )}
+      </>
+    );
   };
 
   return (
     <View style={[CommonStyles.screensRootContainer(insets.top)]}>
-      <AppHeader
-        title={`${isScanQr ? Languages.Scan : Languages.Upload} QR`}
-        navigation={navigation}
-      />
+      <AppHeader title={"Scan QR"} navigation={navigation} />
       <FeildHeader
-        name={`Please ${
-          isScanQr ? Languages.Scan : Languages.Upload
-        } the ticket QR Code`}
+        name={"Please Scan ticket QR Code"}
         containerStyle={{ paddingHorizontal: 20 }}
       />
       {_returnTypeUi()}
     </View>
   );
-}
+};
+
+export default ScanQRScreen;

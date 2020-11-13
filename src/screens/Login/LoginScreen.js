@@ -27,6 +27,7 @@ const LoginScreen = () => {
 
   const [countryCode, setCountryCode] = useState(APP_DEFAULTS.countryCode);
   const [callingCode, setCallingCode] = useState(APP_DEFAULTS.callingCode);
+  const [loader, setLoader] = useState(false);
 
   const _onSelectCountry = (country) => {
     console.log("country: ", country);
@@ -47,6 +48,7 @@ const LoginScreen = () => {
       notify("Enter your mobile number.");
       return;
     }
+    setLoader(true);
     const response = await Api.get(
       `users/login?mobile=${"+" + callingCode + mobile}`
     );
@@ -56,9 +58,11 @@ const LoginScreen = () => {
     } else {
       notify(Languages.SomethingWentWrong);
     }
+    setLoader(false);
   };
 
   const _authOtpAndLogin = async () => {
+    setLoader(true);
     const params = {
       grant_type: "password",
       client_id: 9,
@@ -71,6 +75,7 @@ const LoginScreen = () => {
     console.log("tokenRes: ", tokenRes);
     if (tokenRes.error) {
       notify(tokenRes.message);
+      setLoader(false);
       return;
     }
     const header = {
@@ -140,6 +145,7 @@ const LoginScreen = () => {
             hint={Languages.OTP_Number}
             saveText={(t) => setOtp(t)}
             maxLength={4}
+            keyboardType="number-pad"
           />
         )}
         <View style={{ flexDirection: "row" }}>
@@ -171,6 +177,7 @@ const LoginScreen = () => {
             containerStyle={{
               flex: 1,
             }}
+            disabled={loader}
           />
         </View>
         {isOtpMode && (

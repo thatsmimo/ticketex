@@ -29,15 +29,12 @@ const FaqScreen = ({ navigation }) => {
     <View
       style={{
         backgroundColor: Colors.background,
-        // borderWidth: 0.3,
         borderRadius: 8,
         elevation: 2,
       }}
     >
       <List.Accordion title={item.qq} titleStyle={styles.bodyHeader}>
-        <Text style={styles.bodyTxt}>
-          {item.ans} dbsbd hsvdfsd fs for(let s fs f s f s in object) {}
-        </Text>
+        <Text style={styles.bodyTxt}>{item.ans}</Text>
       </List.Accordion>
     </View>
   );

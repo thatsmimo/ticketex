@@ -4,6 +4,7 @@ import AppButton from "./AppButton";
 import MyAccountItems from "./MyAccountItems";
 import Separator from "./Separator";
 import FeildHeader from "./FeildHeader";
+import Loader from "./Loader";
 
 export {
   AppHeader,
@@ -12,4 +13,5 @@ export {
   MyAccountItems,
   Separator,
   FeildHeader,
+  Loader,
 };

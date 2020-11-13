@@ -54,11 +54,5 @@ export const AddTicketScreen = _AddTicketScreen;
 import _ScanQRScreen from "./ScanQR/ScanQRScreen";
 export const ScanQRScreen = _ScanQRScreen;
 
-import _AddImageScreen from "./AddImage/AddImageScreen";
-export const AddImageScreen = _AddImageScreen;
-
-import _getCamera from "./GetCamera/CameraScreen";
-export const GetCamera = _getCamera;
-
-import _reviewQrScreen from "./ReviewQR/ReviewQrScreen";
-export const ReviewQrScreen = _reviewQrScreen;
+import _ReviewQrScreen from "./ReviewQR/ReviewQrScreen";
+export const ReviewQrScreen = _ReviewQrScreen;

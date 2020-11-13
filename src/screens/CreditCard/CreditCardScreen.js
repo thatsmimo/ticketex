@@ -35,13 +35,6 @@ const CreditCardScreen = ({ navigation }) => {
             <Text style={styles.cardHeadTxt}>{Languages.CardNumber}</Text>
             <Text style={styles.cardTxt}>{item.card_number}</Text>
           </View>
-          {/* <View style={styles.cardImgContainer}>
-        <Image
-          source={require("../../../assets/images/visa.png")}
-          resizeMode="center"
-          style={styles.cardImg}
-        />
-      </View> */}
         </View>
         <Separator color={Colors.lineColor} height={40} />
         <View style={styles.cardBtmDetails}>
@@ -64,19 +57,23 @@ const CreditCardScreen = ({ navigation }) => {
     <View style={CommonStyles.screensRootContainer(insets.top)}>
       <AppHeader title={Languages.CreditCard} navigation={navigation} />
       <View style={styles.container}>
-        <Image source={Assets.ic_cc} style={styles.logo} resizeMode="contain" />
-        <Text style={styles.logoTxt}>{Languages.CreditCard}</Text>
         <FlatList
-          // contentContainerStyle={{ paddingHorizontal: 20, flexGrow: 1 }}
           data={cardList}
-          // ItemSeparatorComponent={Separator}
           renderItem={renderList}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           refreshing={loader}
           onRefresh={fetchCardList}
-          // ListHeaderComponent={Separator}
-          // ListFooterComponent={<Separator heigh={30} />}
+          ListHeaderComponent={() => (
+            <>
+              <Image
+                source={Assets.ic_cc}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+              <Text style={styles.logoTxt}>{Languages.CreditCard}</Text>
+            </>
+          )}
         />
         <AppButton
           name={Languages.AddNewCreditCard}

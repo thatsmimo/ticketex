@@ -1,5 +1,5 @@
-import React, { useReducer, useEffect, useState } from "react";
-import { StatusBar, View, Text, Platform } from "react-native";
+import React, { useReducer, useEffect } from "react";
+import { StatusBar, Text, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -26,9 +26,6 @@ const AppTabBarTxt = ({ name }) => (
 );
 
 const index = () => {
-  // const navigationRef = React.useRef(null);
-  // const [navigationState, setNavigationState] = useState({});
-
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -98,15 +95,11 @@ const index = () => {
         await AsyncStorage.clear();
         dispatch({ type: "SIGN_OUT" });
       },
-      // signUp: async () => {
-      //   dispatch({ type: "SIGN_IN", userDetails: {} });
-      // },
     }),
     []
   );
 
   const PlatformStatusBar = () => {
-    // console.log("navState: ", navState);
     return (
       <>
         {Platform.OS === "ios" ? (
@@ -130,9 +123,6 @@ const index = () => {
 
   const HomeStack = () => (
     <Stack.Navigator headerMode="none">
-      {/* <Stack.Screen name="AddTicket" component={screens.AddTicketScreen} /> */}
-      {/*    <Stack.Screen name="AddImage" component={screens.AddImageScreen} /> */}
-      {/*    <Stack.Screen name="CameraScreen" component={screens.GetCamera} /> */}
       <Stack.Screen name="Home" component={screens.HomeScreen} />
       <Stack.Screen name="Ticket" component={screens.TicketScreen} />
       <Stack.Screen
@@ -188,7 +178,6 @@ const index = () => {
   const AddTicketStack = () => (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="AddTicket" component={screens.AddTicketScreen} />
-      <Stack.Screen name="AddImage" component={screens.AddImageScreen} />
       <Stack.Screen name="ScanQr" component={screens.ScanQRScreen} />
       <Stack.Screen name="ReviewQr" component={screens.ReviewQrScreen} />
     </Stack.Navigator>
@@ -211,7 +200,7 @@ const index = () => {
           component={HomeStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.Home} />,
-            tabBarIcon: ({ color, focused, size }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.home}
                 color={color}
@@ -225,7 +214,7 @@ const index = () => {
           component={SellTicketStackStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.SellTicket} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.ticket}
                 color={color}
@@ -239,7 +228,7 @@ const index = () => {
           component={AddTicketStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.AddTicket} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.tagPlus}
                 color={color}
@@ -253,7 +242,7 @@ const index = () => {
           component={PurchasedTicketStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.PurchasedTicket} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.bookmark}
                 color={color}
@@ -267,7 +256,7 @@ const index = () => {
           component={AccountStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.Account} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.account}
                 color={color}
@@ -281,12 +270,9 @@ const index = () => {
   };
 
   const NavMainContent = ({}) => {
-    // console.log("navigationRef: ", navigationRef.current);
     return (
       <>
-        <PlatformStatusBar
-        //navState={navigationState}
-        />
+        <PlatformStatusBar />
         {!state.userDetails ? <LoginStack /> : <TabNav />}
       </>
     );
@@ -296,20 +282,9 @@ const index = () => {
     return <AppLoading />;
   }
 
-  // const unsubscribe = navigationRef.current?.addListener("state", (e) => {
-  //   // You can get the raw navigation state (partial state object of the root navigator)
-  //   console.log(e.data.state);
-  //   setNavigationState(e.data.state);
-
-  //   // Or get the full state object with `getRootState()`
-  //   // console.log(navigationRef.current.getRootState());
-  // });
-
   return (
     <AuthContext.Provider value={authContext}>
-      <NavigationContainer
-      //ref={navigationRef}
-      >
+      <NavigationContainer>
         <SafeAreaProvider>
           <NavMainContent />
         </SafeAreaProvider>

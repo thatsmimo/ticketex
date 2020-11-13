@@ -10,6 +10,8 @@ import Api from "../../js/service/api";
 const ContactUsScreen = ({ navigation }) => {
   const [phn, setPhn] = useState("");
   const [msg, setMsg] = useState("");
+  const [loader, setLoader] = useState(false);
+
   const insets = useSafeAreaInsets();
 
   const _handleOnPress = async () => {
@@ -23,14 +25,18 @@ const ContactUsScreen = ({ navigation }) => {
       notify(Languages.EnterMessage);
       return;
     }
+    setLoader(true);
     const params = {
       mob: phn_,
       msg: msg_,
     };
     const response = await Api.post(`user/contact`, params);
     console.log("res: ", response);
+    notify(response.message);
+    setLoader(false);
     if (response.status) {
-      notify(response.message);
+      setMsg("");
+      setPhn("");
     }
   };
 
@@ -57,7 +63,11 @@ const ContactUsScreen = ({ navigation }) => {
           multiline
           saveText={(t) => setMsg(t)}
         />
-        <AppButton name={Languages.Send} _handleOnPress={_handleOnPress} />
+        <AppButton
+          name={Languages.Send}
+          _handleOnPress={_handleOnPress}
+          disabled={loader}
+        />
       </View>
     </View>
   );

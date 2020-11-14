@@ -115,7 +115,9 @@ const ScanQRScreen = ({ navigation, route }) => {
               </Text>
             </View>
             <AppButton
-              name={qrCount < formData.qty ? "Scan Next" : Languages.ReviewQr}
+              name={
+                qrCount < formData.qty ? Languages.ScanNext : Languages.ReviewQr
+              }
               containerStyle={{
                 width: 200,
                 marginLeft: 10,
@@ -160,9 +162,9 @@ const ScanQRScreen = ({ navigation, route }) => {
 
   return (
     <View style={[CommonStyles.screensRootContainer(insets.top)]}>
-      <AppHeader title={"Scan QR"} navigation={navigation} />
+      <AppHeader title={Languages.ScanQR} navigation={navigation} />
       <FeildHeader
-        name={"Please Scan ticket QR Code"}
+        name={Languages.ScanTicketQR}
         containerStyle={{ paddingHorizontal: 20 }}
       />
       {_returnTypeUi()}

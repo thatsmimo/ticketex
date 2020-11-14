@@ -169,9 +169,9 @@ const ScanQRScreen = ({ navigation, route }) => {
 
   return (
     <View style={[CommonStyles.screensRootContainer(insets.top)]}>
-      <AppHeader title={"Review QR"} navigation={navigation} />
+      <AppHeader title={Languages.ReviewQr} navigation={navigation} />
       <FeildHeader
-        name={"Please Review the ticket QR Code"}
+        name={Languages.ReviewTicketQR}
         containerStyle={{ paddingHorizontal: 20 }}
       />
       {_returnTypeUi()}

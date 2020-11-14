@@ -26,13 +26,7 @@ const FaqScreen = ({ navigation }) => {
   };
 
   const renderList = ({ item }) => (
-    <View
-      style={{
-        backgroundColor: Colors.background,
-        borderRadius: 8,
-        elevation: 2,
-      }}
-    >
+    <View style={styles.listContainer}>
       <List.Accordion title={item.qq} titleStyle={styles.bodyHeader}>
         <Text style={styles.bodyTxt}>{item.ans}</Text>
       </List.Accordion>

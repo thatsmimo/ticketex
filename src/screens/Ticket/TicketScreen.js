@@ -17,6 +17,9 @@ const TicketScreen = ({ navigation, route }) => {
   const [loader, setLoader] = useState(true);
   const [ticketList, setTicketList] = useState([]);
 
+  const [availableTicketLength, setAvailableTicketLength] = useState(0);
+  const [soldTicketLength, setSoldTicketLength] = useState(0);
+
   useEffect(() => {
     fetchEventDetails();
   }, []);
@@ -34,6 +37,10 @@ const TicketScreen = ({ navigation, route }) => {
   const _handleShowMore = (selectedItem) => {
     navigation.navigate("TicketDetails", {
       eventDetails: { ...eventDetails, offers: selectedItem },
+      availableTicketLength: availableTicketLength,
+      soldTicketLength: soldTicketLength,
+      sub_cat_name: eventDetails.sub_cat_name,
+      city: eventDetails.city.name,
     });
   };
 
@@ -47,6 +54,8 @@ const TicketScreen = ({ navigation, route }) => {
         availableArr.push({ ...element });
       }
     });
+    setAvailableTicketLength(availableArr.length);
+    setSoldTicketLength(soldArr.length);
     setTicketList([...availableArr, ...soldArr]);
   };
 
@@ -121,9 +130,13 @@ const TicketScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.headerBtmContainer}>
           <View style={styles.headerOpacityContainer}>
-            <Text style={styles.whiteTxt13}>{Languages.Available} 3</Text>
+            <Text style={styles.whiteTxt13}>
+              {Languages.Available} {availableTicketLength}
+            </Text>
             <View style={styles.whiteSeparatorHorizontal} />
-            <Text style={styles.whiteTxt13}>{Languages.Sold} 1</Text>
+            <Text style={styles.whiteTxt13}>
+              {Languages.Sold} {soldTicketLength}
+            </Text>
           </View>
         </View>
       </View>
@@ -131,11 +144,13 @@ const TicketScreen = ({ navigation, route }) => {
       <View style={styles.card(true)}>
         <View style={styles.rowAsContainer}>
           <Text style={styles.bodyHeaderTxt}>{eventDetails?.name}</Text>
-          <View style={CommonStyles.mainChipContainer}>
-            <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
-              King Cup
-            </Text>
-          </View>
+          {eventDetails.sub_cat_name ? (
+            <View style={CommonStyles.mainChipContainer}>
+              <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
+                {eventDetails.sub_cat_name}
+              </Text>
+            </View>
+          ) : null}
         </View>
         <View style={styles.rowAsContainer}>
           <Text style={CommonStyles.dateTxt}>
@@ -146,7 +161,8 @@ const TicketScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.rowAsContainer}>
           <Text style={styles.extraTxt}>
-            {Languages.OriginalSellingPrices} {eventDetails.org_price} SAR
+            {Languages.OriginalSellingPrices} {eventDetails.org_price}{" "}
+            {APP_DEFAULTS.currency}
           </Text>
         </View>
       </View>

@@ -22,4 +22,9 @@ export default StyleSheet.create({
     fontFamily: "semi",
     paddingBottom: 10,
   },
+  listContainer: {
+    backgroundColor: Colors.background,
+    borderRadius: 8,
+    elevation: 2,
+  },
 });

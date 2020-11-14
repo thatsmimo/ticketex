@@ -14,6 +14,7 @@ import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { notify } from "../../utils";
+import Styles from "./styles";
 
 let orgEventList = [];
 let orgClassList = [];
@@ -134,12 +135,7 @@ const AddTicketScreen = ({ navigation, route }) => {
         }}
         style={{ paddingVertical: 8 }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
+        <View style={Styles.listContainer}>
           <Ionicons
             size={20}
             name={
@@ -149,15 +145,7 @@ const AddTicketScreen = ({ navigation, route }) => {
             }
             color={Colors.primary}
           />
-          <Text
-            style={{
-              fontFamily: "regular",
-              fontSize: 15,
-              marginLeft: 15,
-            }}
-          >
-            {item.name}
-          </Text>
+          <Text style={Styles.listText}>{item.name}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -173,25 +161,8 @@ const AddTicketScreen = ({ navigation, route }) => {
           }}
           style={{ flexDirection: "row" }}
         >
-          <View
-            style={{
-              backgroundColor: Colors.lightBlue,
-              borderRadius: 20,
-              flex: 1,
-              flexDirection: "row",
-              padding: 13,
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "semi",
-                flex: 1,
-                color: Colors.lineColor,
-              }}
-            >
-              {selectedTxt}
-            </Text>
+          <View style={Styles.selectFieldContainer}>
+            <Text style={Styles.selectFieldText}>{selectedTxt}</Text>
             <Ionicons
               name={IconDir.Ionicons.down}
               size={20}
@@ -231,6 +202,7 @@ const AddTicketScreen = ({ navigation, route }) => {
   };
 
   const FeildHeader = ({ name, containerStyle }) => (
+    //check
     <Text
       style={{
         fontFamily: "semi",
@@ -286,77 +258,21 @@ const AddTicketScreen = ({ navigation, route }) => {
             {selectedClassPos !== -1 && (
               <>
                 <FeildHeader name={Languages.Quantity} />
-                <View
-                  style={{
-                    height: 45,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                  }}
-                >
+                <View style={Styles.quantityContainer}>
                   <TouchableOpacity
                     onPress={() => _handleQuantity("-")}
-                    style={{
-                      paddingVertical: 13,
-                      paddingHorizontal: 20,
-                      backgroundColor: Colors.lightBlue,
-                      borderTopLeftRadius: 20,
-                      borderBottomLeftRadius: 20,
-                      justifyContent: "center",
-                    }}
+                    style={Styles.quantityIncreaseDecreaseContainer}
                   >
-                    <Text
-                      style={{
-                        fontFamily: "semi",
-                        color: Colors.lineColor,
-                        textAlign: "center",
-                        fontSize: 20,
-                      }}
-                    >
-                      -
-                    </Text>
+                    <Text style={Styles.quantityTextContainer}>-</Text>
                   </TouchableOpacity>
-                  <View
-                    style={{
-                      padding: 13,
-                      width: 75,
-                      backgroundColor: Colors.lightBlue,
-                      justifyContent: "center",
-                      marginHorizontal: 2,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontFamily: "semi",
-                        color: Colors.lineColor,
-                        textAlign: "center",
-                        fontSize: 20,
-                      }}
-                    >
-                      {quantity}
-                    </Text>
+                  <View style={Styles.quantityShowContainer}>
+                    <Text style={Styles.quantityTextContainer}>{quantity}</Text>
                   </View>
                   <TouchableOpacity
                     onPress={() => _handleQuantity("+")}
-                    style={{
-                      padding: 13,
-                      paddingHorizontal: 20,
-                      backgroundColor: Colors.lightBlue,
-                      borderTopRightRadius: 20,
-                      borderBottomRightRadius: 20,
-                      justifyContent: "center",
-                    }}
+                    style={Styles.quantityIncreaseDecreaseContainer}
                   >
-                    <Text
-                      style={{
-                        fontFamily: "semi",
-                        color: Colors.lineColor,
-                        textAlign: "center",
-                        fontSize: 20,
-                      }}
-                    >
-                      +
-                    </Text>
+                    <Text style={Styles.quantityTextContainer}>+</Text>
                   </TouchableOpacity>
                 </View>
                 <FeildHeader name={Languages.PricePerTicket} />

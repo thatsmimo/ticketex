@@ -34,7 +34,7 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     // width: 240,
-    paddingHorizontal:"15%"
+    paddingHorizontal: "15%",
   },
   input: {
     marginTop: 0,
@@ -54,5 +54,54 @@ export default StyleSheet.create({
     padding: 30,
     alignItems: "center",
     maxHeight: "80%",
+  },
+  listContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  listText: {
+    fontFamily: "regular",
+    fontSize: 15,
+    marginLeft: 15,
+  },
+  selectFieldContainer: {
+    backgroundColor: Colors.lightBlue,
+    borderRadius: 20,
+    flex: 1,
+    flexDirection: "row",
+    padding: 13,
+    alignItems: "center",
+  },
+  selectFieldText: {
+    fontFamily: "semi",
+    flex: 1,
+    color: Colors.lineColor,
+  },
+  quantityContainer: {
+    height: 45,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  quantityIncreaseDecreaseContainer: {
+    paddingVertical: 13,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.lightBlue,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    justifyContent: "center",
+  },
+  quantityTextContainer: {
+    fontFamily: "semi",
+    color: Colors.lineColor,
+    textAlign: "center",
+    fontSize: 20,
+  },
+  quantityShowContainer: {
+    padding: 13,
+    width: 75,
+    backgroundColor: Colors.lightBlue,
+    justifyContent: "center",
+    marginHorizontal: 2,
   },
 });

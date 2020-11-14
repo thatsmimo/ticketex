@@ -113,4 +113,8 @@ export default {
 
   EnterMobNumber: "Enter your mobile number.",
   Ticket: "Ticket",
+  ReviewTicketQR: "Please Review the ticket QR Code",
+  ScanQR: "Scan QR",
+  ScanTicketQR: "Please Scan ticket QR Code",
+  ScanNext: "Scan Next",
 };

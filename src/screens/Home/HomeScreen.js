@@ -52,13 +52,15 @@ const HomeScreen = ({ navigation }) => {
   ];
 
   const fetchSearch = async (categoryId, cityId) => {
-    setCityList(city);
+    // setCityList(city);
     setLoader(true);
     const response = await Api.get(
       "events/list?search=" +
         "" +
         "&categoryId=" +
-        (categoryId ? categoryId : "")
+        (categoryId ? categoryId : "") +
+        "&sub_cat_name=" +
+        (cityId ? cityId : "")
     );
     // console.log("search event: ", response);
     setLoader(false);
@@ -80,10 +82,14 @@ const HomeScreen = ({ navigation }) => {
 
   const getOptions = async () => {
     setCityList(city);
-    const response = await Api.get("category/list");
-    console.log("res: ", response);
-    if (response.status) {
-      setCategoryList(response.categories);
+    const categoryResponse = await Api.get("category/list");
+    const cityResponse = await Api.get("events/cityList");
+    console.log("res: ", cityResponse);
+    if (categoryResponse.status) {
+      setCategoryList(categoryResponse.categories);
+    }
+    if (cityResponse.status) {
+      setCityList(cityResponse.data);
     }
   };
 
@@ -99,7 +105,14 @@ const HomeScreen = ({ navigation }) => {
         style={CommonStyles.cardNoBg}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image source={{ uri: item.image_url }} style={styles.cardUserImg} />
+          <Image
+            source={{
+              uri:
+                "https://ticketex.co/server/public/images/events/" +
+                item.image_name,
+            }}
+            style={styles.cardUserImg}
+          />
           <View style={{ paddingLeft: 10, flex: 1 }}>
             <View
               style={{

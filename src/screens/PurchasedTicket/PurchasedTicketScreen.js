@@ -8,7 +8,7 @@ import { Languages, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
-import { globalDateFormatter, imgBaseUrl } from "../../utils";
+import { APP_DEFAULTS, globalDateFormatter, imgBaseUrl } from "../../utils";
 
 const PurchasedTicketScreen = ({ navigation }) => {
   const [purchasedList, setPurchasedList] = useState(null);
@@ -79,7 +79,9 @@ const PurchasedTicketScreen = ({ navigation }) => {
               </Text>
             </View>
             <Separator height={5} />
-            <Text style={styles.priceTxt}>{item.price} SAR</Text>
+            <Text style={styles.priceTxt}>
+              {item.price} {APP_DEFAULTS.currency}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>

@@ -30,7 +30,7 @@ const LoginScreen = () => {
   const [loader, setLoader] = useState(false);
 
   const _onSelectCountry = (country) => {
-    console.log("country: ", country);
+    // console.log("country: ", country);
     setCountryCode(country.cca2);
     setCallingCode(country.callingCode[0] || "");
   };
@@ -45,7 +45,7 @@ const LoginScreen = () => {
 
   const _getMobileOtp = async () => {
     if (mobile === "") {
-      notify("Enter your mobile number.");
+      notify(Languages.EnterMobNumber);
       return;
     }
     setLoader(true);

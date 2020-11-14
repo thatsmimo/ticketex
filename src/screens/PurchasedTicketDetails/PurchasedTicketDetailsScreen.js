@@ -17,7 +17,7 @@ import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
 import QRCode from "react-native-qrcode-svg";
-import { globalDateFormatter, imgBaseUrl } from "../../utils";
+import { APP_DEFAULTS, globalDateFormatter, imgBaseUrl } from "../../utils";
 
 const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
@@ -73,7 +73,7 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
                     textAlign: I18nManager.isRTL ? "left" : "left",
                   }}
                 >
-                  {ticketDetails.price} SAR
+                  {ticketDetails.price} {APP_DEFAULTS.currency}
                 </Text>
               </View>
             </View>

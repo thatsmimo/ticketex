@@ -8,6 +8,7 @@ import IconDir from "../../js/common/IconDir";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
 import { StatusBar } from "expo-status-bar";
+import { APP_DEFAULTS } from "../../utils";
 
 const SellTicketScreen = () => {
   const [sellList, setSellList] = useState(null);
@@ -76,7 +77,7 @@ const renderList = ({ item }) => {
             fontSize: 15,
           }}
         >
-          {item.price} SAR
+          {item.price} {APP_DEFAULTS.currency}
         </Text>
       </View>
       <Separator />

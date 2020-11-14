@@ -18,23 +18,23 @@ const AddCreditCardScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const _handleNavigate = async () => {
     if (card_no === "") {
-      notify("Enter card number.");
+      notify(Languages.EnterCardNumber);
       return;
     }
     if (holder_name === "") {
-      notify("Enter card holder name.");
+      notify(Languages.EnterCardHolderName);
       return;
     }
     if (cvv === "") {
-      notify("Enter cvv.");
+      notify(Languages.EnterCvv);
       return;
     }
     if (expireMonth === "") {
-      notify("Enter expire month.");
+      notify(Languages.EnterExpireMonth);
       return;
     }
     if (expireYear === "") {
-      notify("Enter expire year.");
+      notify(Languages.EnterExpireYear);
       return;
     }
     setLoader(true);
@@ -86,7 +86,7 @@ const AddCreditCardScreen = ({ navigation }) => {
           <Separator width={10} />
           <AppEditText
             value={expireMonth}
-            hint={"Expire Month"}
+            hint={Languages.ExpireMonth}
             keyBoardType="numeric"
             containerStyle={styles.editTxtExtra}
             saveText={(text) => setExpireMonth(text)}
@@ -95,7 +95,7 @@ const AddCreditCardScreen = ({ navigation }) => {
           <Separator width={10} />
           <AppEditText
             value={expireYear}
-            hint={"Expire Year"}
+            hint={Languages.ExpireYear}
             keyBoardType="numeric"
             containerStyle={styles.editTxtExtra}
             saveText={(text) => setExpireYear(text)}

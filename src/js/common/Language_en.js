@@ -102,4 +102,15 @@ export default {
   ScanMore: "Scan More",
   ReviewQr: "Review QR",
   Edit: "Edit",
+
+  EnterCardNumber: "Enter card number.",
+  EnterCardHolderName: "Enter card holder name.",
+  EnterCvv: "Enter cvv.",
+  EnterExpireMonth: "Enter expire month.",
+  EnterExpireYear: "Enter expire year.",
+  ExpireMonth: "Expire Month",
+  ExpireYear: "Expire Year",
+
+  EnterMobNumber: "Enter your mobile number.",
+  Ticket: "Ticket",
 };

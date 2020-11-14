@@ -5,6 +5,7 @@ export default {
   Login: "Login",
   Home: "Home",
   SellTicket: "Sell Ticket",
+  AddTicket: "AddTicket",
   PurchasedTicket: "Purchased Ticket",
   Account: "Account",
   MyAccount: "My Account",
@@ -16,7 +17,6 @@ export default {
   SignOut: "Sign Out",
   AddNewCreditCard: "Add New Credit card",
   AddBankAccount: "Add Bank Account",
-
   YourSellingBalanceIs: "Your Selling Balance is",
   BalancePageBigText:
     "You can use this balance to buy other ticket or you can request transfer to your bank account",
@@ -35,7 +35,6 @@ export default {
   TicketDetails: "Ticket Details",
   OpenOnGoogleMaps: "Open on google maps",
   OrYouCanScanQRCode: "Or you can scan QR code",
-  MyListing: "My Listing",
   Sold: "Sold",
   Expired: "Expired",
   Listed: "Listed",
@@ -47,46 +46,32 @@ export default {
   AvailableTickets: "Available Tickets",
   ShowMore: "Show More",
   Search: "Search",
-
-  MyTickets: "My Tickets",
   OTP_Number: "OTP Number",
-  ResendOTPNumber: "Resend OTP Number",
   AddTicket: "Add Ticket",
   Next: "Next",
   SelectCategory: "Select category",
   SelectCity: "Select city",
-
   TicketsSold: "Tickets Sold",
   OneTicketFor: "1 Ticket for",
   Loading: "Loading",
   EnterYourBankIban: "Enter your bank iban.",
   EnterYourBankBeneficiaryName: "Enter your bank beneficiary name.",
   EnterYourBankName: "Enter your bank name.",
-
   SelectEventType: "Select Event Type",
   SelectClassType: "Select Class Type",
-  Quantity: "Quantity:",
-  PricePerTicket: "Price Per Ticket(SAR)",
+  Quantity: "Quantity",
+  PricePerTicket: "Price Per Ticket",
   Note: "Based on ticket class the price should not exceed 240 SAR",
   TicketName: "Ticket Name",
   TicketDescription: "Ticket Description",
-  SelectQrOption: "Select Scan or upload the ticket QR Code",
-  UploadQRCode: "Upload QR Code",
-  ScanQRCode: "Scan QR Code",
   Next: "Next",
   Price: "Price",
   TypeToSearch: "Type here to search...",
   EnterPrice: "Enter ticket price.",
   EnterName: "Enter ticket name.",
-
   EnterPhoneNo: "Enter your phone number.",
   EnterMessage: "Enter your message.",
-
-  AccesCameraDenied: "Acess to camera denied",
-
-  Clear: "Clear",
-
-  PleaseSelectImage: "Please select a image.",
+  Clear: "clear",
   AreYouSure: "Are you sure you want to submit!",
   Ok: "Ok",
   RequestingForCameraPermissions: "Requesting For Camera Permission",
@@ -94,15 +79,10 @@ export default {
   ScannedData: "Scanned Data: ",
   Submit: "Submit",
   Scan: "Scan",
-  Upload: "Upload",
-
   SoldTickets: "Sold Tickets",
   SomethingWentWrong: "Something went wrong!",
-
-  ScanMore: "Scan More",
   ReviewQr: "Review QR",
   Edit: "Edit",
-
   EnterCardNumber: "Enter card number.",
   EnterCardHolderName: "Enter card holder name.",
   EnterCvv: "Enter cvv.",
@@ -110,7 +90,6 @@ export default {
   EnterExpireYear: "Enter expire year.",
   ExpireMonth: "Expire Month",
   ExpireYear: "Expire Year",
-
   EnterMobNumber: "Enter your mobile number.",
   Ticket: "Ticket",
   ReviewTicketQR: "Please Review the ticket QR Code",

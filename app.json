@@ -14,11 +14,8 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["assets/*"],
-    "android":{
-
-    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     }
   }
 }

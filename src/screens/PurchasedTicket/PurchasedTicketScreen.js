@@ -16,7 +16,7 @@ const PurchasedTicketScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    fetchList();
+    // fetchList();
   }, []);
 
   const fetchList = async () => {

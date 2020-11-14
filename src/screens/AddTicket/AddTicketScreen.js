@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { notify } from "../../utils";
+import { APP_DEFAULTS, notify } from "../../utils";
 import Styles from "./styles";
 
 let orgEventList = [];
@@ -257,7 +257,7 @@ const AddTicketScreen = ({ navigation, route }) => {
             )}
             {selectedClassPos !== -1 && (
               <>
-                <FeildHeader name={Languages.Quantity} />
+                <FeildHeader name={Languages.Quantity + ":"} />
                 <View style={Styles.quantityContainer}>
                   <TouchableOpacity
                     onPress={() => _handleQuantity("-")}
@@ -275,7 +275,9 @@ const AddTicketScreen = ({ navigation, route }) => {
                     <Text style={Styles.quantityTextContainer}>+</Text>
                   </TouchableOpacity>
                 </View>
-                <FeildHeader name={Languages.PricePerTicket} />
+                <FeildHeader
+                  name={`${Languages.PricePerTicket} (${APP_DEFAULTS.currency})`}
+                />
                 <AppEditText
                   value={price}
                   containerStyle={{ marginTop: 0 }}

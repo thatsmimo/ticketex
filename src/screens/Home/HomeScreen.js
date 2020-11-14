@@ -16,6 +16,7 @@ import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { imgBaseUrl } from "../../utils";
 
 let orgEventList = [];
 
@@ -40,26 +41,13 @@ const HomeScreen = ({ navigation }) => {
     getOptions();
   }, []);
 
-  let city = [
-    {
-      id: 1,
-      name: "riyadh",
-    },
-    {
-      id: 2,
-      name: "random",
-    },
-  ];
-
   const fetchSearch = async (categoryId, cityId) => {
     // setCityList(city);
     setLoader(true);
     const response = await Api.get(
-      "events/list?search=" +
-        "" +
-        "&categoryId=" +
+      "events/list?&category_id=" +
         (categoryId ? categoryId : "") +
-        "&sub_cat_name=" +
+        "&city_id=" +
         (cityId ? cityId : "")
     );
     // console.log("search event: ", response);
@@ -81,7 +69,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const getOptions = async () => {
-    setCityList(city);
+    // setCityList(city);
     const categoryResponse = await Api.get("category/list");
     const cityResponse = await Api.get("events/cityList");
     console.log("res: ", cityResponse);
@@ -107,9 +95,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
             source={{
-              uri:
-                "https://ticketex.co/server/public/images/events/" +
-                item.image_name,
+              uri: imgBaseUrl + item.image_name,
             }}
             style={styles.cardUserImg}
           />

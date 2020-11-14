@@ -12,11 +12,11 @@ import { APP_DEFAULTS } from "../../utils";
 
 const SellTicketScreen = () => {
   const [sellList, setSellList] = useState(null);
-  const [loader, setLoader] = useState(true);
+  const [loader, setLoader] = useState(false);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    fetchList();
+    // fetchList();
   }, []);
 
   const fetchList = async () => {

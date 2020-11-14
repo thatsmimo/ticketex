@@ -87,10 +87,15 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const _moveToEventDetails = (id) => {
+    // console.log(id);
+    navigation.navigate("Ticket", id);
+  };
+
   const renderList = ({ item }) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate("Ticket", item.id)}
+        onPress={() => _moveToEventDetails(item.id)}
         style={CommonStyles.cardNoBg}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>

@@ -9,7 +9,7 @@ import { IconButton } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 import Api from "../../js/service/api";
-import { globalDateFormatter, imgBaseUrl } from "../../utils";
+import { APP_DEFAULTS, globalDateFormatter, imgBaseUrl } from "../../utils";
 
 const TicketScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
@@ -74,12 +74,14 @@ const TicketScreen = ({ navigation, route }) => {
       <>
         <View style={styles.rowAsContainer}>
           <Text style={styles.itemBodyTxt}>
-            {item.qty} X {item.name}
+            {item?.qty} X {item?.name}
           </Text>
-          <Text style={styles.itemBodyTxt}>{item.price} SAR / Ticket</Text>
+          <Text style={styles.itemBodyTxt}>
+            {item.price} {APP_DEFAULTS.currency} / {Languages.Ticket}
+          </Text>
         </View>
         <Text style={styles.itemIconTxt}>
-          <Ionicons name={IconDir.Ionicons.user} /> {item.user.name}
+          <Ionicons name={IconDir.Ionicons.user} /> {item?.user?.name}
         </Text>
       </>
       <View style={styles.itemSeparatorHorizontal} />
@@ -115,7 +117,7 @@ const TicketScreen = ({ navigation, route }) => {
             size={40}
             onPress={navigation.goBack}
           />
-          <Text style={styles.headerBigTxt}>{eventDetails.name}</Text>
+          <Text style={styles.headerBigTxt}>{eventDetails?.name}</Text>
         </View>
         <View style={styles.headerBtmContainer}>
           <View style={styles.headerOpacityContainer}>
@@ -128,7 +130,7 @@ const TicketScreen = ({ navigation, route }) => {
 
       <View style={styles.card(true)}>
         <View style={styles.rowAsContainer}>
-          <Text style={styles.bodyHeaderTxt}>{eventDetails.name}</Text>
+          <Text style={styles.bodyHeaderTxt}>{eventDetails?.name}</Text>
           <View style={CommonStyles.mainChipContainer}>
             <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
               King Cup
@@ -140,7 +142,7 @@ const TicketScreen = ({ navigation, route }) => {
             {globalDateFormatter(eventDetails.start)}
           </Text>
           <Text style={CommonStyles.dateTxt}>{eventDetails.location}</Text>
-          <Text style={CommonStyles.dateTxt}>{eventDetails.city.name}</Text>
+          <Text style={CommonStyles.dateTxt}>{eventDetails?.city?.name}</Text>
         </View>
         <View style={styles.rowAsContainer}>
           <Text style={styles.extraTxt}>

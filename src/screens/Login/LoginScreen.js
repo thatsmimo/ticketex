@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { View, Image, Text, TextInput } from "react-native";
 import { AppHeader, AppEditText, AppButton } from "../../components";
+import { I18nManager } from "react-native";
+
 import {
   Assets,
   Languages,
@@ -125,6 +127,7 @@ const LoginScreen = () => {
                 withCallingCode
                 withEmoji
                 onSelect={_onSelectCountry}
+                containerButtonStyle={{ paddingRight: 0, marginLeft: 0 }}
               />
               <TextInput
                 style={{
@@ -132,6 +135,8 @@ const LoginScreen = () => {
                   fontFamily: "regular",
                   color: "#1d1d1d",
                 }}
+                textAlign={!I18nManager.isRTL ? "left" : "right"}
+                maxLength={13}
                 value={mobile}
                 placeholder={Languages.MobileNo}
                 keyboardType="number-pad"

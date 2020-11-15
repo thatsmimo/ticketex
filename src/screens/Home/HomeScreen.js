@@ -27,9 +27,12 @@ const HomeScreen = ({ navigation }) => {
   const [cityList, setCityList] = useState([]);
 
   const [categoryModalState, setCategoryModalState] = useState(null);
+  const [selectedModalName, setModalName] = useState(null);
 
   const [selectedCategoryPos, setCategoryPos] = useState(-1);
   const [selectedCityPos, setCityPos] = useState(-1);
+  const [selectedCategoryID, setCategoryID] = useState(null);
+  const [selectedCityID, setCityID] = useState(null);
   const [visible, setVisible] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -154,10 +157,12 @@ const HomeScreen = ({ navigation }) => {
           hideModal();
           if (categoryModalState) {
             setCategoryPos(index);
-            fetchSearch(item.id, null);
+            setCategoryID(item.id);
+            fetchSearch(item.id, selectedCityID);
           } else {
             setCityPos(index);
-            fetchSearch(null, item.id);
+            setCityID(item.id);
+            fetchSearch(selectedCategoryID, item.id);
           }
         }}
         style={{ paddingVertical: 8 }}
@@ -247,6 +252,7 @@ const HomeScreen = ({ navigation }) => {
               onPress={() => {
                 showModal();
                 setCategoryModalState(1);
+                setModalName("category");
               }}
             >
               <View
@@ -282,6 +288,7 @@ const HomeScreen = ({ navigation }) => {
               onPress={() => {
                 showModal();
                 setCategoryModalState(0);
+                setModalName("city");
               }}
             >
               <View
@@ -330,12 +337,13 @@ const HomeScreen = ({ navigation }) => {
           onDismiss={hideModal}
           contentContainerStyle={CommonStyles.appModalContainer}
         >
-          {selectedCategoryPos !== -1 && (
+          {selectedCategoryPos !== -1 && selectedModalName == "category" ? (
             <TouchableOpacity
               onPress={() => {
                 hideModal();
                 setCategoryPos(-1);
-                fetchSearch("");
+                setCategoryID(null);
+                fetchSearch(null, selectedCityID);
               }}
               style={{
                 flexDirection: "row",
@@ -364,13 +372,14 @@ const HomeScreen = ({ navigation }) => {
                 {Languages.Clear}
               </Text>
             </TouchableOpacity>
-          )}
-          {selectedCityPos !== -1 && (
+          ) : null}
+          {selectedCityPos !== -1 && selectedModalName == "city" ? (
             <TouchableOpacity
               onPress={() => {
                 hideModal();
                 setCityPos(-1);
-                fetchSearch("");
+                setCityID(null);
+                fetchSearch(selectedCategoryID, null);
               }}
               style={{
                 flexDirection: "row",
@@ -399,7 +408,7 @@ const HomeScreen = ({ navigation }) => {
                 {Languages.Clear}
               </Text>
             </TouchableOpacity>
-          )}
+          ) : null}
           <FlatList
             style={{ marginTop: 15, paddingHorizontal: 10 }}
             data={categoryModalState ? categoryList : cityList}

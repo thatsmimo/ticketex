@@ -261,7 +261,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                 <View style={Styles.quantityContainer}>
                   <TouchableOpacity
                     onPress={() => _handleQuantity("-")}
-                    style={Styles.quantityIncreaseDecreaseContainer}
+                    style={Styles.quantityDecreaseContainer}
                   >
                     <Text style={Styles.quantityTextContainer}>-</Text>
                   </TouchableOpacity>
@@ -270,7 +270,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                   </View>
                   <TouchableOpacity
                     onPress={() => _handleQuantity("+")}
-                    style={Styles.quantityIncreaseDecreaseContainer}
+                    style={Styles.quantityIncreaseContainer}
                   >
                     <Text style={Styles.quantityTextContainer}>+</Text>
                   </TouchableOpacity>

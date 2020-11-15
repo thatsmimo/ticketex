@@ -83,12 +83,20 @@ export default StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
   },
-  quantityIncreaseDecreaseContainer: {
+  quantityDecreaseContainer: {
     paddingVertical: 13,
     paddingHorizontal: 20,
     backgroundColor: Colors.lightBlue,
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
+    justifyContent: "center",
+  },
+  quantityIncreaseContainer: {
+    paddingVertical: 13,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.lightBlue,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
     justifyContent: "center",
   },
   quantityTextContainer: {

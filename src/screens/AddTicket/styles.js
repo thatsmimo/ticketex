@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, I18nManager } from "react-native";
 import { Colors } from "../../js/common";
 import { StatusBar } from "react-native";
 
@@ -76,6 +76,7 @@ export default StyleSheet.create({
     fontFamily: "semi",
     flex: 1,
     color: Colors.lineColor,
+    textAlign: I18nManager.isRTL ? "left" : "left",
   },
   quantityContainer: {
     height: 45,

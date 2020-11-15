@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  I18nManager,
 } from "react-native";
 import { Modal } from "react-native-paper";
 import { AppButton, AppEditText, AppHeader } from "../../components";
@@ -15,6 +16,7 @@ import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { APP_DEFAULTS, notify } from "../../utils";
 import Styles from "./styles";
+// import { I18nManager } from "react-native";
 
 let orgEventList = [];
 let orgClassList = [];
@@ -209,6 +211,8 @@ const AddTicketScreen = ({ navigation, route }) => {
         marginTop: 20,
         marginBottom: 5,
         color: Colors.text,
+        textAlign: I18nManager.isRTL ? "left" : "left",
+
         ...containerStyle,
       }}
     >
@@ -280,7 +284,10 @@ const AddTicketScreen = ({ navigation, route }) => {
                 />
                 <AppEditText
                   value={price}
-                  containerStyle={{ marginTop: 0 }}
+                  containerStyle={{
+                    marginTop: 0,
+                  }}
+                  textAlign={!I18nManager.isRTL ? "left" : "right"}
                   hint={Languages.Price}
                   saveText={(t) => setPrice(t)}
                   keyBoardType="number-pad"
@@ -299,6 +306,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                   containerStyle={{ marginTop: 0 }}
                   hint={Languages.TicketName}
                   saveText={(t) => setName(t)}
+                  textAlign={!I18nManager.isRTL ? "left" : "right"}
                 />
                 <FeildHeader name={Languages.TicketDescription} />
                 <AppEditText
@@ -306,6 +314,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                   containerStyle={{ marginTop: 0 }}
                   hint={Languages.TicketDescription}
                   saveText={(t) => setDesc(t)}
+                  textAlign={!I18nManager.isRTL ? "left" : "right"}
                 />
               </>
             )}
@@ -326,6 +335,7 @@ const AddTicketScreen = ({ navigation, route }) => {
           hint={Languages.TypeToSearch}
           value={keyword}
           saveText={_saveKeywordAndSearch}
+          textAlign={!I18nManager.isRTL ? "left" : "right"}
         />
         <FlatList
           style={{ marginTop: 15, paddingHorizontal: 10 }}

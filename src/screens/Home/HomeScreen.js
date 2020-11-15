@@ -17,6 +17,7 @@ import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { imgBaseUrl } from "../../utils";
+import { I18nManager } from "react-native";
 
 let orgEventList = [];
 
@@ -240,6 +241,7 @@ const HomeScreen = ({ navigation }) => {
                 paddingLeft: 10,
                 flex: 1,
               }}
+              textAlign={!I18nManager.isRTL ? "left" : "right"}
               onChangeText={(text) => {
                 search(text);
               }}
@@ -269,12 +271,14 @@ const HomeScreen = ({ navigation }) => {
                     fontFamily: "semi",
                     flex: 1,
                     color: Colors.lineColor,
+                    textAlign: I18nManager.isRTL ? "left" : "left",
                   }}
                 >
                   {selectedCategoryPos == -1
                     ? Languages.SelectCategory
                     : categoryList[selectedCategoryPos].name}
                 </Text>
+
                 <Ionicons
                   name={IconDir.Ionicons.down}
                   size={20}
@@ -305,6 +309,7 @@ const HomeScreen = ({ navigation }) => {
                     fontFamily: "semi",
                     flex: 1,
                     color: Colors.lineColor,
+                    textAlign: I18nManager.isRTL ? "left" : "left",
                   }}
                 >
                   {selectedCityPos == -1

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   FlatList,
+  I18nManager,
 } from "react-native";
 import { Colors, CommonStyles, Languages } from "../../js/common";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -72,6 +73,7 @@ const ScanQRScreen = ({ navigation, route }) => {
             flex: 1,
             fontSize: 14,
             fontFamily: "regular",
+            textAlign: I18nManager.isRTL ? "left" : "left",
           }}
         >
           {item}
@@ -172,7 +174,10 @@ const ScanQRScreen = ({ navigation, route }) => {
       <AppHeader title={Languages.ReviewQr} navigation={navigation} />
       <FeildHeader
         name={Languages.ReviewTicketQR}
-        containerStyle={{ paddingHorizontal: 20 }}
+        containerStyle={{
+          paddingHorizontal: 20,
+          textAlign: I18nManager.isRTL ? "left" : "left",
+        }}
       />
       {_returnTypeUi()}
     </View>

@@ -151,6 +151,7 @@ const LoginScreen = () => {
             saveText={(t) => setOtp(t)}
             maxLength={4}
             keyboardType="number-pad"
+            textAlign={!I18nManager.isRTL ? "left" : "right"}
           />
         )}
         <View style={{ flexDirection: "row" }}>

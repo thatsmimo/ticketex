@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, I18nManager } from "react-native";
 import { AppHeader, AppButton, AppEditText } from "../../components";
 import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
@@ -57,21 +57,25 @@ const AddBankScreen = ({ navigation, route }) => {
         <AppEditText
           hint={Languages.IBAN}
           value={iban}
+          textAlign={!I18nManager.isRTL ? "left" : "right"}
           saveText={(text) => setIban(text)}
         />
         <AppEditText
           value={benfName}
           hint={Languages.BeneficiaryName}
+          textAlign={!I18nManager.isRTL ? "left" : "right"}
           saveText={(text) => setBenfName(text)}
         />
         <AppEditText
           value={bankName}
           hint={Languages.BankName}
+          textAlign={!I18nManager.isRTL ? "left" : "right"}
           saveText={(text) => setBankName(text)}
         />
         <AppButton
           name={Languages.AddNewBank}
           containerStyle={CommonStyles.appBtn}
+          textAlign={!I18nManager.isRTL ? "left" : "right"}
           _handleOnPress={_handlenavigate}
           disabled={loader}
         />

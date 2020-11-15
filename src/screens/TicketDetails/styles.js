@@ -67,6 +67,7 @@ export default StyleSheet.create({
     fontSize: 13,
     paddingHorizontal: 15,
     marginTop: 10,
+    textAlign: I18nManager.isRTL ? "left" : "left",
   },
   padding20: { padding: 20 },
   item2ndTxt: {
@@ -74,5 +75,8 @@ export default StyleSheet.create({
     color: Colors.lineColor,
     marginLeft: 10,
     fontFamily: "regular",
+    paddingRight: 5,
+    paddingLeft: 5,
+    textAlign: I18nManager.isRTL ? "left" : "left",
   },
 });

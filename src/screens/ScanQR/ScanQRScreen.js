@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, I18nManager } from "react-native";
 import { Colors, CommonStyles, Languages } from "../../js/common";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppButton, AppHeader, FeildHeader } from "../../components";
@@ -165,7 +165,10 @@ const ScanQRScreen = ({ navigation, route }) => {
       <AppHeader title={Languages.ScanQR} navigation={navigation} />
       <FeildHeader
         name={Languages.ScanTicketQR}
-        containerStyle={{ paddingHorizontal: 20 }}
+        containerStyle={{
+          paddingHorizontal: 20,
+          textAlign: I18nManager.isRTL ? "left" : "left",
+        }}
       />
       {_returnTypeUi()}
     </View>

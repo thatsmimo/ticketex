@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, I18nManager } from "react-native";
 import { Colors } from "../../js/common";
 
 export default StyleSheet.create({
@@ -21,6 +21,7 @@ export default StyleSheet.create({
     fontSize: 14,
     fontFamily: "semi",
     paddingBottom: 10,
+    textAlign: I18nManager.isRTL ? "left" : "left",
   },
   listContainer: {
     backgroundColor: Colors.background,

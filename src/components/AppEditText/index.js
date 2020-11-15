@@ -12,6 +12,7 @@ const AppEditText = ({
   maxLength = null,
   containerStyle,
   multiline,
+  textAlign,
 }) => {
   return (
     <View
@@ -34,6 +35,7 @@ const AppEditText = ({
         onChangeText={saveText}
         maxLength={maxLength}
         multiline={multiline}
+        textAlign={textAlign}
       />
     </View>
   );

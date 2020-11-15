@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, I18nManager } from "react-native";
 import { AppHeader, AppButton, AppEditText } from "../../components";
 import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
@@ -54,6 +54,7 @@ const ContactUsScreen = ({ navigation }) => {
           value={phn}
           hint={Languages.PhoneNumber}
           saveText={(t) => setPhn(t)}
+          textAlign={!I18nManager.isRTL ? "left" : "right"}
           keyBoardType="number-pad"
         />
         <AppEditText
@@ -61,6 +62,7 @@ const ContactUsScreen = ({ navigation }) => {
           hint={Languages.MessageHere}
           containerStyle={styles.msgEditTextContainer}
           multiline
+          textAlign={!I18nManager.isRTL ? "left" : "right"}
           saveText={(t) => setMsg(t)}
         />
         <AppButton

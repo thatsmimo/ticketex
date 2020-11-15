@@ -39,6 +39,7 @@ export default StyleSheet.create({
     color: Colors.background,
     fontFamily: "regular",
     fontSize: 13,
+    // flexDirection: "row-reverse",
   },
   whiteSeparatorHorizontal: {
     width: 1,

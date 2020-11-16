@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Image, I18nManager } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  I18nManager,
+  Platform,
+} from "react-native";
 import { Languages, Colors, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -99,21 +106,24 @@ const TicketScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <View style={{ paddingTop: insets.top }}>
+      <View style={{ paddingTop: Platform.OS === "android" ? insets.top : 0 }}>
         <StatusBar translucent style={"dark"} />
-        <View
-          style={{
-            height: Constants.statusBarHeight,
-            backgroundColor: "rgba(255,255,255,.5)",
-            position: "absolute",
-            zIndex: 9,
-            left: 0,
-            right: 0,
-          }}
-        />
+        {Platform.OS === "android" && (
+          <View
+            style={{
+              height: Constants.statusBarHeight,
+              backgroundColor: "rgba(255,255,255,.5)",
+              position: "absolute",
+              zIndex: 9,
+              left: 0,
+              right: 0,
+            }}
+          />
+        )}
         <Image
           source={{ uri: imgBaseUrl + eventDetails.image_name }}
           style={styles.headerBigImg}
+          // resizeMode="contain"
         />
         <View style={styles.headerTopContainer}>
           <IconButton
@@ -166,7 +176,6 @@ const TicketScreen = ({ navigation, route }) => {
           </Text>
         </View>
       </View>
-
       <FlatList
         data={ticketList}
         renderItem={renderList}

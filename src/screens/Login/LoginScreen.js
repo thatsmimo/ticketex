@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
 import { View, Image, Text, TextInput } from "react-native";
-import { AppHeader, AppEditText, AppButton } from "../../components";
+import { AppHeader, AppEditText, AppButton, SnackBar } from "../../components";
 import { I18nManager } from "react-native";
-
 import {
   Assets,
   Languages,
@@ -22,7 +21,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 const LoginScreen = () => {
   const { signIn } = useContext(AuthContext);
 
-  const [mobile, setMobile] = useState("9578541854");
+  const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [isOtpMode, setOtpMode] = useState(false);
   const insets = useSafeAreaInsets();
@@ -31,8 +30,11 @@ const LoginScreen = () => {
   const [callingCode, setCallingCode] = useState(APP_DEFAULTS.callingCode);
   const [loader, setLoader] = useState(false);
 
+  const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
+
+  const onDismissSnackBar = () => setSnackBar({ isShow: false });
+
   const _onSelectCountry = (country) => {
-    // console.log("country: ", country);
     setCountryCode(country.cca2);
     setCallingCode(country.callingCode[0] || "");
   };
@@ -47,7 +49,8 @@ const LoginScreen = () => {
 
   const _getMobileOtp = async () => {
     if (mobile === "") {
-      notify(Languages.EnterMobNumber);
+      // notify(Languages.EnterMobNumber);
+      setSnackBar({ isShow: true, msg: Languages.EnterMobNumber });
       return;
     }
     setLoader(true);
@@ -64,6 +67,10 @@ const LoginScreen = () => {
   };
 
   const _authOtpAndLogin = async () => {
+    if (otp === "") {
+      setSnackBar({ isShow: true, msg: Languages.PleaseEnterOtp });
+      return;
+    }
     setLoader(true);
     const params = {
       grant_type: "password",
@@ -90,7 +97,10 @@ const LoginScreen = () => {
       signIn({
         userDetails: JSON.stringify(userDetailsRes.profile),
         tokens: JSON.stringify(tokenRes),
+        // params -> asyncstorage
       });
+      // login success,
+      // params -> asyncstorage
     }
   };
 
@@ -151,7 +161,6 @@ const LoginScreen = () => {
             saveText={(t) => setOtp(t)}
             maxLength={4}
             keyboardType="number-pad"
-            textAlign={!I18nManager.isRTL ? "left" : "right"}
           />
         )}
         <View style={{ flexDirection: "row" }}>
@@ -192,6 +201,11 @@ const LoginScreen = () => {
           </Text>
         )}
       </View>
+      <SnackBar
+        visible={snackbar.isShow}
+        onDismissSnackBar={onDismissSnackBar}
+        msg={snackbar.msg}
+      />
     </View>
   );
 };

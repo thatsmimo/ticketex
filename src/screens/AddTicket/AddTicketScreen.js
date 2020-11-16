@@ -194,7 +194,6 @@ const AddTicketScreen = ({ navigation, route }) => {
   };
 
   const _placeListToModal = () => {
-    console.log("current Modal: ", currentModal);
     switch (currentModal) {
       case "event":
         return eventList;
@@ -231,7 +230,7 @@ const AddTicketScreen = ({ navigation, route }) => {
         break;
       case "+":
         // level condition
-        if (orgQuantity == 10) return;
+        if (orgQuantity == APP_DEFAULTS.AddTicketMaxQty) return;
         orgQuantity++;
         setQuantity(orgQuantity);
         break;

@@ -19,5 +19,6 @@ export default StyleSheet.create({
     paddingHorizontal: 10,
     flex: 1,
     justifyContent: "center",
+    textAlign: !I18nManager.isRTL ? "left" : "right",
   },
 });

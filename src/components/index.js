@@ -5,6 +5,7 @@ import MyAccountItems from "./MyAccountItems";
 import Separator from "./Separator";
 import FeildHeader from "./FeildHeader";
 import Loader from "./Loader";
+import SnackBar from "./SnackBar";
 
 export {
   AppHeader,
@@ -14,4 +15,5 @@ export {
   Separator,
   FeildHeader,
   Loader,
+  SnackBar,
 };

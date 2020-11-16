@@ -28,7 +28,6 @@ const ScanQRScreen = ({ navigation, route }) => {
     setScanned(true);
     setScannedData(data);
     scannedQrList[willUpdateId] = data;
-    console.log("data: ", scannedQrList);
   };
 
   const _handleSubmit = () => {
@@ -41,7 +40,6 @@ const ScanQRScreen = ({ navigation, route }) => {
   };
 
   const _appendQrAndSubmit = async () => {
-    console.log("dataset: ", formData, scannedQrList);
     setLoader(true);
     const params = {
       ...formData,

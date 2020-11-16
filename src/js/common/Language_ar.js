@@ -96,4 +96,5 @@ export default {
   ScanQR: "Scan QR",
   ScanTicketQR: "Please Scan ticket QR Code",
   ScanNext: "Scan Next",
+  PleaseEnterOtp: "Please enter the otp.",
 };

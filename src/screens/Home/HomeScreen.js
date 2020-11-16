@@ -16,7 +16,7 @@ import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { imgBaseUrl } from "../../utils";
+import { globalDateFormatter, imgBaseUrl } from "../../utils";
 import { I18nManager } from "react-native";
 
 let orgEventList = [];
@@ -86,7 +86,6 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const _moveToEventDetails = (id) => {
-    // console.log(id);
     navigation.navigate("Ticket", id);
   };
 
@@ -112,11 +111,13 @@ const HomeScreen = ({ navigation }) => {
               }}
             >
               <Text style={styles.cardDetailsTitle}>{item.name}</Text>
-              <View style={CommonStyles.mainChipContainer}>
-                <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
-                  {item.name}
-                </Text>
-              </View>
+              {item?.sub_cat_name && (
+                <View style={CommonStyles.mainChipContainer}>
+                  <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
+                    {item?.sub_cat_name}
+                  </Text>
+                </View>
+              )}
             </View>
             <View
               style={{
@@ -128,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
               <View style={{ flex: 1, marginTop: 20 }}>
                 <View style={styles.chipWithDate(true)}>
                   <Text numberOfLines={1} style={styles.chipWithDateTxt}>
-                    {item.start}
+                    {globalDateFormatter(item.start)}
                   </Text>
                 </View>
               </View>

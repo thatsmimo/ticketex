@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, I18nManager } from "react-native";
+import { View, Text, Image, I18nManager, Platform } from "react-native";
 import { Languages, Colors, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,7 +13,6 @@ import { APP_DEFAULTS, globalDateFormatter, imgBaseUrl } from "../../utils";
 
 const TicketDetailsScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
-  console.log("route: ", route);
   const {
     eventDetails,
     availableTicketLength,
@@ -24,18 +23,20 @@ const TicketDetailsScreen = ({ navigation, route }) => {
 
   return (
     <>
-      <View style={{ paddingTop: insets.top }}>
+      <View style={{ paddingTop: Platform.OS === "android" ? insets.top : 0 }}>
         <StatusBar translucent style={"dark"} />
-        <View
-          style={{
-            height: Constants.statusBarHeight,
-            backgroundColor: "rgba(255,255,255,.5)",
-            position: "absolute",
-            zIndex: 9,
-            left: 0,
-            right: 0,
-          }}
-        />
+        {Platform.OS === "android" && (
+          <View
+            style={{
+              height: Constants.statusBarHeight,
+              backgroundColor: "rgba(255,255,255,.5)",
+              position: "absolute",
+              zIndex: 9,
+              left: 0,
+              right: 0,
+            }}
+          />
+        )}
         <Image
           source={{ uri: imgBaseUrl + eventDetails.image_name }}
           style={styles.headerBigImg}

@@ -35,7 +35,7 @@ const AppEditText = ({
         onChangeText={saveText}
         maxLength={maxLength}
         multiline={multiline}
-        textAlign={textAlign}
+        // textAlign={textAlign}
       />
     </View>
   );

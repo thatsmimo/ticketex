@@ -8,13 +8,13 @@ import {
   I18nManager,
 } from "react-native";
 import { Modal } from "react-native-paper";
-import { AppButton, AppEditText, AppHeader } from "../../components";
+import { AppButton, AppEditText, AppHeader, SnackBar } from "../../components";
 import { Colors, CommonStyles, Languages } from "../../js/common";
 import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { APP_DEFAULTS, notify } from "../../utils";
+import { APP_DEFAULTS } from "../../utils";
 import Styles from "./styles";
 // import { I18nManager } from "react-native";
 
@@ -39,6 +39,9 @@ const AddTicketScreen = ({ navigation, route }) => {
   const [price, setPrice] = useState("");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
+
+  const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
+  const onDismissSnackBar = () => setSnackBar({ isShow: false });
 
   useEffect(() => {
     _fetchDropdownLists();
@@ -95,19 +98,23 @@ const AddTicketScreen = ({ navigation, route }) => {
   };
   const _handleValidation = () => {
     if (selectedEventPos === -1) {
-      notify(Languages.SelectEventType + ".");
+      setSnackBar({ isShow: true, msg: Languages.SelectEventType + "." });
+      // notify(Languages.SelectEventType + ".");
       return;
     }
     if (selectedClassPos === -1) {
-      notify(Languages.SelectClassType + ".");
+      setSnackBar({ isShow: true, msg: Languages.SelectClassType + "." });
+      // notify(Languages.SelectClassType + ".");
       return;
     }
     if (price === "") {
-      notify(Languages.EnterPrice);
+      setSnackBar({ isShow: true, msg: Languages.EnterPrice });
+      // notify(Languages.EnterPrice);
       return;
     }
     if (name === "") {
-      notify(Languages.EnterName);
+      setSnackBar({ isShow: true, msg: Languages.EnterName });
+      // notify(Languages.EnterName);
       return;
     }
     return true;
@@ -286,7 +293,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                   containerStyle={{
                     marginTop: 0,
                   }}
-                  textAlign={!I18nManager.isRTL ? "left" : "right"}
+                  // textAlign={!I18nManager.isRTL ? "left" : "right"}
                   hint={Languages.Price}
                   saveText={(t) => setPrice(t)}
                   keyBoardType="number-pad"
@@ -347,6 +354,11 @@ const AddTicketScreen = ({ navigation, route }) => {
           keyboardShouldPersistTaps="handled"
         />
       </Modal>
+      <SnackBar
+        visible={snackbar.isShow}
+        onDismissSnackBar={onDismissSnackBar}
+        msg={snackbar.msg}
+      />
     </>
   );
 };

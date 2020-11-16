@@ -10,11 +10,11 @@ import {
 } from "react-native";
 import { Colors, CommonStyles, Languages } from "../../js/common";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AppButton, AppHeader, FeildHeader } from "../../components";
+import { AppButton, AppHeader, FeildHeader, SnackBar } from "../../components";
 import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import Api from "../../js/service/api";
-import { notify } from "../../utils";
+// import { notify } from "../../utils";
 
 const ScanQRScreen = ({ navigation, route }) => {
   const [scannedData, setScannedData] = useState("");
@@ -23,6 +23,9 @@ const ScanQRScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const { scannedQrList, formData } = route.params;
   const [loader, setLoader] = useState(false);
+
+  const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
+  const onDismissSnackBar = () => setSnackBar({ isShow: false });
 
   const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
@@ -48,7 +51,8 @@ const ScanQRScreen = ({ navigation, route }) => {
     console.log("params: ", params);
     const res = await Api.post("ticket/create", params);
     console.log(res);
-    notify(res.message);
+    setSnackBar({ isShow: true, msg: res.message });
+    // notify(res.message);
     if (res.status) {
       navigation.navigate("AddTicket", { isSubmitted: true });
     } else {
@@ -178,6 +182,11 @@ const ScanQRScreen = ({ navigation, route }) => {
         }}
       />
       {_returnTypeUi()}
+      <SnackBar
+        visible={snackbar.isShow}
+        onDismissSnackBar={onDismissSnackBar}
+        msg={snackbar.msg}
+      />
     </View>
   );
 };

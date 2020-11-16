@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, Image, I18nManager } from "react-native";
-import { AppHeader, AppButton, AppEditText, Separator } from "../../components";
+import { AppHeader, AppButton, AppEditText, Separator, SnackBar } from "../../components";
 import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
-import { notify } from "../../utils";
+// import { notify } from "../../utils";
 
 const AddCreditCardScreen = ({ navigation }) => {
   const [card_no, setCard_no] = useState("");
@@ -15,26 +15,35 @@ const AddCreditCardScreen = ({ navigation }) => {
   const [expireYear, setExpireYear] = useState("");
   const [loader, setLoader] = useState(false);
 
+  const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
+  const onDismissSnackBar = () => setSnackBar({ isShow: false });
+
+
   const insets = useSafeAreaInsets();
   const _handleNavigate = async () => {
     if (card_no === "") {
-      notify(Languages.EnterCardNumber);
+      setSnackBar({ isShow: true, msg: Languages.EnterCardNumber });
+      // notify(Languages.EnterCardNumber);
       return;
     }
     if (holder_name === "") {
-      notify(Languages.EnterCardHolderName);
+      setSnackBar({ isShow: true, msg: Languages.EnterCardHolderName });
+      // notify(Languages.EnterCardHolderName);
       return;
     }
     if (cvv === "") {
-      notify(Languages.EnterCvv);
+      setSnackBar({ isShow: true, msg:Languages.EnterCvv});
+      // notify(Languages.EnterCvv);
       return;
     }
     if (expireMonth === "") {
-      notify(Languages.EnterExpireMonth);
+      setSnackBar({ isShow: true, msg: Languages.EnterExpireMonth});
+      // notify(Languages.EnterExpireMonth);
       return;
     }
     if (expireYear === "") {
-      notify(Languages.EnterExpireYear);
+      setSnackBar({ isShow: true, msg:Languages.EnterExpireYear });
+      // notify(Languages.EnterExpireYear);
       return;
     }
     setLoader(true);
@@ -54,7 +63,8 @@ const AddCreditCardScreen = ({ navigation }) => {
       setExpireMonth("");
       setExpireYear("");
     }
-    notify(cardDetails.message);
+    setSnackBar({ isShow: true, msg:cardDetails.message });
+    // notify(cardDetails.message);
     setLoader(false);
   };
 
@@ -113,6 +123,11 @@ const AddCreditCardScreen = ({ navigation }) => {
           disabled={loader}
         />
       </View>
+      <SnackBar
+        visible={snackbar.isShow}
+        onDismissSnackBar={onDismissSnackBar}
+        msg={snackbar.msg}
+      />
     </View>
   );
 };

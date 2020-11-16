@@ -61,7 +61,8 @@ const LoginScreen = () => {
     if (response.status) {
       setOtpMode(true);
     } else {
-      notify(Languages.SomethingWentWrong);
+      setSnackBar({ isShow: true, msg: Languages.SomethingWentWrong });
+      // notify(Languages.SomethingWentWrong);
     }
     setLoader(false);
   };
@@ -83,7 +84,8 @@ const LoginScreen = () => {
     const tokenRes = await Api.postOAuth(params);
     console.log("tokenRes: ", tokenRes);
     if (tokenRes.error) {
-      notify(tokenRes.message);
+      setSnackBar({ isShow: true, msg: tokenRes.message});
+      // notify(tokenRes.message);
       setLoader(false);
       return;
     }

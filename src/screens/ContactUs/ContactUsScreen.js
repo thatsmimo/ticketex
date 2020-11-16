@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { View, Text, Image, I18nManager } from "react-native";
-import { AppHeader, AppButton, AppEditText } from "../../components";
+import { AppHeader, AppButton, AppEditText, SnackBar } from "../../components";
 import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { notify } from "../../utils";
+// import { notify } from "../../utils";
 import Api from "../../js/service/api";
 
 const ContactUsScreen = ({ navigation }) => {
   const [phn, setPhn] = useState("");
   const [msg, setMsg] = useState("");
   const [loader, setLoader] = useState(false);
+  const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
+  const onDismissSnackBar = () => setSnackBar({ isShow: false });
+
 
   const insets = useSafeAreaInsets();
 
@@ -18,11 +21,13 @@ const ContactUsScreen = ({ navigation }) => {
     const phn_ = phn.trim();
     const msg_ = msg.trim();
     if (phn_ === "") {
-      notify(Languages.EnterPhoneNo);
+      setSnackBar({ isShow: true, msg: Languages.EnterPhoneNo });
+      // notify(Languages.EnterPhoneNo);
       return;
     }
     if (msg_ === "") {
-      notify(Languages.EnterMessage);
+      setSnackBar({ isShow: true, msg: Languages.EnterMessage });
+      // notify(Languages.EnterMessage);
       return;
     }
     setLoader(true);
@@ -32,7 +37,8 @@ const ContactUsScreen = ({ navigation }) => {
     };
     const response = await Api.post(`user/contact`, params);
     console.log("res: ", response);
-    notify(response.message);
+    setSnackBar({ isShow: true, msg: response.message });
+    // notify(response.message);
     setLoader(false);
     if (response.status) {
       setMsg("");
@@ -71,6 +77,11 @@ const ContactUsScreen = ({ navigation }) => {
           disabled={loader}
         />
       </View>
+      <SnackBar
+        visible={snackbar.isShow}
+        onDismissSnackBar={onDismissSnackBar}
+        msg={snackbar.msg}
+      />
     </View>
   );
 };

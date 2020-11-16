@@ -1,30 +1,39 @@
 import React, { useState } from "react";
 import { View, Text, Image, I18nManager } from "react-native";
-import { AppHeader, AppButton, AppEditText } from "../../components";
+import { AppHeader, AppButton, AppEditText, SnackBar } from "../../components";
 import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
-import { notify } from "../../utils";
+// import { notify } from "../../utils";
 
 const AddBankScreen = ({ navigation, route }) => {
   const [iban, setIban] = useState("");
   const [benfName, setBenfName] = useState("");
   const [bankName, setBankName] = useState("");
+  const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
+  const onDismissSnackBar = () => setSnackBar({ isShow: false });
+
   const insets = useSafeAreaInsets();
   const [loader, setLoader] = useState(false);
 
   const _handlenavigate = async () => {
     if (iban === "") {
-      notify(Languages.EnterYourBankIban);
+      setSnackBar({ isShow: true, msg: Languages.EnterYourBankIban });
+      // notify(Languages.EnterYourBankIban);
       return;
     }
     if (benfName === "") {
-      notify(Languages.EnterYourBankBeneficiaryName);
+      setSnackBar({
+        isShow: true,
+        msg: Languages.EnterYourBankBeneficiaryName,
+      });
+      // notify(Languages.EnterYourBankBeneficiaryName);
       return;
     }
     if (bankName === "") {
-      notify(Languages.EnterYourBankName);
+      setSnackBar({ isShow: true, msg: Languages.EnterYourBankName });
+      // notify(Languages.EnterYourBankName);
       return;
     }
     setLoader(true);
@@ -40,7 +49,8 @@ const AddBankScreen = ({ navigation, route }) => {
       setIban("");
       setBankName("");
     }
-    notify(bankDetails.message);
+    setSnackBar({ isShow: true, msg: bankDetails.message });
+    // notify(bankDetails.message);
     setLoader(false);
   };
 
@@ -80,6 +90,11 @@ const AddBankScreen = ({ navigation, route }) => {
           disabled={loader}
         />
       </View>
+      <SnackBar
+        visible={snackbar.isShow}
+        onDismissSnackBar={onDismissSnackBar}
+        msg={snackbar.msg}
+      />
     </View>
   );
 };

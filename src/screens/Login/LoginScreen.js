@@ -96,10 +96,8 @@ const LoginScreen = () => {
       signIn({
         userDetails: JSON.stringify(userDetailsRes.profile),
         tokens: JSON.stringify(tokenRes),
-        // params -> asyncstorage
+        lastLoginParams: JSON.stringify(params),
       });
-      // login success,
-      // params -> asyncstorage
     }
   };
 

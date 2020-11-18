@@ -52,7 +52,10 @@ export default class API {
             resolve(responseJson);
           });
         })
-        .catch((error) => reject(error)); //to catch the errors if any
+        .catch((error) => {
+          console.log("error: ", error);
+          reject(error);
+        }); //to catch the errors if any
     });
   }
 
@@ -103,7 +106,10 @@ export default class API {
             resolve(responseJson);
           });
         })
-        .catch((error) => reject(error)); //to catch the errors if any
+        .catch((error) => {
+          console.log("error: ", error);
+          reject(error);
+        }); //to catch the errors if any
     });
   }
 
@@ -122,17 +128,6 @@ export default class API {
         body: params,
       };
 
-      //   console.log("api -> " + url);
-      //   console.log("params -> ", options);
-
-      //   fetch(url, options)
-      //     .then((response) => response.json())
-      //     .then((responseJson) => {
-      //       resolve(responseJson);
-      //     })
-      //     .catch((error) => reject(error)); //to catch the errors if any
-      // });
-
       console.log("api -> " + url);
       console.log("params -> ", options);
       fetch(url, options)
@@ -150,7 +145,10 @@ export default class API {
             resolve(responseJson);
           });
         })
-        .catch((error) => reject(error)); //to catch the errors if any
+        .catch((error) => {
+          console.log("error: ", error);
+          reject(error);
+        }); //to catch the errors if any
     });
   }
 }

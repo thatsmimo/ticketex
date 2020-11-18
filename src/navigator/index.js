@@ -10,6 +10,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-community/async-storage";
 import { AuthContext } from "../js/context";
 import AppLoading from "../components/AppLoading";
+import Api from "../js/service/api";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -29,6 +30,7 @@ const index = () => {
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
+        // case "RESTORE"
         case "RESTORE_USER_DETAILS":
           return {
             ...prevState,
@@ -40,6 +42,7 @@ const index = () => {
           return {
             ...prevState,
             userDetails: action.userDetails,
+            lastLoginParams: action.lastLoginParams,
           };
         case "SIGN_OUT":
           return {
@@ -52,19 +55,23 @@ const index = () => {
       userDetails: null,
       isLoading: true,
       userToken: null,
+      lastLoginParams: null,
     }
   );
 
   useEffect(() => {
     const bootstrapAsync = async () => {
-      let userDetails;
+      let userDetails, userToken;
       try {
         userDetails = await AsyncStorage.getItem("userDetails");
-        userToken = await AsyncStorage.getItem("userToken");
+        lastLoginParams = await AsyncStorage.getItem("lastLoginParams");
         console.log("userDetails: ", userDetails);
-        console.log("userToken: ", userToken);
       } catch (e) {
         // Restoring failed
+      }
+      if (userDetails) {
+        updateToken(JSON.parse(lastLoginParams), userDetails);
+        return;
       }
 
       dispatch({
@@ -77,6 +84,15 @@ const index = () => {
     bootstrapAsync();
   }, []);
 
+  const updateToken = async (lastLoginParams, userDetails) => {
+    const tokenRes = await Api.postOAuth(lastLoginParams);
+    dispatch({
+      type: "RESTORE_USER_DETAILS",
+      userDetails: userDetails,
+      token: tokenRes,
+    });
+  };
+
   const authContext = React.useMemo(
     () => ({
       signIn: async (signInData) => {
@@ -84,7 +100,10 @@ const index = () => {
 
         await AsyncStorage.setItem("userDetails", signInData.userDetails);
         await AsyncStorage.setItem("userToken", signInData.tokens);
-
+        await AsyncStorage.setItem(
+          "lastLoginParams",
+          signInData.lastLoginParams
+        );
         dispatch({
           type: "SIGN_IN",
           userDetails: signInData.userDetails,

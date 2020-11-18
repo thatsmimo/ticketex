@@ -16,7 +16,6 @@ import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { APP_DEFAULTS } from "../../utils";
 import Styles from "./styles";
-// import { I18nManager } from "react-native";
 
 let orgEventList = [];
 let orgClassList = [];
@@ -33,15 +32,18 @@ const AddTicketScreen = ({ navigation, route }) => {
 
   const [selectedEventPos, setSelectedEventPos] = useState(-1); // set only event pos
   const [currentModal, setCurrentModal] = useState("event"); // or class // (default: 1st one) set type of modals
-
   const [selectedClassPos, setSelectedClassPos] = useState(-1); // set only class pos
+
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState("");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
 
   const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
+
   const onDismissSnackBar = () => setSnackBar({ isShow: false });
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
 
   useEffect(() => {
     _fetchDropdownLists();
@@ -51,16 +53,15 @@ const AddTicketScreen = ({ navigation, route }) => {
     if (route.params?.isSubmitted) {
       // updated from previous screen
       // reset all
-      setTimeout(() => {
-        setSelectedEventPos(-1);
-        setSelectedClassPos(-1);
-        setQuantity(1);
-        setCurrentModal("event");
-        setPrice("");
-        setKeyword("");
-        setName("");
-        setDesc("");
-      }, 200);
+      setSelectedEventPos(-1);
+      setSelectedClassPos(-1);
+      setQuantity(1);
+      setCurrentModal("event");
+      setPrice("");
+      setKeyword("");
+      setName("");
+      setDesc("");
+      setSnackBar({ isShow: true, msg: Languages.TicketCreatedSuccessfully });
     }
   }, [route, route.params?.isSubmitted]);
 
@@ -115,8 +116,6 @@ const AddTicketScreen = ({ navigation, route }) => {
     }
     return true;
   };
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
 
   const renderList = ({ item, index }) => {
     let isMatchedItem = false;

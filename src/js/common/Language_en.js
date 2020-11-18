@@ -97,5 +97,6 @@ export default {
   ScanTicketQR: "Please Scan ticket QR Code",
   ScanNext: "Scan Next",
   PleaseEnterOtp: "Please enter the otp.",
-  ListedTicket : "Listed Ticket"
+  ListedTicket: "Listed Ticket",
+  TicketCreatedSuccessfully: "Ticket created successfully!",
 };

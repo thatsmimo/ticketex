@@ -90,7 +90,7 @@ const TicketScreen = ({ navigation, route }) => {
       <>
         <View style={styles.rowAsContainer}>
           <Text style={styles.itemBodyTxt}>
-            {item?.qty} X {item?.name}
+            {item?.qty} X {item?.class_type.name}
           </Text>
           <Text style={styles.itemBodyTxt}>
             {item.price} {APP_DEFAULTS.currency} / {Languages.Ticket}
@@ -164,7 +164,8 @@ const TicketScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.rowAsContainer}>
           <Text style={CommonStyles.dateTxt}>
-            {globalDateFormatter(eventDetails.start)}
+            {globalDateFormatter(eventDetails.end)}
+            {/* //end */}
           </Text>
           <Text style={CommonStyles.dateTxt}>{eventDetails.location}</Text>
           <Text style={CommonStyles.dateTxt}>{eventDetails?.city?.name}</Text>

@@ -1,13 +1,18 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { Languages } from "../../js/common";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { Colors } from "../../js/common";
 
 const AppLoading = () => {
   return (
-    <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
-      <Text style={{ fontSize: 25, fontFamily: "semi" }}>
-        {Languages.Loading}...
-      </Text>
+    <View
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+        ...StyleSheet.absoluteFill,
+        zIndex: 9,
+      }}
+    >
+      <ActivityIndicator size="large" color={Colors.primary} />
     </View>
   );
 };

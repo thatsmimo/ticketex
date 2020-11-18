@@ -293,7 +293,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                   containerStyle={{
                     marginTop: 0,
                   }}
-                  // textAlign={!I18nManager.isRTL ? "left" : "right"}
+                  
                   hint={Languages.Price}
                   saveText={(t) => setPrice(t)}
                   keyBoardType="number-pad"
@@ -312,7 +312,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                   containerStyle={{ marginTop: 0 }}
                   hint={Languages.TicketName}
                   saveText={(t) => setName(t)}
-                  textAlign={!I18nManager.isRTL ? "left" : "right"}
+              
                 />
                 <FeildHeader name={Languages.TicketDescription} />
                 <AppEditText
@@ -320,7 +320,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                   containerStyle={{ marginTop: 0 }}
                   hint={Languages.TicketDescription}
                   saveText={(t) => setDesc(t)}
-                  textAlign={!I18nManager.isRTL ? "left" : "right"}
+            
                 />
               </>
             )}
@@ -341,7 +341,7 @@ const AddTicketScreen = ({ navigation, route }) => {
           hint={Languages.TypeToSearch}
           value={keyword}
           saveText={_saveKeywordAndSearch}
-          textAlign={!I18nManager.isRTL ? "left" : "right"}
+          
         />
         <FlatList
           style={{ marginTop: 15, paddingHorizontal: 10 }}

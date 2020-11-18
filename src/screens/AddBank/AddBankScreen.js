@@ -67,25 +67,25 @@ const AddBankScreen = ({ navigation, route }) => {
         <AppEditText
           hint={Languages.IBAN}
           value={iban}
-          textAlign={!I18nManager.isRTL ? "left" : "right"}
+          
           saveText={(text) => setIban(text)}
         />
         <AppEditText
           value={benfName}
           hint={Languages.BeneficiaryName}
-          textAlign={!I18nManager.isRTL ? "left" : "right"}
+        
           saveText={(text) => setBenfName(text)}
         />
         <AppEditText
           value={bankName}
           hint={Languages.BankName}
-          textAlign={!I18nManager.isRTL ? "left" : "right"}
+          
           saveText={(text) => setBankName(text)}
         />
         <AppButton
           name={Languages.AddNewBank}
           containerStyle={CommonStyles.appBtn}
-          textAlign={!I18nManager.isRTL ? "left" : "right"}
+          
           _handleOnPress={_handlenavigate}
           disabled={loader}
         />

@@ -30,7 +30,7 @@ const SellTicketScreen = () => {
 
   return (
     <View style={CommonStyles.screensRootContainer(insets.top)}>
-      <AppHeader title={Languages.SellTicket} />
+      <AppHeader title={Languages.ListedTicket} />
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={{ padding: 20 }}

@@ -78,13 +78,13 @@ const AddCreditCardScreen = ({ navigation }) => {
           value={card_no}
           hint={Languages.CardNumber}
           keyBoardType="numeric"
-          textAlign={!I18nManager.isRTL ? "left" : "right"}
+          
           saveText={(text) => setCard_no(text)}
         />
         <AppEditText
           value={holder_name}
           hint={Languages.CardHolderName}
-          textAlign={!I18nManager.isRTL ? "left" : "right"}
+          
           saveText={(text) => setHolder_name(text)}
         />
         <View style={{ flexDirection: "row" }}>
@@ -93,7 +93,7 @@ const AddCreditCardScreen = ({ navigation }) => {
             hint={Languages.CVV}
             keyBoardType="numeric"
             containerStyle={styles.editTxtExtra}
-            textAlign={!I18nManager.isRTL ? "left" : "right"}
+          
             saveText={(text) => setCvv(text)}
           />
           <Separator width={10} />
@@ -102,7 +102,7 @@ const AddCreditCardScreen = ({ navigation }) => {
             hint={Languages.ExpireMonth}
             keyBoardType="numeric"
             containerStyle={styles.editTxtExtra}
-            textAlign={!I18nManager.isRTL ? "left" : "right"}
+          
             saveText={(text) => setExpireMonth(text)}
             maxLength={2}
           />
@@ -112,7 +112,7 @@ const AddCreditCardScreen = ({ navigation }) => {
             hint={Languages.ExpireYear}
             keyBoardType="numeric"
             containerStyle={styles.editTxtExtra}
-            textAlign={!I18nManager.isRTL ? "left" : "right"}
+            
             saveText={(text) => setExpireYear(text)}
             maxLength={4}
           />

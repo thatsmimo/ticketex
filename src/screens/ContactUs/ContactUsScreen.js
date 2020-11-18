@@ -60,7 +60,7 @@ const ContactUsScreen = ({ navigation }) => {
           value={phn}
           hint={Languages.PhoneNumber}
           saveText={(t) => setPhn(t)}
-          textAlign={!I18nManager.isRTL ? "left" : "right"}
+          
           keyBoardType="number-pad"
         />
         <AppEditText
@@ -68,7 +68,7 @@ const ContactUsScreen = ({ navigation }) => {
           hint={Languages.MessageHere}
           containerStyle={styles.msgEditTextContainer}
           multiline
-          textAlign={!I18nManager.isRTL ? "left" : "right"}
+    
           saveText={(t) => setMsg(t)}
         />
         <AppButton

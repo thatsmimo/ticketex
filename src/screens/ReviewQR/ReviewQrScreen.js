@@ -14,7 +14,6 @@ import { AppButton, AppHeader, FeildHeader, SnackBar } from "../../components";
 import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import Api from "../../js/service/api";
-// import { notify } from "../../utils";
 
 const ScanQRScreen = ({ navigation, route }) => {
   const [scannedData, setScannedData] = useState("");
@@ -52,7 +51,6 @@ const ScanQRScreen = ({ navigation, route }) => {
     const res = await Api.post("ticket/create", params);
     console.log(res);
     setSnackBar({ isShow: true, msg: res.message });
-    // notify(res.message);
     if (res.status) {
       navigation.navigate("AddTicket", { isSubmitted: true });
     } else {

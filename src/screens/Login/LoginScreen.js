@@ -13,7 +13,7 @@ import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AuthContext } from "../../js/context";
 import Api from "../../js/service/api";
-import { notify, APP_DEFAULTS, APP_KEYS } from "../../utils";
+import { APP_DEFAULTS, APP_KEYS } from "../../utils";
 import CountryPicker from "react-native-country-picker-modal";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -49,7 +49,6 @@ const LoginScreen = () => {
 
   const _getMobileOtp = async () => {
     if (mobile === "") {
-      // notify(Languages.EnterMobNumber);
       setSnackBar({ isShow: true, msg: Languages.EnterMobNumber });
       return;
     }
@@ -62,7 +61,6 @@ const LoginScreen = () => {
       setOtpMode(true);
     } else {
       setSnackBar({ isShow: true, msg: Languages.SomethingWentWrong });
-      // notify(Languages.SomethingWentWrong);
     }
     setLoader(false);
   };
@@ -84,8 +82,7 @@ const LoginScreen = () => {
     const tokenRes = await Api.postOAuth(params);
     console.log("tokenRes: ", tokenRes);
     if (tokenRes.error) {
-      setSnackBar({ isShow: true, msg: tokenRes.message});
-      // notify(tokenRes.message);
+      setSnackBar({ isShow: true, msg: tokenRes.message });
       setLoader(false);
       return;
     }

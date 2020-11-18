@@ -4,7 +4,6 @@ import { AppHeader, AppButton, AppEditText, SnackBar } from "../../components";
 import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-// import { notify } from "../../utils";
 import Api from "../../js/service/api";
 
 const ContactUsScreen = ({ navigation }) => {
@@ -14,7 +13,6 @@ const ContactUsScreen = ({ navigation }) => {
   const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
   const onDismissSnackBar = () => setSnackBar({ isShow: false });
 
-
   const insets = useSafeAreaInsets();
 
   const _handleOnPress = async () => {
@@ -22,12 +20,10 @@ const ContactUsScreen = ({ navigation }) => {
     const msg_ = msg.trim();
     if (phn_ === "") {
       setSnackBar({ isShow: true, msg: Languages.EnterPhoneNo });
-      // notify(Languages.EnterPhoneNo);
       return;
     }
     if (msg_ === "") {
       setSnackBar({ isShow: true, msg: Languages.EnterMessage });
-      // notify(Languages.EnterMessage);
       return;
     }
     setLoader(true);
@@ -38,7 +34,6 @@ const ContactUsScreen = ({ navigation }) => {
     const response = await Api.post(`user/contact`, params);
     console.log("res: ", response);
     setSnackBar({ isShow: true, msg: response.message });
-    // notify(response.message);
     setLoader(false);
     if (response.status) {
       setMsg("");
@@ -60,7 +55,6 @@ const ContactUsScreen = ({ navigation }) => {
           value={phn}
           hint={Languages.PhoneNumber}
           saveText={(t) => setPhn(t)}
-          
           keyBoardType="number-pad"
         />
         <AppEditText
@@ -68,7 +62,6 @@ const ContactUsScreen = ({ navigation }) => {
           hint={Languages.MessageHere}
           containerStyle={styles.msgEditTextContainer}
           multiline
-    
           saveText={(t) => setMsg(t)}
         />
         <AppButton

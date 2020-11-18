@@ -99,22 +99,18 @@ const AddTicketScreen = ({ navigation, route }) => {
   const _handleValidation = () => {
     if (selectedEventPos === -1) {
       setSnackBar({ isShow: true, msg: Languages.SelectEventType + "." });
-      // notify(Languages.SelectEventType + ".");
       return;
     }
     if (selectedClassPos === -1) {
       setSnackBar({ isShow: true, msg: Languages.SelectClassType + "." });
-      // notify(Languages.SelectClassType + ".");
       return;
     }
     if (price === "") {
       setSnackBar({ isShow: true, msg: Languages.EnterPrice });
-      // notify(Languages.EnterPrice);
       return;
     }
     if (name === "") {
       setSnackBar({ isShow: true, msg: Languages.EnterName });
-      // notify(Languages.EnterName);
       return;
     }
     return true;
@@ -293,7 +289,6 @@ const AddTicketScreen = ({ navigation, route }) => {
                   containerStyle={{
                     marginTop: 0,
                   }}
-                  
                   hint={Languages.Price}
                   saveText={(t) => setPrice(t)}
                   keyBoardType="number-pad"
@@ -312,7 +307,6 @@ const AddTicketScreen = ({ navigation, route }) => {
                   containerStyle={{ marginTop: 0 }}
                   hint={Languages.TicketName}
                   saveText={(t) => setName(t)}
-              
                 />
                 <FeildHeader name={Languages.TicketDescription} />
                 <AppEditText
@@ -320,7 +314,6 @@ const AddTicketScreen = ({ navigation, route }) => {
                   containerStyle={{ marginTop: 0 }}
                   hint={Languages.TicketDescription}
                   saveText={(t) => setDesc(t)}
-            
                 />
               </>
             )}
@@ -341,7 +334,6 @@ const AddTicketScreen = ({ navigation, route }) => {
           hint={Languages.TypeToSearch}
           value={keyword}
           saveText={_saveKeywordAndSearch}
-          
         />
         <FlatList
           style={{ marginTop: 15, paddingHorizontal: 10 }}

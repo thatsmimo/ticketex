@@ -5,7 +5,6 @@ import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
-// import { notify } from "../../utils";
 
 const AddBankScreen = ({ navigation, route }) => {
   const [iban, setIban] = useState("");
@@ -20,7 +19,6 @@ const AddBankScreen = ({ navigation, route }) => {
   const _handlenavigate = async () => {
     if (iban === "") {
       setSnackBar({ isShow: true, msg: Languages.EnterYourBankIban });
-      // notify(Languages.EnterYourBankIban);
       return;
     }
     if (benfName === "") {
@@ -28,12 +26,10 @@ const AddBankScreen = ({ navigation, route }) => {
         isShow: true,
         msg: Languages.EnterYourBankBeneficiaryName,
       });
-      // notify(Languages.EnterYourBankBeneficiaryName);
       return;
     }
     if (bankName === "") {
       setSnackBar({ isShow: true, msg: Languages.EnterYourBankName });
-      // notify(Languages.EnterYourBankName);
       return;
     }
     setLoader(true);
@@ -50,7 +46,6 @@ const AddBankScreen = ({ navigation, route }) => {
       setBankName("");
     }
     setSnackBar({ isShow: true, msg: bankDetails.message });
-    // notify(bankDetails.message);
     setLoader(false);
   };
 
@@ -67,25 +62,21 @@ const AddBankScreen = ({ navigation, route }) => {
         <AppEditText
           hint={Languages.IBAN}
           value={iban}
-          
           saveText={(text) => setIban(text)}
         />
         <AppEditText
           value={benfName}
           hint={Languages.BeneficiaryName}
-        
           saveText={(text) => setBenfName(text)}
         />
         <AppEditText
           value={bankName}
           hint={Languages.BankName}
-          
           saveText={(text) => setBankName(text)}
         />
         <AppButton
           name={Languages.AddNewBank}
           containerStyle={CommonStyles.appBtn}
-          
           _handleOnPress={_handlenavigate}
           disabled={loader}
         />

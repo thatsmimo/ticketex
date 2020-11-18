@@ -5,7 +5,6 @@ import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
-// import { notify } from "../../utils";
 
 const BankScreen = ({ navigation }) => {
   const [bankList, setBankList] = useState(null);

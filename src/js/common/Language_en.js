@@ -1,7 +1,7 @@
 export default {
   LoginToTicketex: "Login to Ticketex",
   WelcomeAtLogin: "Welcome to Ticketex, login to our app",
-  MobileNo: "Mobile number",
+  MobileNo: "Mobile number(0xxx)",
   Login: "Login",
   Home: "Home",
   SellTicket: "Sell Ticket",
@@ -99,4 +99,5 @@ export default {
   PleaseEnterOtp: "Please enter the otp.",
   ListedTicket: "Listed Ticket",
   TicketCreatedSuccessfully: "Ticket created successfully!",
+  NumberShouldStartWith0 : "number should start with 0.",
 };

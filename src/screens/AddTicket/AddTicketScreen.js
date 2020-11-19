@@ -36,8 +36,7 @@ const AddTicketScreen = ({ navigation, route }) => {
 
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState("");
-  const [name, setName] = useState("");
-  const [desc, setDesc] = useState("");
+  
 
   const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
 
@@ -59,8 +58,6 @@ const AddTicketScreen = ({ navigation, route }) => {
       setCurrentModal("event");
       setPrice("");
       setKeyword("");
-      setName("");
-      setDesc("");
       setSnackBar({ isShow: true, msg: Languages.TicketCreatedSuccessfully });
     }
   }, [route, route.params?.isSubmitted]);
@@ -89,8 +86,6 @@ const AddTicketScreen = ({ navigation, route }) => {
       class_id: classList[selectedClassPos].id,
       qty: quantity,
       price: price,
-      name: name,
-      ticket_desc: desc,
     };
     navigation.navigate("ScanQr", {
       formData,
@@ -110,10 +105,7 @@ const AddTicketScreen = ({ navigation, route }) => {
       setSnackBar({ isShow: true, msg: Languages.EnterPrice });
       return;
     }
-    if (name === "") {
-      setSnackBar({ isShow: true, msg: Languages.EnterName });
-      return;
-    }
+   
     return true;
   };
 
@@ -299,20 +291,6 @@ const AddTicketScreen = ({ navigation, route }) => {
                     color: Colors.negative,
                     fontSize: 13,
                   }}
-                />
-                <FeildHeader name={Languages.TicketName} />
-                <AppEditText
-                  value={name}
-                  containerStyle={{ marginTop: 0 }}
-                  hint={Languages.TicketName}
-                  saveText={(t) => setName(t)}
-                />
-                <FeildHeader name={Languages.TicketDescription} />
-                <AppEditText
-                  value={desc}
-                  containerStyle={{ marginTop: 0 }}
-                  hint={Languages.TicketDescription}
-                  saveText={(t) => setDesc(t)}
                 />
               </>
             )}

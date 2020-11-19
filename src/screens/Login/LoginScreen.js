@@ -39,6 +39,14 @@ const LoginScreen = () => {
     setCallingCode(country.callingCode[0] || "");
   };
 
+  const _handleValidation = () => {
+    if (mobile[0] != 0) {
+      setSnackBar({ isShow: true, msg: Languages.NumberShouldStartWith0 });
+    } else {
+      _handleLogin();
+    }
+  };
+
   const _handleLogin = async () => {
     if (isOtpMode) {
       _authOtpAndLogin();
@@ -54,7 +62,7 @@ const LoginScreen = () => {
     }
     setLoader(true);
     const response = await Api.get(
-      `users/login?mobile=${"+" + callingCode + mobile}`
+      `users/login?mobile=${"+" + callingCode + mobile.slice(1)}`
     );
     console.log("res: ", response);
     if (response.status) {
@@ -75,7 +83,7 @@ const LoginScreen = () => {
       grant_type: "password",
       client_id: 9,
       client_secret: APP_KEYS.oAuthClientSecret,
-      username: callingCode + mobile,
+      username: callingCode + mobile.slice(1),
       password: otp,
       scope: "",
     };
@@ -184,7 +192,8 @@ const LoginScreen = () => {
             </TouchableOpacity>
           )}
           <AppButton
-            _handleOnPress={_handleLogin}
+            // _handleOnPress={_handleLogin}
+            _handleOnPress={_handleValidation}
             name={Languages.Login}
             containerStyle={{
               flex: 1,

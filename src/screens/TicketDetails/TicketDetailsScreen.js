@@ -66,7 +66,6 @@ const TicketDetailsScreen = ({ navigation, route }) => {
           </View>
         </View>
       </View>
-
       <View style={styles.card(true)}>
         <View style={styles.rowAsContainer}>
           <Text style={styles.bodyHeaderTxt}>{eventDetails.name}</Text>
@@ -79,9 +78,11 @@ const TicketDetailsScreen = ({ navigation, route }) => {
           ) : null}
         </View>
         <View style={styles.rowAsContainer}>
-          <Text style={CommonStyles.dateTxt}>
-            {globalDateFormatter(eventDetails.start)}
-          </Text>
+          {eventDetails.end && (
+            <Text style={CommonStyles.dateTxt}>
+              {globalDateFormatter(eventDetails.end)}
+            </Text>
+          )}
           <Text style={CommonStyles.dateTxt}>{eventDetails.location}</Text>
           <Text style={CommonStyles.dateTxt}>{city}</Text>
         </View>

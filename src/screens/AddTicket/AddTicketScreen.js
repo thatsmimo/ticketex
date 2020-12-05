@@ -36,7 +36,6 @@ const AddTicketScreen = ({ navigation, route }) => {
 
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState("");
-  
 
   const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
 
@@ -66,6 +65,8 @@ const AddTicketScreen = ({ navigation, route }) => {
     setLoader(true);
     const classResponse = await Api.get("class-type");
     const eventResponse = await Api.get("events/list");
+    console.log("classResponse: ", classResponse);
+    console.log("eventResponse: ", eventResponse);
     setLoader(false);
     if (classResponse.status) {
       orgClassList = classResponse.data;
@@ -105,7 +106,7 @@ const AddTicketScreen = ({ navigation, route }) => {
       setSnackBar({ isShow: true, msg: Languages.EnterPrice });
       return;
     }
-   
+
     return true;
   };
 
@@ -205,7 +206,6 @@ const AddTicketScreen = ({ navigation, route }) => {
         marginBottom: 5,
         color: Colors.text,
         textAlign: I18nManager.isRTL ? "left" : "left",
-
         ...containerStyle,
       }}
     >

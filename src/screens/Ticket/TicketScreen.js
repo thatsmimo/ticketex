@@ -163,10 +163,11 @@ const TicketScreen = ({ navigation, route }) => {
           ) : null}
         </View>
         <View style={styles.rowAsContainer}>
-          <Text style={CommonStyles.dateTxt}>
-            {globalDateFormatter(eventDetails.end)}
-            {/* //end */}
-          </Text>
+          {eventDetails.end && (
+            <Text style={CommonStyles.dateTxt}>
+              {globalDateFormatter(eventDetails.end)}
+            </Text>
+          )}
           <Text style={CommonStyles.dateTxt}>{eventDetails.location}</Text>
           <Text style={CommonStyles.dateTxt}>{eventDetails?.city?.name}</Text>
         </View>

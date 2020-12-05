@@ -13,9 +13,14 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["assets/*"],
+    "assetBundlePatterns": [
+      "assets/*"
+    ],
     "ios": {
       "supportsTablet": false
+    },
+    "android": {
+      "package": "com.ticketex"
     }
   }
 }

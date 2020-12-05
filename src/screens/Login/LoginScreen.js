@@ -67,6 +67,7 @@ const LoginScreen = () => {
     console.log("res: ", response);
     if (response.status) {
       setOtpMode(true);
+      // setOtp(response.otp.toString());
     } else {
       setSnackBar({ isShow: true, msg: Languages.SomethingWentWrong });
     }
@@ -166,6 +167,7 @@ const LoginScreen = () => {
             saveText={(t) => setOtp(t)}
             maxLength={4}
             keyboardType="number-pad"
+            value={otp}
           />
         )}
         <View style={{ flexDirection: "row" }}>

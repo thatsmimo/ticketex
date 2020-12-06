@@ -29,4 +29,12 @@ export default StyleSheet.create({
     fontFamily: "regular",
     fontSize: 12.5,
   },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 30,
+    alignItems: "center",
+    maxHeight: "80%",
+  },
 });

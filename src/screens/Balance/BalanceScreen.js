@@ -4,6 +4,7 @@ import { AppHeader, Separator, AppButton } from "../../components";
 import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { APP_DEFAULTS } from "../../utils";
 
 const BalanceScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -19,7 +20,7 @@ const BalanceScreen = ({ navigation }) => {
         />
         <Text style={styles.logoTxt}>{Languages.YourSellingBalanceIs}</Text>
         <Separator />
-        <Text style={styles.logoTxt}>350 SAR</Text>
+        <Text style={styles.logoTxt}>350 {APP_DEFAULTS.currency}</Text>
         <Separator />
         <Text style={styles.bigTxt}>{Languages.BalancePageBigText}</Text>
         <AppButton

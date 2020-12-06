@@ -2,17 +2,18 @@ import { StyleSheet } from "react-native";
 import { Colors, CommonStyles } from "../../js/common";
 
 export default StyleSheet.create({
-  mainContainer: {
+  mainContainer: (disabled) => ({
     height: 45,
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 45 / 2,
     paddingLeft: 5,
     marginTop: 20,
-    backgroundColor: Colors.primary,
+    backgroundColor: !disabled ? Colors.primary : Colors.accent,
     elevation: 5,
+    justifyContent: "center",
     ...CommonStyles.shadow,
-  },
+  }),
   text: {
     fontSize: 16,
     fontFamily: "regular",

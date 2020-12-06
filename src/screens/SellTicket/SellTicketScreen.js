@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, I18nManager } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { AppHeader, Separator } from "../../components";
 import { Languages, Colors, CommonStyles } from "../../js/common";
 import styles from "./styles";
@@ -7,6 +7,8 @@ import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
+import { StatusBar } from "expo-status-bar";
+import { APP_DEFAULTS } from "../../utils";
 
 const SellTicketScreen = () => {
   const [sellList, setSellList] = useState(null);
@@ -14,36 +16,25 @@ const SellTicketScreen = () => {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    fetchList();
+    // fetchList();
   }, []);
 
   const fetchList = async () => {
-    setLoader(true);
     const response = await Api.get("ticket/sell");
     setLoader(false);
-    console.log(response);
-    if (response.status) setSellList(response.tickets);
+    console.log("SellTicketScreen: ", response);
+    if (response.status) {
+      setSellList(response.data);
+    }
   };
 
   return (
     <View style={CommonStyles.screensRootContainer(insets.top)}>
-      <AppHeader title={Languages.SellTicket} />
+      <AppHeader title={Languages.ListedTicket} />
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={{ padding: 20 }}
           data={sellList}
-          // ListHeaderComponent={
-          //   <Text
-          //     style={{
-          //       fontFamily: "regular",
-          //       fontSize: 15,
-          //       marginBottom: 15,
-          //       textAlign: I18nManager.isRTL ? "left" : "left",
-          //     }}
-          //   >
-          //     {Languages.MyListing}
-          //   </Text>
-          // }
           ItemSeparatorComponent={Separator}
           renderItem={renderList}
           keyExtractor={(item, index) => index.toString()}
@@ -56,36 +47,37 @@ const SellTicketScreen = () => {
   );
 };
 
-const renderList = ({ item, index }) => {
+const renderList = ({ item }) => {
   let iconName = IconDir.Ionicons.check;
   let iconColor = Colors.positive;
   let iconText = Languages.Sold;
 
-  switch (index) {
-    case 0:
-      break;
-    case 1:
-      iconColor = Colors.negative;
-      iconText = Languages.Expired;
-      iconName = IconDir.Ionicons.close;
-      break;
-    case 2:
-      iconColor = Colors.neutral;
-      iconText = Languages.Listed;
-      iconName = IconDir.Ionicons.menu;
-      break;
-  }
+  // switch (index) {
+  //   case 0:
+  //     break;
+  //   case 1:
+  //     iconColor = Colors.negative;
+  //     iconText = Languages.Expired;
+  //     iconName = IconDir.Ionicons.close;
+  //     break;
+  //   case 2:
+  //     iconColor = Colors.neutral;
+  //     iconText = Languages.Listed;
+  //     iconName = IconDir.Ionicons.menu;
+  //     break;
+  // }
   return (
     <View style={CommonStyles.cardLine}>
+      <StatusBar style={"dark"} />
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>{item.serial}</Text>
+        <Text>{item.name}</Text>
         <Text
           style={{
             fontFamily: "regular",
             fontSize: 15,
           }}
         >
-          350 SAR
+          {item.price} {APP_DEFAULTS.currency}
         </Text>
       </View>
       <Separator />
@@ -96,7 +88,7 @@ const renderList = ({ item, index }) => {
           alignItems: "center",
         }}
       >
-        <Text style={CommonStyles.dateTxt}>{item.date}</Text>
+        <Text style={CommonStyles.dateTxt}>Nov 2 2020</Text>
         <Text
           style={{
             fontFamily: "regular",

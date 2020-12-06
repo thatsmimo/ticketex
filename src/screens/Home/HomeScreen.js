@@ -7,7 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { Picker } from "@react-native-community/picker";
+import { Modal } from "react-native-paper";
 import { Separator } from "../../components";
 import { Languages, Colors, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
@@ -15,55 +15,93 @@ import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import Api from "../../js/service/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import index from "../../components/Separator";
+import { StatusBar } from "expo-status-bar";
+import { globalDateFormatter, imgBaseUrl } from "../../utils";
+import { I18nManager } from "react-native";
+
+let orgEventList = [];
 
 const HomeScreen = ({ navigation }) => {
-  const [searchText, setSearchText] = useState("");
-  const [events, setEvents] = useState(null);
+  const [eventList, setEventList] = useState(null);
   const [loader, setLoader] = useState(false);
-  const [options, setOptions] = useState([]);
-  const [primaryDropdown, setPrimaryDropDown] = useState("");
-  const [secondaryDropdown, setSecondaryDropDown] = useState("");
+  const [categoryList, setCategoryList] = useState([]);
+  const [cityList, setCityList] = useState([]);
 
-  useEffect(() => {
-    search();
-    getOptions();
-  }, []);
+  const [categoryModalState, setCategoryModalState] = useState(null);
+  const [selectedModalName, setModalName] = useState(null);
+
+  const [selectedCategoryPos, setCategoryPos] = useState(-1);
+  const [selectedCityPos, setCityPos] = useState(-1);
+  const [selectedCategoryID, setCategoryID] = useState(null);
+  const [selectedCityID, setCityID] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
 
   const insets = useSafeAreaInsets();
 
-  const search = async (value) => {
-    setLoader(true);
+  useEffect(() => {
+    fetchSearch("");
+    getOptions();
+  }, []);
 
+  const fetchSearch = async (categoryId, cityId) => {
+    // setCityList(city);
+    setLoader(true);
     const response = await Api.get(
-      "events/list?search=" + searchText + "&categoryId=" + (value ? value : "")
+      "events/list?&category_id=" +
+        (categoryId ? categoryId : "") +
+        "&city_id=" +
+        (cityId ? cityId : "")
     );
+    // console.log("search event: ", response);
     setLoader(false);
     if (response.status) {
-      setEvents(response.events);
+      orgEventList = response.events;
+      setEventList(response.events);
     }
+  };
+
+  const search = async (value) => {
+    setEventList([...orgEventList]);
+    const keyword = value;
+    const filterList = orgEventList.filter(
+      (e) => !e.name.toLowerCase().search(keyword.toLowerCase())
+    );
+    // console.log("filterList: ", filterList);
+    setEventList([...filterList]);
   };
 
   const getOptions = async () => {
-    const response = await Api.get("category/list");
-    console.log("res: ", response);
-    if (response.status) {
-      setOptions(response.categories);
+    // setCityList(city);
+    const categoryResponse = await Api.get("category/list");
+    const cityResponse = await Api.get("events/cityList");
+    console.log("res: ", cityResponse);
+    if (categoryResponse.status) {
+      setCategoryList(categoryResponse.categories);
+    }
+    if (cityResponse.status) {
+      setCityList(cityResponse.data);
     }
   };
 
-  const _handleDropDown = (value) => {
-    search(value);
+  const _moveToEventDetails = (id) => {
+    navigation.navigate("Ticket", id);
   };
 
   const renderList = ({ item }) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate("Ticket", item.id)}
+        onPress={() => _moveToEventDetails(item.id)}
         style={CommonStyles.cardNoBg}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image source={{ uri: item.image_url }} style={styles.cardUserImg} />
+          <Image
+            source={{
+              uri: imgBaseUrl + item.image_name,
+            }}
+            style={styles.cardUserImg}
+          />
           <View style={{ paddingLeft: 10, flex: 1 }}>
             <View
               style={{
@@ -73,11 +111,13 @@ const HomeScreen = ({ navigation }) => {
               }}
             >
               <Text style={styles.cardDetailsTitle}>{item.name}</Text>
-              <View style={CommonStyles.mainChipContainer}>
-                <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
-                  {item.name}
-                </Text>
-              </View>
+              {item?.sub_cat_name && (
+                <View style={CommonStyles.mainChipContainer}>
+                  <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
+                    {item?.sub_cat_name}
+                  </Text>
+                </View>
+              )}
             </View>
             <View
               style={{
@@ -89,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
               <View style={{ flex: 1, marginTop: 20 }}>
                 <View style={styles.chipWithDate(true)}>
                   <Text numberOfLines={1} style={styles.chipWithDateTxt}>
-                    {item.start}
+                    {globalDateFormatter(item.start)}
                   </Text>
                 </View>
               </View>
@@ -108,119 +148,283 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: Colors.container,
-        paddingTop: insets.top,
-      }}
-    >
-      <View style={styles.container}>
-        <Image
-          source={Assets.logo_app_name}
-          style={{ height: 65, width: 65 }}
-        />
+  const renderModalList = ({ item, index }) => {
+    const isMatchedItem = categoryModalState
+      ? selectedCategoryPos === index
+      : selectedCityPos === index;
+
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          hideModal();
+          if (categoryModalState) {
+            setCategoryPos(index);
+            setCategoryID(item.id);
+            fetchSearch(item.id, selectedCityID);
+          } else {
+            setCityPos(index);
+            setCityID(item.id);
+            fetchSearch(selectedCategoryID, item.id);
+          }
+        }}
+        style={{ paddingVertical: 8 }}
+      >
         <View
           style={{
             flexDirection: "row",
-            marginTop: 15,
-            height: 50,
-            paddingHorizontal: 15,
-            paddingVertical: 10,
-            borderColor: Colors.lineColor,
-            borderWidth: 0.4,
-            borderRadius: 8,
             alignItems: "center",
-            backgroundColor: Colors.background,
           }}
         >
           <Ionicons
-            name={IconDir.Ionicons.search}
-            size={25}
-            color={Colors.lineColor}
+            size={20}
+            name={
+              isMatchedItem
+                ? IconDir.Ionicons.radioOn
+                : IconDir.Ionicons.radioOff
+            }
+            color={Colors.primary}
           />
-          <TextInput
-            placeholder={Languages.Search}
+          <Text
             style={{
-              fontSize: 16,
-              fontFamily: "semi",
-              color: Colors.lineColor,
-              paddingLeft: 10,
-              flex: 1,
-            }}
-            onChangeText={(text) => {
-              setSearchText(text);
-              search();
-            }}
-          />
-        </View>
-        <View style={{ flexDirection: "row", marginTop: 15 }}>
-          <View
-            style={{
-              backgroundColor: "#EEF7FF",
-              borderRadius: 20,
-              flex: 1,
-              flexDirection: "row",
+              fontFamily: "regular",
+              fontSize: 15,
+              marginLeft: 15,
             }}
           >
-            <Picker
-              selectedValue={primaryDropdown}
-              style={{
-                flex: 1,
-              }}
-              onValueChange={(itemValue, itemIndex) => {
-                setPrimaryDropDown(itemValue);
-                _handleDropDown(itemIndex);
-                console.log("itemvalue : ", itemValue);
-                console.log("itemindex : ", itemIndex);
-              }}
-            >
-              <Picker.Item label="----" value="" />
-              {options.map((element, index) => (
-                <Picker.Item label={element.name} value={index} key={index} />
-              ))}
-            </Picker>
-          </View>
-          <Separator width={10} />
+            {item.name}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  return (
+    <>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: Colors.container,
+          paddingTop: insets.top,
+        }}
+      >
+        <StatusBar style={"dark"} />
+        <View style={styles.container}>
+          <Image
+            source={Assets.logo_app_name}
+            style={{ height: 65, width: 65 }}
+            resizeMode="contain"
+          />
           <View
             style={{
-              backgroundColor: "#EEF7FF",
-              borderRadius: 20,
-              flex: 1,
               flexDirection: "row",
+              marginTop: 15,
+              height: 50,
+              paddingHorizontal: 15,
+              paddingVertical: 10,
+              borderColor: Colors.lineColor,
+              borderWidth: 0.4,
+              borderRadius: 8,
+              alignItems: "center",
+              backgroundColor: Colors.background,
             }}
           >
-            <Picker
-              enabled={false}
-              selectedValue={secondaryDropdown}
+            <Ionicons
+              name={IconDir.Ionicons.search}
+              size={25}
+              color={Colors.lineColor}
+            />
+            <TextInput
+              placeholder={Languages.Search}
               style={{
+                fontSize: 16,
+                fontFamily: "semi",
+                color: Colors.lineColor,
+                paddingLeft: 10,
                 flex: 1,
               }}
-              onValueChange={(itemValue, itemIndex) => {
-                setSecondaryDropDown(itemValue);
-                _handleDropDown();
+              textAlign={!I18nManager.isRTL ? "left" : "right"}
+              onChangeText={(text) => {
+                search(text);
+              }}
+            />
+          </View>
+
+          <View style={{ flexDirection: "row", marginTop: 15 }}>
+            <TouchableOpacity
+              style={{ flex: 1, flexDirection: "row" }}
+              onPress={() => {
+                showModal();
+                setCategoryModalState(1);
+                setModalName("category");
               }}
             >
-              <Picker.Item label="----" value="default" />
-              <Picker.Item label="1" value="java" />
-            </Picker>
+              <View
+                style={{
+                  backgroundColor: Colors.lightBlue,
+                  borderRadius: 20,
+                  flex: 1,
+                  flexDirection: "row",
+                  padding: 13,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "semi",
+                    flex: 1,
+                    color: Colors.lineColor,
+                    textAlign: I18nManager.isRTL ? "left" : "left",
+                  }}
+                >
+                  {selectedCategoryPos == -1
+                    ? Languages.SelectCategory
+                    : categoryList[selectedCategoryPos].name}
+                </Text>
+
+                <Ionicons
+                  name={IconDir.Ionicons.down}
+                  size={20}
+                  color={Colors.lineColor}
+                />
+              </View>
+            </TouchableOpacity>
+            <Separator width={10} />
+            <TouchableOpacity
+              style={{ flex: 1, flexDirection: "row" }}
+              onPress={() => {
+                showModal();
+                setCategoryModalState(0);
+                setModalName("city");
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: Colors.lightBlue,
+                  borderRadius: 20,
+                  flex: 1,
+                  flexDirection: "row",
+                  padding: 13,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "semi",
+                    flex: 1,
+                    color: Colors.lineColor,
+                    textAlign: I18nManager.isRTL ? "left" : "left",
+                  }}
+                >
+                  {selectedCityPos == -1
+                    ? Languages.SelectCity
+                    : cityList[selectedCityPos].name}
+                </Text>
+                <Ionicons
+                  name={IconDir.Ionicons.down}
+                  size={20}
+                  color={Colors.lineColor}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
+        <FlatList
+          contentContainerStyle={{ paddingHorizontal: 20, flexGrow: 1 }}
+          data={eventList}
+          ItemSeparatorComponent={Separator}
+          renderItem={renderList}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={Separator}
+          ListFooterComponent={<Separator heigh={30} />}
+          refreshing={loader}
+          onRefresh={() => fetchSearch("")}
+        />
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={CommonStyles.appModalContainer}
+        >
+          {selectedCategoryPos !== -1 && selectedModalName == "category" ? (
+            <TouchableOpacity
+              onPress={() => {
+                hideModal();
+                setCategoryPos(-1);
+                setCategoryID(null);
+                fetchSearch(null, selectedCityID);
+              }}
+              style={{
+                flexDirection: "row",
+                width: 100,
+                backgroundColor: Colors.lightBlue,
+                alignSelf: "flex-end",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 5,
+                borderRadius: 20,
+              }}
+            >
+              <Ionicons
+                size={20}
+                name={IconDir.Ionicons.close}
+                color={Colors.primary}
+              />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: "semi",
+                  color: Colors.lineColor,
+                  marginLeft: 8,
+                }}
+              >
+                {Languages.Clear}
+              </Text>
+            </TouchableOpacity>
+          ) : null}
+          {selectedCityPos !== -1 && selectedModalName == "city" ? (
+            <TouchableOpacity
+              onPress={() => {
+                hideModal();
+                setCityPos(-1);
+                setCityID(null);
+                fetchSearch(selectedCategoryID, null);
+              }}
+              style={{
+                flexDirection: "row",
+                width: 100,
+                backgroundColor: Colors.lightBlue,
+                alignSelf: "flex-end",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 5,
+                borderRadius: 20,
+              }}
+            >
+              <Ionicons
+                size={20}
+                name={IconDir.Ionicons.close}
+                color={Colors.primary}
+              />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: "semi",
+                  color: Colors.lineColor,
+                  marginLeft: 8,
+                }}
+              >
+                {Languages.Clear}
+              </Text>
+            </TouchableOpacity>
+          ) : null}
+          <FlatList
+            style={{ marginTop: 15, paddingHorizontal: 10 }}
+            data={categoryModalState ? categoryList : cityList}
+            renderItem={renderModalList}
+            keyExtractor={(item, index) => index.toString()}
+            showsVerticalScrollIndicator={false}
+          />
+        </Modal>
       </View>
-      <FlatList
-        contentContainerStyle={{ paddingHorizontal: 20, flexGrow: 1 }}
-        data={events}
-        ItemSeparatorComponent={Separator}
-        renderItem={renderList}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={Separator}
-        ListFooterComponent={<Separator heigh={30} />}
-        refreshing={loader}
-        onRefresh={search}
-      />
-    </View>
+    </>
   );
 };
 export default HomeScreen;

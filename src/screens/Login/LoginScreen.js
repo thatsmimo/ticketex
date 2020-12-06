@@ -1,22 +1,50 @@
 import React, { useContext, useState } from "react";
-import { View, Image, Text } from "react-native";
-import { AppHeader, AppEditText, AppButton } from "../../components";
-import { Assets, Languages, CommonStyles } from "../../js/common";
+import { View, Image, Text, TextInput } from "react-native";
+import { AppHeader, AppEditText, AppButton, SnackBar } from "../../components";
+import { I18nManager } from "react-native";
+import {
+  Assets,
+  Languages,
+  CommonStyles,
+  IconDir,
+  Colors,
+} from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AuthContext } from "../../js/context";
 import Api from "../../js/service/api";
-import { notify } from "../../utils";
-
+import { APP_DEFAULTS, APP_KEYS } from "../../utils";
+import CountryPicker from "react-native-country-picker-modal";
+import { Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native-gesture-handler";
+//9578541854
 const LoginScreen = () => {
+  const { signIn } = useContext(AuthContext);
+
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [isOtpMode, setOtpMode] = useState(false);
-
   const insets = useSafeAreaInsets();
-  const { signIn } = useContext(AuthContext);
-  const userDetails = {
-    isLogin: true,
+
+  const [countryCode, setCountryCode] = useState(APP_DEFAULTS.countryCode);
+  const [callingCode, setCallingCode] = useState(APP_DEFAULTS.callingCode);
+  const [loader, setLoader] = useState(false);
+
+  const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
+
+  const onDismissSnackBar = () => setSnackBar({ isShow: false });
+
+  const _onSelectCountry = (country) => {
+    setCountryCode(country.cca2);
+    setCallingCode(country.callingCode[0] || "");
+  };
+
+  const _handleValidation = () => {
+    if (mobile[0] != 0) {
+      setSnackBar({ isShow: true, msg: Languages.NumberShouldStartWith0 });
+    } else {
+      _handleLogin();
+    }
   };
 
   const _handleLogin = async () => {
@@ -29,34 +57,46 @@ const LoginScreen = () => {
 
   const _getMobileOtp = async () => {
     if (mobile === "") {
-      notify("Please enter your mobile number.");
+      setSnackBar({ isShow: true, msg: Languages.EnterMobNumber });
       return;
     }
-    if (mobile.length < 10) {
-      notify("Please enter a valid mobile number.");
-      return;
-    }
-    const response = await Api.get(`users/login?mobile=${mobile}`);
+    setLoader(true);
+    const response = await Api.get(
+      `users/login?mobile=${"+" + callingCode + mobile.slice(1)}`
+    );
     console.log("res: ", response);
     if (response.status) {
       setOtpMode(true);
-      setOtp(response.otp);
+      setOtp(response.otp.toString());
+    } else {
+      setSnackBar({ isShow: true, msg: Languages.SomethingWentWrong });
     }
+    setLoader(false);
   };
 
   const _authOtpAndLogin = async () => {
+    if (otp === "") {
+      setSnackBar({ isShow: true, msg: Languages.PleaseEnterOtp });
+      return;
+    }
+    setLoader(true);
     const params = {
       grant_type: "password",
       client_id: 9,
-      client_secret: "NQKbFoKFXkLZh6AMkF7P4KiwRgE3wqhOHJzNyw5V",
-      username: mobile,
+      client_secret: APP_KEYS.oAuthClientSecret,
+      username: callingCode + mobile.slice(1),
       password: otp,
       scope: "",
     };
     const tokenRes = await Api.postOAuth(params);
-    console.log(tokenRes);
+    console.log("tokenRes: ", tokenRes);
+    if (tokenRes.error) {
+      setSnackBar({ isShow: true, msg: tokenRes.message });
+      setLoader(false);
+      return;
+    }
     const header = {
-      Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6Ijg3NzJjN2UxNjk1NDIzMmJlYTM5MjEwZGViMGE2NThiMGNlYTM2NjM4MmM0Nzc2Yzc1YTczZmQ1MGJmNTk0Y2U4YmI5ZDdlMmNlM2JmMTRjIn0.eyJhdWQiOiI5IiwianRpIjoiODc3MmM3ZTE2OTU0MjMyYmVhMzkyMTBkZWIwYTY1OGIwY2VhMzY2MzgyYzQ3NzZjNzVhNzNmZDUwYmY1OTRjZThiYjlkN2UyY2UzYmYxNGMiLCJpYXQiOjE2MDEyNTY1NTIsIm5iZiI6MTYwMTI1NjU1MiwiZXhwIjoxNjMyNzkyNTUyLCJzdWIiOiIyIiwic2NvcGVzIjpbXX0.x7hP3tT92gALeXBBYSt9WbheQV--ngYYWWJ9zcyrODjCUYMrl-ugSQb0cSAF7HnGFgBbV4TCnEZqyZj6YJ0nWEFrcVLCjHI1tr6fmNq2dixgXeFovSTC3OETjzCK29khKK5CcJeLERuPmGftN3CGMY9uWBLMOH9TSPO4IpgzIrgh3oHKNmrfrZ811Y09jhik2Gj3AyIpgkwP40i5Hq6G5jFFeHoC8Nq3kPVWVUHfYsZsNCPoiCLKrnB-_qwKQvV1ChGyIo583BAzCDL91wWTdYYxeLusxrgfLz3y-ie9MTeoFXx9600zCq0iJZQAkPJFZ15oqPOuschBV03pYvSGKxxrLERlw8zrtuediPVrhbkKj1GWrAmKsmVNDj9OCR0WQOsWvpGvTRTuvrAjIsIxXpWygdCmewuXltUgK-MpbXGZpq9zDWig4_ORXsfX7ZpI3Ydf-ktIj4gL1NXYinl1aAHqWbsLr_OgyYsafOQzgdjLE7dIXotbPGHBVs9RuYEGT0_3vifLgr5ReWD8LwKlar3MeUmXQEYzV50xmXOhZJ-keoTXPtqSNYc2HvCskEHPwvTPkQ1f5W057475XuzO88rHtv6fdWhzy5qN4J9kimTQZ59hybOGmSizVAF9jB41fdHDUJ7n_fT68QmUPZDknkLzJVEhd5EmbKw0QqgpuwI",
+      Authorization: `${tokenRes.token_type} ${tokenRes.access_token}`,
       "Content-Type": "application/json",
     };
     const userDetailsRes = await Api.get("user/profile", null, header);
@@ -65,6 +105,7 @@ const LoginScreen = () => {
       signIn({
         userDetails: JSON.stringify(userDetailsRes.profile),
         tokens: JSON.stringify(tokenRes),
+        lastLoginParams: JSON.stringify(params),
       });
     }
   };
@@ -82,30 +123,97 @@ const LoginScreen = () => {
           resizeMode="contain"
         />
         {!isOtpMode ? (
-          <AppEditText
-            containerStyle={CommonStyles.marginTop50}
-            hint={Languages.MobileNo}
-            keyBoardType="number-pad"
-            saveText={(t) => setMobile(t.trim())}
-          />
+          <>
+            <View
+              style={{
+                height: 45,
+                marginTop: 50,
+                flexDirection: "row",
+                borderRadius: 45 / 2,
+                padding: 6,
+                paddingLeft: 10,
+                borderColor: Colors.lineColor,
+                borderWidth: 0.5,
+              }}
+            >
+              <CountryPicker
+                countryCode={countryCode}
+                withFilter
+                withFlag
+                withCallingCode
+                withEmoji
+                onSelect={_onSelectCountry}
+                containerButtonStyle={{ paddingRight: 0, marginLeft: 0 }}
+              />
+              <TextInput
+                style={{
+                  fontSize: 15,
+                  fontFamily: "regular",
+                  color: "#1d1d1d",
+                }}
+                textAlign={!I18nManager.isRTL ? "left" : "right"}
+                maxLength={13}
+                value={mobile}
+                placeholder={Languages.MobileNo}
+                keyboardType="number-pad"
+                onChangeText={(t) => setMobile(t.trim())}
+              />
+            </View>
+          </>
         ) : (
           <AppEditText
-            value={otp}
             containerStyle={CommonStyles.marginTop50}
             hint={Languages.OTP_Number}
             saveText={(t) => setOtp(t)}
             maxLength={4}
+            keyboardType="number-pad"
+            value={otp}
           />
         )}
-        <AppButton
-          _handleOnPress={_handleLogin}
-          name={Languages.Login}
-          containerStyle={CommonStyles.appBtn}
-        />
+        <View style={{ flexDirection: "row" }}>
+          {isOtpMode && (
+            <TouchableOpacity
+              onPress={() => setOtpMode(false)}
+              style={{
+                height: 45,
+                width: 70,
+                alignItems: "center",
+                borderRadius: 45 / 2,
+                marginTop: 20,
+                backgroundColor: Colors.primary,
+                elevation: 5,
+                justifyContent: "center",
+                marginRight: 10,
+              }}
+            >
+              <Ionicons
+                name={IconDir.Ionicons.back}
+                size={25}
+                color={Colors.background}
+              />
+            </TouchableOpacity>
+          )}
+          <AppButton
+            // _handleOnPress={_handleLogin}
+            _handleOnPress={_handleValidation}
+            name={Languages.Login}
+            containerStyle={{
+              flex: 1,
+            }}
+            disabled={loader}
+          />
+        </View>
         {isOtpMode && (
-          <Text style={styles.resendOtp}>{Languages.ResendOTPNumber}</Text>
+          <Text onPress={_getMobileOtp} style={styles.resendOtp}>
+            {Languages.ResendOTPNumber}
+          </Text>
         )}
       </View>
+      <SnackBar
+        visible={snackbar.isShow}
+        onDismissSnackBar={onDismissSnackBar}
+        msg={snackbar.msg}
+      />
     </View>
   );
 };

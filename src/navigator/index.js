@@ -1,5 +1,5 @@
-import React, { useReducer, useEffect, createContext } from "react";
-import { StatusBar, View, Text, Platform } from "react-native";
+import React, { useReducer, useEffect } from "react";
+import { StatusBar, Text, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -9,18 +9,28 @@ import { Colors, Languages, IconDir, CommonStyles } from "../js/common";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-community/async-storage";
 import { AuthContext } from "../js/context";
+import AppLoading from "../components/AppLoading";
+import Api from "../js/service/api";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 const AppTabBarTxt = ({ name }) => (
-  <Text style={{ fontSize: 13, fontFamily: "regular" }}>{name}</Text>
+  <Text
+    style={{
+      fontSize: name === Languages.PurchasedTicket ? 10 : 13,
+      fontFamily: "regular",
+    }}
+  >
+    {name}
+  </Text>
 );
 
 const index = () => {
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
+        // case "RESTORE"
         case "RESTORE_USER_DETAILS":
           return {
             ...prevState,
@@ -32,6 +42,7 @@ const index = () => {
           return {
             ...prevState,
             userDetails: action.userDetails,
+            lastLoginParams: action.lastLoginParams,
           };
         case "SIGN_OUT":
           return {
@@ -44,19 +55,23 @@ const index = () => {
       userDetails: null,
       isLoading: true,
       userToken: null,
+      lastLoginParams: null,
     }
   );
 
   useEffect(() => {
     const bootstrapAsync = async () => {
-      let userDetails;
+      let userDetails, userToken;
       try {
         userDetails = await AsyncStorage.getItem("userDetails");
-        userToken = await AsyncStorage.getItem("userToken");
+        lastLoginParams = await AsyncStorage.getItem("lastLoginParams");
         console.log("userDetails: ", userDetails);
-        console.log("userToken: ", userToken);
       } catch (e) {
         // Restoring failed
+      }
+      if (userDetails) {
+        updateToken(JSON.parse(lastLoginParams), userDetails);
+        return;
       }
 
       dispatch({
@@ -69,6 +84,15 @@ const index = () => {
     bootstrapAsync();
   }, []);
 
+  const updateToken = async (lastLoginParams, userDetails) => {
+    const tokenRes = await Api.postOAuth(lastLoginParams);
+    dispatch({
+      type: "RESTORE_USER_DETAILS",
+      userDetails: userDetails,
+      token: tokenRes,
+    });
+  };
+
   const authContext = React.useMemo(
     () => ({
       signIn: async (signInData) => {
@@ -76,7 +100,10 @@ const index = () => {
 
         await AsyncStorage.setItem("userDetails", signInData.userDetails);
         await AsyncStorage.setItem("userToken", signInData.tokens);
-
+        await AsyncStorage.setItem(
+          "lastLoginParams",
+          signInData.lastLoginParams
+        );
         dispatch({
           type: "SIGN_IN",
           userDetails: signInData.userDetails,
@@ -87,25 +114,24 @@ const index = () => {
         await AsyncStorage.clear();
         dispatch({ type: "SIGN_OUT" });
       },
-      // signUp: async () => {
-      //   dispatch({ type: "SIGN_IN", userDetails: {} });
-      // },
     }),
     []
   );
 
-  const PlatformStatusBar = () => (
-    <>
-      {Platform.OS === "ios" ? (
-        <StatusBar barStyle="dark-content" />
-      ) : (
-        <StatusBar
-          backgroundColor={Colors.background}
-          barStyle="dark-content"
-        />
-      )}
-    </>
-  );
+  const PlatformStatusBar = () => {
+    return (
+      <>
+        {Platform.OS === "ios" ? (
+          <StatusBar barStyle="dark-content" />
+        ) : (
+          <StatusBar
+            backgroundColor={Colors.background}
+            barStyle="dark-content"
+          />
+        )}
+      </>
+    );
+  };
 
   // ---------------------------------------------------
   const LoginStack = () => (
@@ -116,9 +142,6 @@ const index = () => {
 
   const HomeStack = () => (
     <Stack.Navigator headerMode="none">
-      {/* <Stack.Screen name="AddTicket" component={screens.AddTicketScreen} /> */}
-      {/*    <Stack.Screen name="AddImage" component={screens.AddImageScreen} /> */}
-      {/*    <Stack.Screen name="CameraScreen" component={screens.GetCamera} /> */}
       <Stack.Screen name="Home" component={screens.HomeScreen} />
       <Stack.Screen name="Ticket" component={screens.TicketScreen} />
       <Stack.Screen
@@ -150,6 +173,8 @@ const index = () => {
   const AccountStack = () => (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="MyAccount" component={screens.MyAccountScreen} />
+      <Stack.Screen name="ScanQr" component={screens.ScanQRScreen} />
+
       <Stack.Screen name="Balance" component={screens.BalanceScreen} />
       <Stack.Screen name="Bank" component={screens.BankScreen} />
       <Stack.Screen
@@ -172,7 +197,8 @@ const index = () => {
   const AddTicketStack = () => (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="AddTicket" component={screens.AddTicketScreen} />
-      <Stack.Screen name="AddImage" component={screens.AddImageScreen} />
+      <Stack.Screen name="ScanQr" component={screens.ScanQRScreen} />
+      <Stack.Screen name="ReviewQr" component={screens.ReviewQrScreen} />
     </Stack.Navigator>
   );
 
@@ -186,13 +212,14 @@ const index = () => {
         inactiveColor={Colors.lineColor}
         activeColor={Colors.primary}
         barStyle={CommonStyles.tabBarContainerStyle}
+        style={{ fontSize: 10 }}
       >
         <Tab.Screen
           name="Home"
           component={HomeStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.Home} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.home}
                 color={color}
@@ -206,7 +233,7 @@ const index = () => {
           component={SellTicketStackStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.SellTicket} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.ticket}
                 color={color}
@@ -220,7 +247,7 @@ const index = () => {
           component={AddTicketStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.AddTicket} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.tagPlus}
                 color={color}
@@ -234,7 +261,7 @@ const index = () => {
           component={PurchasedTicketStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.PurchasedTicket} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.bookmark}
                 color={color}
@@ -248,7 +275,7 @@ const index = () => {
           component={AccountStack}
           options={{
             tabBarLabel: <AppTabBarTxt name={Languages.Account} />,
-            tabBarIcon: ({ color, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name={IconDir.MaterialCommunityIcons.account}
                 color={color}
@@ -261,19 +288,17 @@ const index = () => {
     );
   };
 
-  const NavMainContent = () => (
-    <>
-      <PlatformStatusBar />
-      {!state.userDetails ? <LoginStack /> : <TabNav />}
-    </>
-  );
+  const NavMainContent = ({}) => {
+    return (
+      <>
+        <PlatformStatusBar />
+        {!state.userDetails ? <LoginStack /> : <TabNav />}
+      </>
+    );
+  };
 
   if (state.isLoading) {
-    return (
-      <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
-        <Text style={{ fontSize: 25, fontFamily: "semi" }}>Loading...</Text>
-      </View>
-    );
+    return <AppLoading />;
   }
 
   return (

@@ -1,3 +1,6 @@
+/**
+ * Tab 4 list
+ */
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, FlatList, TouchableOpacity } from "react-native";
 import { AppHeader, Separator } from "../../components";
@@ -5,6 +8,7 @@ import { Languages, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
+import { APP_DEFAULTS, globalDateFormatter, imgBaseUrl } from "../../utils";
 
 const PurchasedTicketScreen = ({ navigation }) => {
   const [purchasedList, setPurchasedList] = useState(null);
@@ -12,27 +16,33 @@ const PurchasedTicketScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    fetchList();
+    // fetchList();
   }, []);
 
   const fetchList = async () => {
     setLoader(true);
     const response = await Api.get("ticket/purchased");
-    setPurchasedList(response.tickets);
-    setLoader(false);
+    console.log("PurchasedTicketScreen: ", response);
+    if (response.status) {
+      setPurchasedList(response.data);
+      setLoader(false);
+    }
+  };
+
+  const _handleItemPress = (item) => {
+    navigation.navigate("PurchasedTicketDetails", { ticketDetails: item });
   };
 
   const renderList = ({ item }) => {
-    console.log(item.image_url);
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate("PurchasedTicketDetails", item.id)}
+        onPress={() => _handleItemPress(item)}
         style={CommonStyles.cardNoBg}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
             source={{
-              uri: item.image_url,
+              uri: imgBaseUrl + item.ticket_json.event.image_name,
             }}
             style={styles.cardUserImg}
           />
@@ -44,7 +54,9 @@ const PurchasedTicketScreen = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <Text style={styles.cardDetailsTitle}>{item.name}</Text>
+              <Text style={styles.cardDetailsTitle}>
+                {item.ticket_json.event.name}
+              </Text>
               <View style={CommonStyles.mainChipContainer}>
                 <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
                   King Cup
@@ -58,12 +70,18 @@ const PurchasedTicketScreen = ({ navigation }) => {
                 flexDirection: "row",
               }}
             >
-              <Text style={CommonStyles.dateTxt}>{item.date}</Text>
+              <Text style={CommonStyles.dateTxt}>
+                {globalDateFormatter(item.ticket_json.event.start)}
+              </Text>
               <Separator width={10} />
-              <Text style={CommonStyles.dateTxt}>{item.location}</Text>
+              <Text style={CommonStyles.dateTxt}>
+                {item.ticket_json.event.location}
+              </Text>
             </View>
             <Separator height={5} />
-            <Text style={styles.priceTxt}>350 SAR</Text>
+            <Text style={styles.priceTxt}>
+              {item.price} {APP_DEFAULTS.currency}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>

@@ -7,6 +7,10 @@ const Ionicons = {
   menu: "ios-menu",
   search: "ios-search",
   user: "md-person",
+  radioOn: "ios-radio-button-on",
+  radioOff: "ios-radio-button-off",
+  image: "ios-image",
+  add: "ios-add",
 };
 
 const MaterialCommunityIcons = {

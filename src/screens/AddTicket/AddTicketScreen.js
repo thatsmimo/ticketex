@@ -1,156 +1,355 @@
-import React, { useState } from "react";
-import { View, Text, TextInput } from "react-native";
-import styles from "./styles";
-import { Picker } from "@react-native-community/picker";
-import { AppHeader, AppButton, AppEditText } from "../../components";
-import { Colors, Languages } from "../../js/common";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ScrollView,
+  I18nManager,
+} from "react-native";
+import { Modal } from "react-native-paper";
+import { AppButton, AppEditText, AppHeader, SnackBar } from "../../components";
+import { Colors, CommonStyles, Languages } from "../../js/common";
+import { Ionicons } from "@expo/vector-icons";
+import IconDir from "../../js/common/IconDir";
+import Api from "../../js/service/api";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { APP_DEFAULTS } from "../../utils";
+import Styles from "./styles";
 
-const AddTicketScreen = ({ navigation }) => {
-  const [selectedFirst, setSelectedFirst] = useState(false);
-  const [selectedSecond, setSelectedSecond] = useState(false);
-  const [selectedThird, setSelectedThird] = useState(false);
+let orgEventList = [];
+let orgClassList = [];
+
+const AddTicketScreen = ({ navigation, route }) => {
+  const insets = useSafeAreaInsets();
+  const [eventList, setEventList] = useState([]);
+  const [classList, setClassList] = useState([]);
+  const [loader, setLoader] = useState(false);
+
+  const [visible, setVisible] = useState(false);
+
+  const [keyword, setKeyword] = useState("");
+
+  const [selectedEventPos, setSelectedEventPos] = useState(-1); // set only event pos
+  const [currentModal, setCurrentModal] = useState("event"); // or class // (default: 1st one) set type of modals
+  const [selectedClassPos, setSelectedClassPos] = useState(-1); // set only class pos
+
+  const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState("----");
-  const [eventType, setEventType] = useState("----");
-  const [classType, setClassType] = useState("----");
 
-  const _handleNavigate = () => {
-    navigation.navigate("AddImage");
+  const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
+
+  const onDismissSnackBar = () => setSnackBar({ isShow: false });
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+
+  useEffect(() => {
+    _fetchDropdownLists();
+  }, []);
+
+  useEffect(() => {
+    if (route.params?.isSubmitted) {
+      // updated from previous screen
+      // reset all
+      setSelectedEventPos(-1);
+      setSelectedClassPos(-1);
+      setQuantity(1);
+      setCurrentModal("event");
+      setPrice("");
+      setKeyword("");
+      setSnackBar({ isShow: true, msg: Languages.TicketCreatedSuccessfully });
+    }
+  }, [route, route.params?.isSubmitted]);
+
+  const _fetchDropdownLists = async () => {
+    setLoader(true);
+    const classResponse = await Api.get("class-type");
+    const eventResponse = await Api.get("events/list");
+    console.log("classResponse: ", classResponse);
+    console.log("eventResponse: ", eventResponse);
+    setLoader(false);
+    if (classResponse.status) {
+      orgClassList = classResponse.data;
+      setClassList(classResponse.data);
+    }
+    if (eventResponse.status) {
+      orgEventList = eventResponse.events;
+      setEventList(eventResponse.events);
+    }
   };
 
-  const EventType = () => {
-    if (selectedFirst) {
-      return (
-        <View style={styles.form}>
-          <Text>Class Type</Text>
-          <View style={styles.pickerBG}>
-            <Picker
-              selectedValue={classType}
-              style={styles.picker}
-              onValueChange={(itemValue, itemIndex) => {
-                setClassType(itemValue);
-                setSelectedSecond(true);
-              }}
-            >
-              <Picker.Item label="----" value="default" />
-              <Picker.Item label="Singles-Section c" value="java" />
-            </Picker>
-          </View>
+  const _handleNav = () => {
+    if (!_handleValidation()) {
+      return;
+    }
+    const formData = {
+      event_id: eventList[selectedEventPos].id,
+      class_id: classList[selectedClassPos].id,
+      qty: quantity,
+      price: price,
+    };
+    navigation.navigate("ScanQr", {
+      formData,
+      isSubmitted: false,
+    });
+  };
+  const _handleValidation = () => {
+    if (selectedEventPos === -1) {
+      setSnackBar({ isShow: true, msg: Languages.SelectEventType + "." });
+      return;
+    }
+    if (selectedClassPos === -1) {
+      setSnackBar({ isShow: true, msg: Languages.SelectClassType + "." });
+      return;
+    }
+    if (price === "") {
+      setSnackBar({ isShow: true, msg: Languages.EnterPrice });
+      return;
+    }
+    if (price > classList[selectedClassPos].max_price) {
+      setSnackBar({
+        isShow: true,
+        msg:
+          Languages.Note +
+          classList[selectedClassPos].max_price +
+          " " +
+          APP_DEFAULTS.currency,
+      });
+      return;
+    }
+
+    return true;
+  };
+
+  const renderList = ({ item, index }) => {
+    let isMatchedItem = false;
+    switch (currentModal) {
+      case "event":
+        isMatchedItem = selectedEventPos === index;
+        break;
+      case "class":
+        isMatchedItem = selectedClassPos === index;
+        break;
+    }
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          hideModal();
+          if (currentModal == "event") {
+            setSelectedEventPos(index);
+          } else {
+            setSelectedClassPos(index);
+          }
+        }}
+        style={{ paddingVertical: 8 }}
+      >
+        <View style={Styles.listContainer}>
+          <Ionicons
+            size={20}
+            name={
+              isMatchedItem
+                ? IconDir.Ionicons.radioOn
+                : IconDir.Ionicons.radioOff
+            }
+            color={Colors.primary}
+          />
+          <Text style={Styles.listText}>{item.name}</Text>
         </View>
-      );
-    } else {
-      return <></>;
-    }
+      </TouchableOpacity>
+    );
   };
 
-  const Quantity = () => {
-    if (selectedSecond) {
-      return (
-        <>
-          <View style={styles.form}>
-            <Text>Quantity</Text>
-            <View style={styles.pickerBG}>
-              <Picker
-                selectedValue={quantity}
-                style={styles.picker}
-                mode="dialog"
-                // prompt="ss"
-                onValueChange={(itemValue, itemIndex) => {
-                  setQuantity(itemValue);
-                  setSelectedThird(true);
-                }}
-                itemStyle={{ fontFamily: "regular", fontSize: 11 }}
-              >
-                <Picker.Item label="----" value="default" />
-                <Picker.Item label="1" value="java" />
-              </Picker>
-            </View>
-          </View>
-        </>
-      );
-    } else {
-      return <></>;
-    }
-  };
-
-  const PricePerTicket = () => {
-    if (selectedThird) {
-      return (
-        <>
-          <View style={styles.form}>
-            <View style={styles.input}>
-              <Text>Price per Ticket</Text>
-              {/* <AppEditText
-                value={price}
-                keyBoardType={"number-pad"}
-                saveText={(text) => setPrice(() => text)}
-              /> */}
-              <View
-                style={{
-                  height: 45,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  borderRadius: 45 / 2,
-                  paddingLeft: 5,
-                  marginTop: 15,
-                  borderColor: Colors.lineColor,
-                  borderWidth: 0.5,
-                }}
-              >
-                <TextInput
-                  style={{
-                    fontSize: 13,
-                    fontFamily: "regular",
-                    color: "#1d1d1d",
-                    paddingHorizontal: 10,
-                    flex: 1,
-                    justifyContent: "center",
-                  }}
-                  saveText={(text) => setPrice(() => text)}
-                />
-              </View>
-            </View>
-          </View>
-          <View style={styles.btn}>
-            <AppButton
-              name={Languages.Next}
-              _handleOnPress={_handleNavigate}
-              disabled={price === "" ? true : false}
+  const SelectField = ({ selectedTxt, type }) => {
+    return (
+      <>
+        <TouchableOpacity
+          onPress={() => {
+            setCurrentModal(type);
+            showModal();
+          }}
+          style={{ flexDirection: "row" }}
+        >
+          <View style={Styles.selectFieldContainer}>
+            <Text style={Styles.selectFieldText}>{selectedTxt}</Text>
+            <Ionicons
+              name={IconDir.Ionicons.down}
+              size={20}
+              color={Colors.lineColor}
             />
           </View>
-          <Text style={styles.text}>
-            Note: Based on ticket class the price should not exceed 240 SAR
-          </Text>
-        </>
-      );
-    } else {
-      return <View />;
+        </TouchableOpacity>
+      </>
+    );
+  };
+
+  const _saveKeywordAndSearch = (text) => {
+    setKeyword(text.trim());
+
+    currentModal == "event"
+      ? setEventList([...orgEventList])
+      : setClassList([...orgClassList]);
+    const search_text = text;
+    const filterList = (currentModal == "event"
+      ? orgEventList
+      : orgClassList
+    ).filter((e) => !e.name.toLowerCase().search(search_text.toLowerCase()));
+    console.log("filterList: ", filterList);
+    currentModal == "event"
+      ? setEventList([...filterList])
+      : setClassList([...filterList]);
+  };
+
+  const _placeListToModal = () => {
+    switch (currentModal) {
+      case "event":
+        return eventList;
+      case "class":
+        return classList;
     }
   };
 
+  const FeildHeader = ({ name, containerStyle }) => (
+    //check
+    <Text
+      style={{
+        fontFamily: "semi",
+        marginTop: 20,
+        marginBottom: 5,
+        color: Colors.text,
+        textAlign: I18nManager.isRTL ? "left" : "left",
+        ...containerStyle,
+      }}
+    >
+      {name}
+    </Text>
+  );
+
+  const _handleQuantity = (type) => {
+    let orgQuantity = quantity;
+    switch (type) {
+      case "-":
+        // level condition
+        if (orgQuantity == 1) return;
+        orgQuantity--;
+        setQuantity(orgQuantity);
+        break;
+      case "+":
+        // level condition
+        if (orgQuantity == classList[selectedClassPos].max_qty) {
+          setSnackBar({
+            isShow: true,
+            msg: Languages.QuantityWarn + classList[selectedClassPos].max_qty,
+          });
+        } else orgQuantity++;
+        setQuantity(orgQuantity);
+        break;
+      default:
+        break;
+    }
+  };
   return (
-    <View style={styles.container}>
-      <AppHeader title="Add Ticket" />
-      <View style={styles.form}>
-        <Text>Event Type</Text>
-        <View style={styles.pickerBG}>
-          <Picker
-            selectedValue={eventType}
-            style={styles.picker}
-            onValueChange={(itemValue, itemIndex) => {
-              setEventType(itemValue);
-              setSelectedFirst(true);
-            }}
-          >
-            <Picker.Item label="----" value="default" />
-            <Picker.Item label="Alhila vs Alnaseer" value="java" />
-          </Picker>
-        </View>
+    <>
+      <View style={CommonStyles.screensRootContainer(insets.top)}>
+        <AppHeader title={Languages.AddTicket} />
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <View style={{ paddingHorizontal: 30 }}>
+            <FeildHeader name={Languages.SelectEventType + ":"} />
+            <SelectField
+              selectedTxt={eventList[selectedEventPos]?.name}
+              type={"event"}
+            />
+            {selectedEventPos !== -1 && (
+              <>
+                <FeildHeader name={Languages.SelectClassType + ":"} />
+                <SelectField
+                  selectedTxt={classList[selectedClassPos]?.name}
+                  type={"class"}
+                />
+              </>
+            )}
+            {selectedClassPos !== -1 && (
+              <>
+                <FeildHeader name={Languages.Quantity + ":"} />
+                <View style={Styles.quantityContainer}>
+                  <TouchableOpacity
+                    onPress={() => _handleQuantity("-")}
+                    style={Styles.quantityDecreaseContainer}
+                  >
+                    <Text style={Styles.quantityTextContainer}>-</Text>
+                  </TouchableOpacity>
+                  <View style={Styles.quantityShowContainer}>
+                    <Text style={Styles.quantityTextContainer}>{quantity}</Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => _handleQuantity("+")}
+                    style={Styles.quantityIncreaseContainer}
+                  >
+                    <Text style={Styles.quantityTextContainer}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <FeildHeader
+                  name={`${Languages.PricePerTicket} (${APP_DEFAULTS.currency})`}
+                />
+                <AppEditText
+                  value={price}
+                  containerStyle={{
+                    marginTop: 0,
+                  }}
+                  hint={Languages.Price}
+                  saveText={(t) => setPrice(t)}
+                  keyBoardType="number-pad"
+                />
+                <FeildHeader
+                  name={
+                    Languages.Note +
+                    classList[selectedClassPos].max_price +
+                    " " +
+                    APP_DEFAULTS.currency
+                  }
+                  containerStyle={{
+                    marginTop: 5,
+                    color: Colors.negative,
+                    fontSize: 13,
+                  }}
+                />
+              </>
+            )}
+            <AppButton
+              name={Languages.Next}
+              containerStyle={{ marginTop: 20, marginBottom: 40 }}
+              _handleOnPress={_handleNav}
+            />
+          </View>
+        </ScrollView>
       </View>
-      <EventType />
-      <Quantity />
-      <PricePerTicket />
-    </View>
+      <Modal
+        visible={visible}
+        onDismiss={hideModal}
+        contentContainerStyle={CommonStyles.appModalContainer}
+      >
+        <AppEditText
+          hint={Languages.TypeToSearch}
+          value={keyword}
+          saveText={_saveKeywordAndSearch}
+        />
+        <FlatList
+          style={{ marginTop: 15, paddingHorizontal: 10 }}
+          data={_placeListToModal()}
+          renderItem={renderList}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          refreshing={loader}
+          onRefresh={_fetchDropdownLists}
+          keyboardShouldPersistTaps="handled"
+        />
+      </Modal>
+      <SnackBar
+        visible={snackbar.isShow}
+        onDismissSnackBar={onDismissSnackBar}
+        msg={snackbar.msg}
+      />
+    </>
   );
 };
+
 export default AddTicketScreen;

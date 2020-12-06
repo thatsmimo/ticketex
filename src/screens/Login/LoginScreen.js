@@ -67,7 +67,7 @@ const LoginScreen = () => {
     console.log("res: ", response);
     if (response.status) {
       setOtpMode(true);
-      // setOtp(response.otp.toString());
+      setOtp(response.otp.toString());
     } else {
       setSnackBar({ isShow: true, msg: Languages.SomethingWentWrong });
     }

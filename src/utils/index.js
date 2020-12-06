@@ -7,8 +7,31 @@ const isIphoneX = Platform.OS === "ios" && !Platform.isPad && !Platform.isTVOS;
 
 const imgBaseUrl = "https://ticketex.co/server/public/images/events/";
 
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 const globalDateFormatter = (dbDate) => {
-  return new Date(dbDate).toDateString();
+  if (!dbDate || dbDate == "" || typeof dbDate === "undefined") {
+    return "";
+  }
+
+  const year = dbDate.slice(0, 4);
+  const month = dbDate.slice(5, 7);
+  const day = dbDate.slice(8, 10);
+
+  return day + " " + months[month - 1] + " " + year;
 };
 
 const APP_DEFAULTS = {

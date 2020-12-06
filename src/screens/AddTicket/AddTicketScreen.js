@@ -106,6 +106,17 @@ const AddTicketScreen = ({ navigation, route }) => {
       setSnackBar({ isShow: true, msg: Languages.EnterPrice });
       return;
     }
+    if (price > classList[selectedClassPos].max_price) {
+      setSnackBar({
+        isShow: true,
+        msg:
+          Languages.Note +
+          classList[selectedClassPos].max_price +
+          " " +
+          APP_DEFAULTS.currency,
+      });
+      return;
+    }
 
     return true;
   };
@@ -224,8 +235,12 @@ const AddTicketScreen = ({ navigation, route }) => {
         break;
       case "+":
         // level condition
-        if (orgQuantity == APP_DEFAULTS.AddTicketMaxQty) return;
-        orgQuantity++;
+        if (orgQuantity == classList[selectedClassPos].max_qty) {
+          setSnackBar({
+            isShow: true,
+            msg: Languages.QuantityWarn + classList[selectedClassPos].max_qty,
+          });
+        } else orgQuantity++;
         setQuantity(orgQuantity);
         break;
       default:
@@ -285,7 +300,12 @@ const AddTicketScreen = ({ navigation, route }) => {
                   keyBoardType="number-pad"
                 />
                 <FeildHeader
-                  name={Languages.Note}
+                  name={
+                    Languages.Note +
+                    classList[selectedClassPos].max_price +
+                    " " +
+                    APP_DEFAULTS.currency
+                  }
                   containerStyle={{
                     marginTop: 5,
                     color: Colors.negative,

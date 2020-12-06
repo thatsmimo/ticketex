@@ -99,5 +99,7 @@ export default {
   PleaseEnterOtp: "Please enter the otp.",
   ListedTicket: "Listed Ticket",
   TicketCreatedSuccessfully: "Ticket created successfully!",
-  NumberShouldStartWith0 : "number should start with 0.",
+  NumberShouldStartWith0: "number should start with 0.",
+  QuantityWarn: "Quantity cannot exceed ",
+  Note: "Based on ticket class the price should not exceed ",
 };

@@ -100,4 +100,6 @@ export default {
   ListedTicket: "التذكرة المدرجة",
   TicketCreatedSuccessfully: "تم إنشاء التذكرة بنجاح",
   NumberShouldStartWith0: "يجب أن يبدأ الرقم بصفر.",
+  QuantityWarn: "Quantity cannot exceed ",
+  Note: "Based on ticket class the price should not exceed ",
 };

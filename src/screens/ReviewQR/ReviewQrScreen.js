@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Colors, CommonStyles, Languages } from "../../js/common";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AppButton, AppHeader, FeildHeader, SnackBar } from "../../components";
+import { AppButton, AppHeader, FieldHeader, SnackBar } from "../../components";
 import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import Api from "../../js/service/api";
@@ -126,21 +126,27 @@ const ScanQRScreen = ({ navigation, route }) => {
           />
         ) : (
           <View style={{ paddingHorizontal: 20 }}>
-            <FeildHeader name={Languages.ScannedData} />
+            <FieldHeader name={Languages.ScannedData} />
             <FlatList
               data={scannedQrList}
               renderItem={renderScannedQrList}
               keyExtractor={(item, index) => index.toString()}
-            />
-            <AppButton
-              name={Languages.Submit}
-              containerStyle={{
-                width: 200,
-                alignSelf: "center",
-                marginTop: 50,
-              }}
-              _handleOnPress={_handleSubmit}
-              disabled={loader}
+              showsVerticalScrollIndicator={false}
+              ListFooterComponent={() => (
+                <>
+                  <AppButton
+                    name={Languages.Submit}
+                    containerStyle={{
+                      width: 200,
+                      alignSelf: "center",
+                      marginTop: 50,
+                      marginBottom: 150,
+                    }}
+                    _handleOnPress={_handleSubmit}
+                    disabled={loader}
+                  />
+                </>
+              )}
             />
           </View>
         )}
@@ -172,7 +178,7 @@ const ScanQRScreen = ({ navigation, route }) => {
   return (
     <View style={[CommonStyles.screensRootContainer(insets.top)]}>
       <AppHeader title={Languages.ReviewQr} navigation={navigation} />
-      <FeildHeader
+      <FieldHeader
         name={Languages.ReviewTicketQR}
         containerStyle={{
           paddingHorizontal: 20,

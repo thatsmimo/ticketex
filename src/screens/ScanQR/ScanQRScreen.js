@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, I18nManager } from "react-native";
 import { Colors, CommonStyles, Languages } from "../../js/common";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AppButton, AppHeader, FeildHeader } from "../../components";
+import { AppButton, AppHeader, FieldHeader } from "../../components";
 import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
 
@@ -163,7 +163,7 @@ const ScanQRScreen = ({ navigation, route }) => {
   return (
     <View style={[CommonStyles.screensRootContainer(insets.top)]}>
       <AppHeader title={Languages.ScanQR} navigation={navigation} />
-      <FeildHeader
+      <FieldHeader
         name={Languages.ScanTicketQR}
         containerStyle={{
           paddingHorizontal: 20,

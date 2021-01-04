@@ -3,7 +3,7 @@ import { I18nManager } from "react-native";
 import { Text } from "react-native";
 import { Colors } from "../../js/common";
 
-const FeildHeader = ({ name, containerStyle }) => (
+const FieldHeader = ({ name, containerStyle }) => (
   <Text
     style={{
       fontFamily: "semi",
@@ -18,4 +18,4 @@ const FeildHeader = ({ name, containerStyle }) => (
   </Text>
 );
 
-export default FeildHeader;
+export default FieldHeader;

@@ -208,7 +208,7 @@ const AddTicketScreen = ({ navigation, route }) => {
     }
   };
 
-  const FeildHeader = ({ name, containerStyle }) => (
+  const FieldHeader = ({ name, containerStyle }) => (
     //check
     <Text
       style={{
@@ -253,14 +253,14 @@ const AddTicketScreen = ({ navigation, route }) => {
         <AppHeader title={Languages.AddTicket} />
         <ScrollView keyboardShouldPersistTaps="handled">
           <View style={{ paddingHorizontal: 30 }}>
-            <FeildHeader name={Languages.SelectEventType + ":"} />
+            <FieldHeader name={Languages.SelectEventType + ":"} />
             <SelectField
               selectedTxt={eventList[selectedEventPos]?.name}
               type={"event"}
             />
             {selectedEventPos !== -1 && (
               <>
-                <FeildHeader name={Languages.SelectClassType + ":"} />
+                <FieldHeader name={Languages.SelectClassType + ":"} />
                 <SelectField
                   selectedTxt={classList[selectedClassPos]?.name}
                   type={"class"}
@@ -269,7 +269,7 @@ const AddTicketScreen = ({ navigation, route }) => {
             )}
             {selectedClassPos !== -1 && (
               <>
-                <FeildHeader name={Languages.Quantity + ":"} />
+                <FieldHeader name={Languages.Quantity + ":"} />
                 <View style={Styles.quantityContainer}>
                   <TouchableOpacity
                     onPress={() => _handleQuantity("-")}
@@ -287,7 +287,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                     <Text style={Styles.quantityTextContainer}>+</Text>
                   </TouchableOpacity>
                 </View>
-                <FeildHeader
+                <FieldHeader
                   name={`${Languages.PricePerTicket} (${APP_DEFAULTS.currency})`}
                 />
                 <AppEditText
@@ -299,7 +299,7 @@ const AddTicketScreen = ({ navigation, route }) => {
                   saveText={(t) => setPrice(t)}
                   keyBoardType="number-pad"
                 />
-                <FeildHeader
+                <FieldHeader
                   name={
                     Languages.Note +
                     classList[selectedClassPos].max_price +

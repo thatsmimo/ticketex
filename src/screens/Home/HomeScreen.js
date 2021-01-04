@@ -54,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
         "&city_id=" +
         (cityId ? cityId : "")
     );
-    // console.log("search event: ", response);
+    console.log("fetchSearch: ", response);
     setLoader(false);
     if (response.status) {
       orgEventList = response.events;
@@ -86,7 +86,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const _moveToEventDetails = (id) => {
-    navigation.navigate("Ticket", id);
+    navigation.navigate("Ticket", { selectedEventId: id });
   };
 
   const renderList = ({ item }) => {

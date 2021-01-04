@@ -1,127 +1,159 @@
 import React, { useState } from "react";
-import { View, Text, Image, I18nManager } from "react-native";
 import {
-  AppHeader,
-  AppButton,
-  AppEditText,
-  Separator,
-  SnackBar,
-} from "../../components";
+  View,
+  Text,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+} from "react-native";
+import { AppHeader, AppButton, SnackBar } from "../../components";
 import { Languages, Assets, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
+import { CreditCardInput } from "react-native-credit-card-input";
+import { showAlert, validateName } from "../../utils";
 
 const AddCreditCardScreen = ({ navigation }) => {
-  const [card_no, setCard_no] = useState("");
-  const [holder_name, setHolder_name] = useState("");
-  const [cvv, setCvv] = useState("");
-  const [expireMonth, setExpireMonth] = useState("");
-  const [expireYear, setExpireYear] = useState("");
   const [loader, setLoader] = useState(false);
+  const [picker, setPicker] = useState({
+    status: {
+      cvc: "incomplete",
+      expiry: "incomplete",
+      name: "incomplete",
+      number: "incomplete",
+      valid: false,
+    },
+    values: {
+      cvc: "",
+      expiry: "",
+      name: "",
+      number: "",
+      type: undefined,
+    },
+    valid: false,
+  });
 
   const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
   const onDismissSnackBar = () => setSnackBar({ isShow: false });
 
   const insets = useSafeAreaInsets();
+
   const _handleNavigate = async () => {
-    if (card_no === "") {
-      setSnackBar({ isShow: true, msg: Languages.EnterCardNumber });
+    Keyboard.dismiss();
+    const { status, values, valid } = picker;
+    if (status.number === "incomplete") {
+      setSnackBar({ isShow: true, msg: Languages.CardNoIncomplete });
       return;
     }
-    if (holder_name === "") {
-      setSnackBar({ isShow: true, msg: Languages.EnterCardHolderName });
+    if (status.number === "invalid") {
+      setSnackBar({ isShow: true, msg: Languages.CardNoNValid });
       return;
     }
-    if (cvv === "") {
-      setSnackBar({ isShow: true, msg: Languages.EnterCvv });
+    if (status.expiry === "incomplete") {
+      setSnackBar({ isShow: true, msg: Languages.CardExpIncomplete });
       return;
     }
-    if (expireMonth === "") {
-      setSnackBar({ isShow: true, msg: Languages.EnterExpireMonth });
+    if (status.expiry === "invalid") {
+      setSnackBar({ isShow: true, msg: Languages.CardExpNValid });
       return;
     }
-    if (expireYear === "") {
-      setSnackBar({ isShow: true, msg: Languages.EnterExpireYear });
+    if (status.cvc === "incomplete") {
+      setSnackBar({ isShow: true, msg: Languages.CardCvvIncomplete });
       return;
     }
+    if (status.cvc === "invalid") {
+      setSnackBar({ isShow: true, msg: Languages.CardCvvNValid });
+      return;
+    }
+    if (status.name === "incomplete") {
+      setSnackBar({ isShow: true, msg: Languages.CardNameIncomplete });
+      return;
+    }
+    if (!validateName(status.name)) {
+      setSnackBar({ isShow: true, msg: Languages.CardNameNValid });
+      return;
+    }
+    if (!valid) {
+      setSnackBar({ isShow: true, msg: Languages.CardNValid });
+      return;
+    }
+
     setLoader(true);
+    const expireMonth = values.expiry.slice(0, 2);
+    const expireYear = values.expiry.slice(3, 5);
     const params = {
-      cardNumber: card_no,
-      holderName: holder_name,
-      cvv: cvv,
-      expireYear: expireYear,
-      expireMonth: expireMonth,
+      cardNumber: values.number,
+      holderName: values.name,
+      cvv: values.cvc,
+      expireYear,
+      expireMonth,
     };
     const cardDetails = await Api.post("card/create", params);
     console.log(cardDetails);
-    if (cardDetails.status) {
-      setHolder_name("");
-      setCvv("");
-      setCard_no("");
-      setExpireMonth("");
-      setExpireYear("");
-    }
-    setSnackBar({ isShow: true, msg: cardDetails.message });
+    showAlert(
+      cardDetails.status ? Languages.Success : Languages.Sorry,
+      cardDetails.message,
+      backWhenDone
+    );
     setLoader(false);
   };
 
+  const backWhenDone = () =>
+    navigation.navigate("CreditCard", { isAdded: true });
+
+  const _onChangeCreditCardInput = (input) => setPicker(input);
+
   return (
-    <View style={CommonStyles.screensRootContainer(insets.top)}>
-      <AppHeader title={Languages.AddNewCreditCard} navigation={navigation} />
-      <View style={styles.container}>
-        <Image source={Assets.ic_cc} style={styles.logo} resizeMode="contain" />
-        <Text style={styles.logoTxt}>{Languages.AddNewCreditCard}</Text>
-        <AppEditText
-          value={card_no}
-          hint={Languages.CardNumber}
-          keyBoardType="numeric"
-          saveText={(text) => setCard_no(text)}
-        />
-        <AppEditText
-          value={holder_name}
-          hint={Languages.CardHolderName}
-          saveText={(text) => setHolder_name(text)}
-        />
-        <View style={{ flexDirection: "row" }}>
-          <AppEditText
-            value={cvv}
-            hint={Languages.CVV}
-            keyBoardType="numeric"
-            containerStyle={styles.editTxtExtra}
-            saveText={(text) => setCvv(text)}
-          />
-          <Separator width={10} />
-          <AppEditText
-            value={expireMonth}
-            hint={Languages.ExpireMonth}
-            keyBoardType="numeric"
-            containerStyle={styles.editTxtExtra}
-            saveText={(text) => setExpireMonth(text)}
-            maxLength={2}
-          />
-          <Separator width={10} />
-          <AppEditText
-            value={expireYear}
-            hint={Languages.ExpireYear}
-            keyBoardType="numeric"
-            containerStyle={styles.editTxtExtra}
-            saveText={(text) => setExpireYear(text)}
-            maxLength={4}
-          />
-        </View>
-        <AppButton
-          name={Languages.AddNewCreditCard}
-          _handleOnPress={_handleNavigate}
-          disabled={loader}
+    <>
+      <View style={CommonStyles.screensRootContainer(insets.top)}>
+        <AppHeader title={Languages.AddNewCreditCard} navigation={navigation} />
+        <ScrollView
+          style={{ flex: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "position" : null}
+            keyboardVerticalOffset={Platform.OS === "ios" ? -80 : 0}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                paddingVertical: 20,
+                marginTop: Platform.OS === "ios" ? 60 : 0,
+              }}
+            >
+              <Image
+                source={Assets.ic_cc}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+              <Text style={styles.logoTxt}>{Languages.AddNewCreditCard}</Text>
+            </View>
+            <CreditCardInput onChange={_onChangeCreditCardInput} requiresName />
+            <AppButton
+              name={Languages.AddNewCreditCard}
+              _handleOnPress={_handleNavigate}
+              disabled={loader}
+              containerStyle={{
+                width: 300,
+                alignSelf: "center",
+                marginBottom: 20,
+              }}
+            />
+          </KeyboardAvoidingView>
+        </ScrollView>
+        <SnackBar
+          visible={snackbar.isShow}
+          onDismissSnackBar={onDismissSnackBar}
+          msg={snackbar.msg}
         />
       </View>
-      <SnackBar
-        visible={snackbar.isShow}
-        onDismissSnackBar={onDismissSnackBar}
-        msg={snackbar.msg}
-      />
-    </View>
+    </>
   );
 };
 

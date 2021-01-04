@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { Languages, Colors, CommonStyles } from "../../js/common";
 import styles from "./styles";
-import { Ionicons } from "@expo/vector-icons";
 import IconDir from "../../js/common/IconDir";
 import { StatusBar } from "expo-status-bar";
 import { IconButton } from "react-native-paper";
@@ -27,12 +26,21 @@ const TicketScreen = ({ navigation, route }) => {
   const [availableTicketLength, setAvailableTicketLength] = useState(0);
   const [soldTicketLength, setSoldTicketLength] = useState(0);
 
+  const { selectedEventId } = route.params;
+
+  useEffect(() => {
+    if (route.params?.isPayment) {
+      // when payment done
+      fetchEventDetails();
+    }
+  }, [route, route.params?.isPayment]);
+
   useEffect(() => {
     fetchEventDetails();
   }, []);
 
   const fetchEventDetails = async () => {
-    const response = await Api.get("events/details/" + route.params);
+    const response = await Api.get("events/details/" + selectedEventId);
     console.log("event details: ", response);
     setLoader(false);
     if (response.status) {
@@ -47,7 +55,7 @@ const TicketScreen = ({ navigation, route }) => {
       availableTicketLength: availableTicketLength,
       soldTicketLength: soldTicketLength,
       sub_cat_name: eventDetails.sub_cat_name,
-      city: eventDetails.city.name,
+      electedEventId: selectedEventId,
     });
   };
 
@@ -80,12 +88,14 @@ const TicketScreen = ({ navigation, route }) => {
             ? Languages.AvailableTickets
             : Languages.SoldTickets}
         </Text>
-        <Text
-          onPress={() => _handleShowMore(item)}
-          style={styles.itemShowMoreTxt}
-        >
-          {Languages.ShowMore}
-        </Text>
+        {item.status == "a" && (
+          <Text
+            onPress={() => _handleShowMore(item)}
+            style={styles.itemShowMoreTxt}
+          >
+            {Languages.ShowMore}
+          </Text>
+        )}
       </View>
       <>
         <View style={styles.rowAsContainer}>
@@ -96,9 +106,9 @@ const TicketScreen = ({ navigation, route }) => {
             {item.price} {APP_DEFAULTS.currency} / {Languages.Ticket}
           </Text>
         </View>
-        <Text style={styles.itemIconTxt}>
+        {/* <Text style={styles.itemIconTxt}>
           <Ionicons name={IconDir.Ionicons.user} /> {item?.user?.name}
-        </Text>
+        </Text> */}
       </>
       <View style={styles.itemSeparatorHorizontal} />
     </View>

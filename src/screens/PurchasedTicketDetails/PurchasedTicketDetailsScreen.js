@@ -37,7 +37,7 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={CommonStyles.screensRootContainer(insets.top)}>
         <AppHeader title={Languages.TicketDetails} navigation={navigation} />
         <View style={styles.container}>
@@ -110,6 +110,7 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
               </Text>
             </TouchableOpacity>
           </View>
+
           <Text
             style={{
               color: Colors.lineColor,
@@ -118,16 +119,15 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
               textAlign: I18nManager.isRTL ? "left" : "left",
             }}
           >
-            {Languages.OrYouCanScanQRCode}
+            {Languages.ScanQR}
           </Text>
-          <View style={CommonStyles.cardNoBg}>
-            <View style={{ alignItems: "center" }}>
-              <QRCode
-                value={ticketDetails.ticket_json.barcode.toString()}
-                size={150}
-              />
+          {ticketDetails.ticket_json.offer_qty.map((e, i) => (
+            <View key={i} style={CommonStyles.cardNoBg}>
+              <View style={{ alignItems: "center" }}>
+                {e.barcode && <QRCode value={String(e.barcode)} size={150} />}
+              </View>
             </View>
-          </View>
+          ))}
         </View>
       </View>
     </ScrollView>

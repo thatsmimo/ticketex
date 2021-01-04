@@ -6,9 +6,16 @@ import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
 
-const BankScreen = ({ navigation }) => {
+const BankScreen = ({ navigation, route }) => {
   const [bankList, setBankList] = useState(null);
   const [loader, setLoader] = useState(false);
+
+  useEffect(() => {
+    if (route.params?.isAdded) {
+      // when bank added
+      fetchBankList();
+    }
+  }, [route, route.params?.isAdded]);
 
   useEffect(() => {
     fetchBankList();
@@ -19,7 +26,7 @@ const BankScreen = ({ navigation }) => {
     const response = await Api.get("account/list");
     console.log("response: ", response);
     if (response.status) {
-      setBankList(response.accounts);
+      setBankList(response.accounts.reverse());
     }
     setLoader(false);
   };
@@ -47,9 +54,7 @@ const BankScreen = ({ navigation }) => {
       <AppHeader title={Languages.BankAccount} navigation={navigation} />
       <View style={styles.container}>
         <FlatList
-          // contentContainerStyle={{ paddingHorizontal: 20, flexGrow: 1 }}
           data={bankList}
-          // ItemSeparatorComponent={Separator}
           renderItem={renderList}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
@@ -65,7 +70,6 @@ const BankScreen = ({ navigation }) => {
               <Text style={styles.logoTxt}>{Languages.BankAccount}</Text>
             </>
           )}
-          // ListFooterComponent={<Separator heigh={30} />}
         />
         <AppButton
           name={Languages.AddNewBank}

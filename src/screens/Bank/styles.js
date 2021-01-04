@@ -5,7 +5,7 @@ export default StyleSheet.create({
   container: {
     backgroundColor: Colors.container,
     flex: 1,
-    padding: 30,
+    paddingHorizontal: 30,
   },
   logo: { width: "100%" },
   logoTxt: { fontFamily: "semi", fontSize: 18, textAlign: "center" },

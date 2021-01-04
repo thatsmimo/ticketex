@@ -5,7 +5,7 @@ export default StyleSheet.create({
   container: {
     backgroundColor: Colors.container,
     flex: 1,
-    padding: 30,
+    paddingHorizontal: 30,
   },
   logo: { width: "100%" },
   logoTxt: { fontFamily: "semi", fontSize: 18, textAlign: "center" },
@@ -18,7 +18,12 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   cardLeftContainer: { flex: 1, marginRight: 10 },
-  cardHeadTxt: { fontSize: 15, fontFamily: "semi", color: Colors.background },
+  cardHeadTxt: {
+    fontSize: 15,
+    fontFamily: "semi",
+    color: Colors.background,
+    textTransform: "capitalize",
+  },
   cardTxt: {
     fontSize: 14,
     fontFamily: "semi",

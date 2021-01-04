@@ -8,7 +8,12 @@ import { Languages, CommonStyles } from "../../js/common";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
-import { APP_DEFAULTS, globalDateFormatter, imgBaseUrl } from "../../utils";
+import {
+  APP_DEFAULTS,
+  globalDateFormatter,
+  imgBaseUrl,
+  showAlert,
+} from "../../utils";
 
 const PurchasedTicketScreen = ({ navigation }) => {
   const [purchasedList, setPurchasedList] = useState(null);
@@ -16,20 +21,23 @@ const PurchasedTicketScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    // fetchList();
+    fetchList();
   }, []);
 
   const fetchList = async () => {
     setLoader(true);
     const response = await Api.get("ticket/purchased");
+    setLoader(false);
     console.log("PurchasedTicketScreen: ", response);
     if (response.status) {
       setPurchasedList(response.data);
-      setLoader(false);
+    } else {
+      showAlert(Languages.Sorry, Languages.SomethingWentWrong);
     }
   };
 
   const _handleItemPress = (item) => {
+    console.log(item);
     navigation.navigate("PurchasedTicketDetails", { ticketDetails: item });
   };
 
@@ -59,7 +67,7 @@ const PurchasedTicketScreen = ({ navigation }) => {
               </Text>
               <View style={CommonStyles.mainChipContainer}>
                 <Text numberOfLines={1} style={CommonStyles.mainChipTxt}>
-                  King Cup
+                  {item.ticket_json.event.location}
                 </Text>
               </View>
             </View>

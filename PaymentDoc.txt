@@ -1,0 +1,38 @@
+Payment Gateway:
+
+COPYandPAY technology, all related data can be accessed using the link below:
+https://hyperpay.docs.oppwa.com/integration-guide
+
+Please find the download link for the latest SDK v2.58 for iOS and Android
+http://hyperpay-2020.quickconnect.to/d/f/578164597851207582
+
+Please find Mada Branding Guidelines ecommerce
+http://hyperpay-2020.quickconnect.to/d/f/574119600881448922
+
+https://hyperpay.docs.oppwa.com/integration-guide
+
+Kindly find the credentials for the TEST server below:
+
+Links used in the integration in the code: https://test.oppwa.com/
+Access Token (Authorization): OGFjN2E0Yzk3NTRiYWM0NDAxNzU0ZmI1M2Q4ZTA3NDN8bjZOWkpoU3dTMw==
+Entity ID (VISA, MASTER): 8ac7a4c9754bac4401754fb5d7fd0747
+Entity ID (MADA): 8ac7a4c9754bac4401754fb6692a074b
+Currency: SAR only
+PaymentType: DB only
+Payment Methods: VISA, MASTER, MADA
+
+ Also you need to add the following required parameters in the POST request (step number.1 in the guide):
+(Without passing them with values will cause a rejection for the transactions on the live by the bank).
+- testMode=EXTERNAL
+- merchantTransactionId="your unique ID in your database"
+- customer.email = The user's email.
+- billing.street1= street address of customer          
+- billing.city= should be city of customer          
+- billing.state= should be state of customer          
+- billing.country= should be country of customer  (Alpha-2 codes with Format A2[A-Z]{2})
+- billing.postcode
+- customer.givenName
+- customer.surname
+*The reference for all the Open Payment Platform parameters (https://hyperpay.docs.oppwa.com/reference/parameters).
+
+Payment methods should be Visa/MasterCard Mada STCPay Applepay

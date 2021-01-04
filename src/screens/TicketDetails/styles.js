@@ -69,7 +69,6 @@ export default StyleSheet.create({
     marginTop: 10,
     textAlign: I18nManager.isRTL ? "left" : "left",
   },
-  padding20: { padding: 20 },
   item2ndTxt: {
     fontSize: 11,
     color: Colors.lineColor,
@@ -78,5 +77,86 @@ export default StyleSheet.create({
     paddingRight: 5,
     paddingLeft: 5,
     textAlign: I18nManager.isRTL ? "left" : "left",
+  },
+
+  //
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    height: "65%",
+  },
+  modalView: {
+    // margin: 20,
+    backgroundColor: "pink",
+    // borderRadius: 20,
+    // padding: 35,
+    alignItems: "center",
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.84,
+    // elevation: 5,
+    height: "100%",
+    width: "100%",
+    // flex: 1,
+  },
+  openButton: {
+    backgroundColor: "#F194FF",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+
+  //
+  quantityContainer: {
+    height: 45,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    marginTop: 20,
+  },
+  quantityDecreaseContainer: {
+    paddingVertical: 13,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.lightBlue,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    justifyContent: "center",
+  },
+  quantityIncreaseContainer: {
+    paddingVertical: 13,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.lightBlue,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+    justifyContent: "center",
+  },
+  quantityTextContainer: {
+    fontFamily: "semi",
+    color: Colors.lineColor,
+    textAlign: "center",
+    fontSize: 20,
+  },
+  quantityShowContainer: {
+    padding: 13,
+    width: 75,
+    backgroundColor: Colors.lightBlue,
+    justifyContent: "center",
+    marginHorizontal: 2,
   },
 });

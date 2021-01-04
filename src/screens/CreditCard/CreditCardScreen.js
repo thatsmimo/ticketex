@@ -6,12 +6,19 @@ import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Api from "../../js/service/api";
 
-const CreditCardScreen = ({ navigation }) => {
+const CreditCardScreen = ({ navigation, route }) => {
   const [cardList, setCardList] = useState(null);
   const [loader, setLoader] = useState(false);
 
   const insets = useSafeAreaInsets();
   const _handleNavigate = () => navigation.navigate("AddCreditCard");
+
+  useEffect(() => {
+    if (route.params?.isAdded) {
+      // when card added
+      fetchCardList();
+    }
+  }, [route, route.params?.isAdded]);
 
   useEffect(() => {
     fetchCardList();
@@ -22,7 +29,7 @@ const CreditCardScreen = ({ navigation }) => {
     const response = await Api.get("card/list");
     console.log("response: ", response);
     if (response.status) {
-      setCardList(response.cards);
+      setCardList(response.cards.reverse());
     }
     setLoader(false);
   };
@@ -43,7 +50,7 @@ const CreditCardScreen = ({ navigation }) => {
             <Text style={styles.cardTxt}>{item.holder_name}</Text>
           </View>
           <View>
-            <Text style={styles.cardHeadTxt}>{Languages.Expire}</Text>
+            <Text style={styles.cardHeadTxt}>{Languages.CardExpiry}</Text>
             <Text
               style={styles.cardTxt}
             >{`${item.expire_month} / ${item.expire_year}`}</Text>

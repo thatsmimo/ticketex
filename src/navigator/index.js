@@ -174,7 +174,7 @@ const index = () => {
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="MyAccount" component={screens.MyAccountScreen} />
       <Stack.Screen name="ScanQr" component={screens.ScanQRScreen} />
-
+      <Stack.Screen name="Withdraw" component={screens.WithdrawScreen} />
       <Stack.Screen name="Balance" component={screens.BalanceScreen} />
       <Stack.Screen name="Bank" component={screens.BankScreen} />
       <Stack.Screen
@@ -204,6 +204,19 @@ const index = () => {
 
   //----------------------------------------------------
 
+  const getTabBarVisibility = (route) => {
+    console.log("route: ", route);
+    const routeName = route.state
+      ? route.state.routes[route.state.index].name
+      : "";
+    console.log("routeName: ", routeName);
+    if (routeName === "Ticket") {
+      return false;
+    }
+
+    return true;
+  };
+
   const TabNav = () => {
     return (
       <Tab.Navigator
@@ -217,7 +230,8 @@ const index = () => {
         <Tab.Screen
           name="Home"
           component={HomeStack}
-          options={{
+          options={({ route }) => ({
+            tabBarVisible: getTabBarVisibility(route),
             tabBarLabel: <AppTabBarTxt name={Languages.Home} />,
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
@@ -226,7 +240,17 @@ const index = () => {
                 size={26}
               />
             ),
-          }}
+          })}
+          // options={{
+          //   tabBarLabel: <AppTabBarTxt name={Languages.Home} />,
+          //   tabBarIcon: ({ color }) => (
+          //     <MaterialCommunityIcons
+          //       name={IconDir.MaterialCommunityIcons.home}
+          //       color={color}
+          //       size={26}
+          //     />
+          //   ),
+          // }}
         />
         <Tab.Screen
           name="SellTicket"

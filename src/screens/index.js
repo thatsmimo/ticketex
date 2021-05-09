@@ -9,6 +9,9 @@ export const MyAccountScreen = _MyAccountScreen;
 import _BalanceScreen from "./Balance/BalanceScreen";
 export const BalanceScreen = _BalanceScreen;
 
+import _WithdrawScreen from "./Withdraw/WithdrawScreen";
+export const WithdrawScreen = _WithdrawScreen;
+
 import _BankScreen from "./Bank/BankScreen";
 export const BankScreen = _BankScreen;
 

@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 import Api from "../../js/service/api";
 import { APP_DEFAULTS, globalDateFormatter, imgBaseUrl } from "../../utils";
+import { Ionicons } from "@expo/vector-icons";
 
 const TicketScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
@@ -23,8 +24,10 @@ const TicketScreen = ({ navigation, route }) => {
   const [loader, setLoader] = useState(true);
   const [ticketList, setTicketList] = useState([]);
 
-  const [availableTicketLength, setAvailableTicketLength] = useState(0);
-  const [soldTicketLength, setSoldTicketLength] = useState(0);
+  // const [availableTicketLength, setAvailableTicketLength] = useState(0);
+  // const [soldTicketLength, setSoldTicketLength] = useState(0);
+
+  const [ticketStatus, setTicketStatus] = useState({ available: 0, sold: 0 });
 
   const { selectedEventId } = route.params;
 
@@ -52,26 +55,34 @@ const TicketScreen = ({ navigation, route }) => {
   const _handleShowMore = (selectedItem) => {
     navigation.navigate("TicketDetails", {
       eventDetails: { ...eventDetails, offers: selectedItem },
-      availableTicketLength: availableTicketLength,
-      soldTicketLength: soldTicketLength,
+      // availableTicketLength: availableTicketLength,
+      // soldTicketLength: soldTicketLength,
       sub_cat_name: eventDetails.sub_cat_name,
       electedEventId: selectedEventId,
+      ticketStatus,
     });
   };
 
   const sortTickets = (ticketList) => {
     let availableArr = [],
       soldArr = [];
+
+    let availableCount = 0,
+      soldCount = 0;
     ticketList.forEach((element) => {
+      // only show available and sold items
       if (element.status == "s") {
         soldArr.push({ ...element });
-      } else {
+        soldCount += element.sold_qty;
+      } else if (element.status == "a") {
         availableArr.push({ ...element });
+        availableCount += element.qty;
       }
     });
-    setAvailableTicketLength(availableArr.length);
-    setSoldTicketLength(soldArr.length);
+    // setAvailableTicketLength(availableArr.length);
+    // setSoldTicketLength(soldArr.length);
     setTicketList([...availableArr, ...soldArr]);
+    setTicketStatus({ available: availableCount, sold: soldCount });
   };
 
   const renderList = ({ item }) => (
@@ -79,23 +90,21 @@ const TicketScreen = ({ navigation, route }) => {
       <View style={styles.rowAsContainer}>
         <Text
           style={
-            item.status == "a"
+            item.status === "a"
               ? styles.itemHeaderTxtAvailable
               : styles.itemHeaderTxtSold
           }
         >
-          {item.status == "a"
+          {item.status === "a"
             ? Languages.AvailableTickets
             : Languages.SoldTickets}
         </Text>
-        {item.status == "a" && (
-          <Text
-            onPress={() => _handleShowMore(item)}
-            style={styles.itemShowMoreTxt}
-          >
-            {Languages.ShowMore}
-          </Text>
-        )}
+        <Text
+          onPress={() => _handleShowMore(item)}
+          style={styles.itemShowMoreTxt}
+        >
+          {Languages.ShowMore}
+        </Text>
       </View>
       <>
         <View style={styles.rowAsContainer}>
@@ -106,9 +115,9 @@ const TicketScreen = ({ navigation, route }) => {
             {item.price} {APP_DEFAULTS.currency} / {Languages.Ticket}
           </Text>
         </View>
-        {/* <Text style={styles.itemIconTxt}>
-          <Ionicons name={IconDir.Ionicons.user} /> {item?.user?.name}
-        </Text> */}
+        <Text style={styles.itemIconTxt}>
+          <Ionicons name={IconDir.Ionicons.user} /> {item?.name}
+        </Text>
       </>
       <View style={styles.itemSeparatorHorizontal} />
     </View>
@@ -151,11 +160,11 @@ const TicketScreen = ({ navigation, route }) => {
         <View style={styles.headerBtmContainer}>
           <View style={styles.headerOpacityContainer}>
             <Text style={styles.whiteTxt13}>
-              {Languages.Available} {availableTicketLength}
+              {Languages.Available} {ticketStatus.available}
             </Text>
             <View style={styles.whiteSeparatorHorizontal} />
             <Text style={styles.whiteTxt13}>
-              {Languages.Sold} {soldTicketLength}
+              {Languages.Sold} {ticketStatus.sold}
             </Text>
           </View>
         </View>
@@ -173,14 +182,14 @@ const TicketScreen = ({ navigation, route }) => {
           ) : null}
         </View>
         <View style={styles.rowAsContainer}>
-          {eventDetails.end && (
-            <Text style={CommonStyles.dateTxt}>
-              {globalDateFormatter(eventDetails.end)}
-            </Text>
-          )}
+          <Text style={CommonStyles.dateTxt}>
+            {globalDateFormatter(eventDetails?.start)} -{" "}
+            {globalDateFormatter(eventDetails?.end)}
+          </Text>
           <Text style={CommonStyles.dateTxt}>{eventDetails.location}</Text>
           <Text style={CommonStyles.dateTxt}>{eventDetails?.city?.name}</Text>
         </View>
+
         <View style={styles.rowAsContainer}>
           <Text style={styles.extraTxt}>
             {Languages.OriginalSellingPrices} {eventDetails.org_price}{" "}

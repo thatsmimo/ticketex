@@ -22,18 +22,15 @@ import { APP_DEFAULTS, globalDateFormatter, imgBaseUrl } from "../../utils";
 const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
   const { ticketDetails } = route.params;
+  const { event } = ticketDetails.ticket_json;
 
   const _handleOpenMapsApp = () => {
-    const location = `${ticketDetails.ticket_json.event.lat},${ticketDetails.ticket_json.event.lng}`;
+    const query = `${event.lat},${event.lng}?q=${event.location}`;
     const url = Platform.select({
-      ios: `maps:${location}`,
-      android: `geo:${location}?center=${location}&q=${location}&z=100`,
+      ios: `maps:${query}`,
+      android: `geo:${query}`,
     });
-    try {
-      Linking.openURL(url);
-    } catch (e) {
-      console.log("e: ", e);
-    }
+    Linking.openURL(url);
   };
 
   return (
@@ -45,23 +42,19 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Image
                 source={{
-                  uri: imgBaseUrl + ticketDetails.ticket_json.event.image_name,
+                  uri: imgBaseUrl + event.image_name,
                 }}
                 style={{ height: 117, width: 117, borderRadius: 8 }}
               />
               <View style={{ paddingLeft: 10, flex: 1 }}>
                 <View style={{ flex: 1, justifyContent: "center" }}>
-                  <Text style={styles.cardDetailsTitle}>
-                    {ticketDetails.ticket_json.event.name}
-                  </Text>
+                  <Text style={styles.cardDetailsTitle}>{event.name}</Text>
                   <Separator height={10} />
                   <Text style={CommonStyles.dateTxt}>
-                    {globalDateFormatter(ticketDetails.ticket_json.event.start)}
+                    {globalDateFormatter(event.start)}
                   </Text>
                   <Separator height={10} />
-                  <Text style={CommonStyles.dateTxt}>
-                    {ticketDetails.ticket_json.event.location}
-                  </Text>
+                  <Text style={CommonStyles.dateTxt}>{event.location}</Text>
                 </View>
                 <Text
                   style={{
@@ -83,8 +76,8 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
           <View style={CommonStyles.cardNoBg}>
             <MapView
               initialRegion={{
-                latitude: parseFloat(ticketDetails.ticket_json.event.lat),
-                longitude: parseFloat(ticketDetails.ticket_json.event.lng),
+                latitude: parseFloat(event.lat),
+                longitude: parseFloat(event.lng),
                 latitudeDelta: 0.00121,
                 longitudeDelta: 0.00121,
               }}
@@ -92,10 +85,10 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
             >
               <MapView.Marker
                 coordinate={{
-                  latitude: parseFloat(ticketDetails.ticket_json.event.lat),
-                  longitude: parseFloat(ticketDetails.ticket_json.event.lng),
+                  latitude: parseFloat(event.lat),
+                  longitude: parseFloat(event.lng),
                 }}
-                title={ticketDetails.ticket_json.event.location}
+                title={event.location}
               />
             </MapView>
             <TouchableOpacity onPress={_handleOpenMapsApp}>
@@ -106,7 +99,7 @@ const PurchasedTicketDetailsScreen = ({ navigation, route }) => {
                   fontFamily: "regular",
                 }}
               >
-                {Languages.OpenOnGoogleMaps}
+                {Languages.OpenOnMaps}
               </Text>
             </TouchableOpacity>
           </View>

@@ -40,13 +40,14 @@ const TicketDetailsScreen = ({ navigation, route }) => {
   const [qtyErrorTxt, setQtyErrorTxt] = useState("");
   const [merchantId, setMerchantId] = useState("");
   const [flagHit, setFlagHit] = useState(false);
-
+  console.log("route.params: ", route.params);
   const {
     eventDetails,
-    availableTicketLength,
-    soldTicketLength,
+    // availableTicketLength,
+    // soldTicketLength,
     sub_cat_name,
     city,
+    ticketStatus,
   } = route.params;
   const maxQty = eventDetails.offers.qty;
 
@@ -153,7 +154,7 @@ const TicketDetailsScreen = ({ navigation, route }) => {
   };
 
   return (
-    <View>
+    <>
       <View>
         <View
           style={{ paddingTop: Platform.OS === "android" ? insets.top : 0 }}
@@ -191,11 +192,11 @@ const TicketDetailsScreen = ({ navigation, route }) => {
           <View style={styles.headerBtmContainer}>
             <View style={styles.headerOpacityContainer}>
               <Text style={styles.whiteTxt13}>
-                {Languages.Available} {availableTicketLength}
+                {Languages.Available} {ticketStatus.available}
               </Text>
               <View style={styles.whiteSeparatorHorizontal} />
               <Text style={styles.whiteTxt13}>
-                {Languages.Sold} {soldTicketLength}
+                {Languages.Sold} {ticketStatus.sold}
               </Text>
             </View>
           </View>
@@ -212,11 +213,10 @@ const TicketDetailsScreen = ({ navigation, route }) => {
             ) : null}
           </View>
           <View style={styles.rowAsContainer}>
-            {eventDetails.end && (
-              <Text style={CommonStyles.dateTxt}>
-                {globalDateFormatter(eventDetails.end)}
-              </Text>
-            )}
+            <Text style={CommonStyles.dateTxt}>
+              {globalDateFormatter(eventDetails?.start)} -{" "}
+              {globalDateFormatter(eventDetails?.end)}
+            </Text>
             <Text style={CommonStyles.dateTxt}>{eventDetails.location}</Text>
             <Text style={CommonStyles.dateTxt}>{city}</Text>
           </View>
@@ -229,11 +229,11 @@ const TicketDetailsScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.card()}>
-          <View style={{}}>
-            {/* <Text style={styles.itemIconTxt}>
+          <View>
+            <Text style={styles.itemIconTxt}>
               <Ionicons name={IconDir.Ionicons.user} />{" "}
-              {eventDetails.offers.user.name}
-            </Text> */}
+              {eventDetails?.offers?.name}
+            </Text>
             <Text style={styles.item2ndTxt}>
               {eventDetails.offers.sold_qty} {Languages.TicketsSold}
             </Text>
@@ -244,63 +244,23 @@ const TicketDetailsScreen = ({ navigation, route }) => {
             </Text>
             <Text style={styles.item2ndTxt}>{Languages.PriceIncludesFees}</Text>
           </View>
-          <View
-            style={{ width: "90%", alignItems: "center", alignSelf: "center" }}
-          >
-            <AppButton
-              name={Languages.BuyNow}
-              _handleOnPress={toggleBottomNavigationView}
-              disabled={loader}
-            />
-          </View>
+          {eventDetails.offers.status == "a" && (
+            <View
+              style={{
+                width: "90%",
+                alignItems: "center",
+                alignSelf: "center",
+              }}
+            >
+              <AppButton
+                name={Languages.BuyNow}
+                _handleOnPress={toggleBottomNavigationView}
+                disabled={loader}
+              />
+            </View>
+          )}
         </View>
       </View>
-      {/*       
-      <Modal
-        visible={openModal}
-        onDismiss={hideModal}
-        backdropPressToClose={false}
-        backButtonClose
-        transparent={false}
-        backdropColor="black"
-        swipeToClose={false}
-      >
-        <View
-          style={{
-            marginTop: 30,
-            flex: 1,
-          }}
-        >
-          <WebView
-            startInLoadingState
-            style={styles.webView}
-            incognito
-            source={{ html: htmlToRender }}
-            userAgent={userAgentAndroid}
-            onNavigationStateChange={(status) =>
-              _onNavigationStateChange(status)
-            }
-            scalesPageToFit
-          />
-        </View>
-
-        <TouchableOpacity
-          onPress={hideModal}
-          style={{
-            position: "absolute",
-            zIndex: 9,
-            top: 20,
-            right: 20,
-          }}
-        >
-          <Ionicons
-            name={"md-close"}
-            style={{ color: Colors.accent }}
-            size={25}
-          />
-        </TouchableOpacity>
-      </Modal>
-      */}
       <BottomSheet
         visible={isvSheetVisible}
         onBackButtonPress={toggleBottomNavigationView}
@@ -386,7 +346,7 @@ const TicketDetailsScreen = ({ navigation, route }) => {
           </>
         </View>
       </BottomSheet>
-    </View>
+    </>
   );
 };
 

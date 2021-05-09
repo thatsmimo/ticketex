@@ -33,6 +33,7 @@ const ScanQRScreen = ({ navigation, route }) => {
   };
 
   const _handleSubmit = () => {
+    console.log("hh");
     Alert.alert(
       "",
       Languages.AreYouSure,
@@ -150,7 +151,7 @@ const ScanQRScreen = ({ navigation, route }) => {
             />
           </View>
         )}
-        {scannedData !== "" && (
+        {scannedData === "scan" && (
           <View
             style={{
               justifyContent: "center",

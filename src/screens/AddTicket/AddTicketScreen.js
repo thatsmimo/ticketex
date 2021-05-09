@@ -6,6 +6,7 @@ import {
   FlatList,
   ScrollView,
   I18nManager,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Modal } from "react-native-paper";
 import { AppButton, AppEditText, AppHeader, SnackBar } from "../../components";
@@ -36,6 +37,7 @@ const AddTicketScreen = ({ navigation, route }) => {
 
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState("");
+  const [name, setName] = useState("");
 
   const [snackbar, setSnackBar] = useState({ isShow: false, msg: "" });
 
@@ -57,6 +59,7 @@ const AddTicketScreen = ({ navigation, route }) => {
       setCurrentModal("event");
       setPrice("");
       setKeyword("");
+      setName("");
       setSnackBar({ isShow: true, msg: Languages.TicketCreatedSuccessfully });
     }
   }, [route, route.params?.isSubmitted]);
@@ -87,6 +90,7 @@ const AddTicketScreen = ({ navigation, route }) => {
       class_id: classList[selectedClassPos].id,
       qty: quantity,
       price: price,
+      name,
     };
     navigation.navigate("ScanQr", {
       formData,
@@ -115,6 +119,10 @@ const AddTicketScreen = ({ navigation, route }) => {
           " " +
           APP_DEFAULTS.currency,
       });
+      return;
+    }
+    if (name === "") {
+      setSnackBar({ isShow: true, msg: Languages.EnterName });
       return;
     }
 
@@ -252,74 +260,91 @@ const AddTicketScreen = ({ navigation, route }) => {
       <View style={CommonStyles.screensRootContainer(insets.top)}>
         <AppHeader title={Languages.AddTicket} />
         <ScrollView keyboardShouldPersistTaps="handled">
-          <View style={{ paddingHorizontal: 30 }}>
-            <FieldHeader name={Languages.SelectEventType + ":"} />
-            <SelectField
-              selectedTxt={eventList[selectedEventPos]?.name}
-              type={"event"}
-            />
-            {selectedEventPos !== -1 && (
-              <>
-                <FieldHeader name={Languages.SelectClassType + ":"} />
-                <SelectField
-                  selectedTxt={classList[selectedClassPos]?.name}
-                  type={"class"}
-                />
-              </>
-            )}
-            {selectedClassPos !== -1 && (
-              <>
-                <FieldHeader name={Languages.Quantity + ":"} />
-                <View style={Styles.quantityContainer}>
-                  <TouchableOpacity
-                    onPress={() => _handleQuantity("-")}
-                    style={Styles.quantityDecreaseContainer}
-                  >
-                    <Text style={Styles.quantityTextContainer}>-</Text>
-                  </TouchableOpacity>
-                  <View style={Styles.quantityShowContainer}>
-                    <Text style={Styles.quantityTextContainer}>{quantity}</Text>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "position" : null}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+          >
+            <View style={{ paddingHorizontal: 30 }}>
+              <FieldHeader name={Languages.SelectEventType + ":"} />
+              <SelectField
+                selectedTxt={eventList[selectedEventPos]?.name}
+                type={"event"}
+              />
+              {selectedEventPos !== -1 && (
+                <>
+                  <FieldHeader name={Languages.SelectClassType + ":"} />
+                  <SelectField
+                    selectedTxt={classList[selectedClassPos]?.name}
+                    type={"class"}
+                  />
+                </>
+              )}
+              {selectedClassPos !== -1 && (
+                <>
+                  <FieldHeader name={Languages.Quantity + ":"} />
+                  <View style={Styles.quantityContainer}>
+                    <TouchableOpacity
+                      onPress={() => _handleQuantity("-")}
+                      style={Styles.quantityDecreaseContainer}
+                    >
+                      <Text style={Styles.quantityTextContainer}>-</Text>
+                    </TouchableOpacity>
+                    <View style={Styles.quantityShowContainer}>
+                      <Text style={Styles.quantityTextContainer}>
+                        {quantity}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => _handleQuantity("+")}
+                      style={Styles.quantityIncreaseContainer}
+                    >
+                      <Text style={Styles.quantityTextContainer}>+</Text>
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity
-                    onPress={() => _handleQuantity("+")}
-                    style={Styles.quantityIncreaseContainer}
-                  >
-                    <Text style={Styles.quantityTextContainer}>+</Text>
-                  </TouchableOpacity>
-                </View>
-                <FieldHeader
-                  name={`${Languages.PricePerTicket} (${APP_DEFAULTS.currency})`}
-                />
-                <AppEditText
-                  value={price}
-                  containerStyle={{
-                    marginTop: 0,
-                  }}
-                  hint={Languages.Price}
-                  saveText={(t) => setPrice(t)}
-                  keyBoardType="number-pad"
-                />
-                <FieldHeader
-                  name={
-                    Languages.Note +
-                    classList[selectedClassPos].max_price +
-                    " " +
-                    APP_DEFAULTS.currency
-                  }
-                  containerStyle={{
-                    marginTop: 5,
-                    color: Colors.negative,
-                    fontSize: 13,
-                  }}
-                />
-              </>
-            )}
-            <AppButton
-              name={Languages.Next}
-              containerStyle={{ marginTop: 20, marginBottom: 40 }}
-              _handleOnPress={_handleNav}
-            />
-          </View>
+                  <FieldHeader
+                    name={`${Languages.PricePerTicket} (${APP_DEFAULTS.currency})`}
+                  />
+                  <AppEditText
+                    value={price}
+                    containerStyle={{
+                      marginTop: 0,
+                    }}
+                    hint={Languages.Price}
+                    saveText={(t) => setPrice(t)}
+                    keyBoardType="number-pad"
+                  />
+                  <FieldHeader
+                    name={
+                      Languages.Note +
+                      classList[selectedClassPos].max_price +
+                      " " +
+                      APP_DEFAULTS.currency
+                    }
+                    containerStyle={{
+                      marginTop: 5,
+                      color: Colors.negative,
+                      fontSize: 13,
+                    }}
+                  />
+                  <FieldHeader name={Languages.Name} />
+                  <AppEditText
+                    value={name}
+                    containerStyle={{
+                      marginTop: 0,
+                    }}
+                    hint={Languages.Name}
+                    saveText={(t) => setName(t)}
+                  />
+                </>
+              )}
+              <AppButton
+                name={Languages.Next}
+                containerStyle={{ marginTop: 20, marginBottom: 40 }}
+                _handleOnPress={_handleNav}
+              />
+            </View>
+          </KeyboardAvoidingView>
         </ScrollView>
       </View>
       <Modal

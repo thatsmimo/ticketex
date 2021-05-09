@@ -17,7 +17,16 @@
       "assets/*"
     ],
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "comgooglemaps",
+          "citymapper",
+          "uber",
+          "lyft",
+          "waze"
+        ]
+      }
     },
     "android": {
       "package": "com.ticketex"

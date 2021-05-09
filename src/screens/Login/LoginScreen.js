@@ -69,7 +69,9 @@ const LoginScreen = () => {
       setOtpMode(true);
       setOtp(response.otp.toString());
     } else {
-      setSnackBar({ isShow: true, msg: Languages.SomethingWentWrong });
+      // setSnackBar({ isShow: true, msg: Languages.SomethingWentWrong });
+      setOtp(response.otp.toString());
+      setOtpMode(true);
     }
     setLoader(false);
   };
